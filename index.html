@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <title>Partner-Dashboard v4.5</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 0; background: #f9f9fb;}
+    header { background: #222; color: #fff; padding: 1rem; text-align: center;}
+    nav { display: flex; background: #f0f0f0; }
+    nav button {
+      flex: 1; padding: 1rem; border: none; background: #f0f0f0;
+      cursor: pointer; font-size: 1rem; transition: background .2s;
+    }
+    nav button.active { background: #fff; font-weight: bold; border-bottom: 2px solid #0057b8; }
+    main { padding: 1.5rem; max-width: 1280px; margin: 0 auto; }
+    section { display: none; }
+    section.active { display: block; }
+    .file-upload { margin-bottom: 1.5rem; }
+    .file-upload label { margin-left: .5rem; color: #ddd; }
+    .search-filter { margin: 1rem 0; display: flex; gap: 1rem; flex-wrap: wrap;}
+    .search-filter input, .search-filter select { padding: 0.5rem; }
+    .table-scroll { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; background: #fff; }
+    th, td { padding: 0.6rem 0.8rem; border: 1px solid #e0e0e0; text-align: left; }
+    th { background: #f5f5f5; position: sticky; left: 0; z-index: 1;}
+    .kpi-boxes { display: flex; gap: 2rem; margin-bottom: 2rem; flex-wrap: wrap;}
+    .kpi {
+      background: #fff; border-radius: 1rem; box-shadow: 0 2px 8px #0001; padding: 1.2rem 2rem;
+      flex: 1 1 120px; min-width: 120px; text-align: center; margin-bottom: 1rem;
+    }
+    .cards { display: flex; flex-wrap: wrap; gap: 1rem; }
+    .card {
+      background: #fff; border-radius: 1rem; box-shadow: 0 2px 8px #0001; padding: 1.5rem; flex: 1 1 280px;
+      min-width: 280px; max-width: 100%; margin-bottom: 1rem;
+    }
+    .card h3 { margin-top: 0; }
+    .export-btn { margin: 1rem 0; padding: 0.7rem 1.3rem; border-radius: 1rem; border: none; background: #0057b8; color: #fff; font-weight: bold; cursor: pointer;}
+    .export-btn:hover { background: #004080;}
+    .edit-btn { background: #f1b21b; color: #222; border: none; padding: 0.4em 0.9em; border-radius: .5em; cursor: pointer; margin-left: 0.4em;}
+    .edit-btn:hover { background: #ffe19c;}
+    .success-msg, .error-msg { margin: 1rem 0; padding: .7rem 1rem; border-radius: .6rem; font-weight: bold;}
+    .success-msg { background: #e1f8e5; color: #277b4f; }
+    .error-msg { background: #ffeaea; color: #c30000;}
+    /* Modal Styles */
+    .modal-bg { display: none; position: fixed; z-index: 100; left: 0; top: 0; width: 100vw; height: 100vh; background: #0008;}
+    .modal { background: #fff; max-width: 500px; margin: 5vh auto; padding: 2rem 2rem 1rem 2rem; border-radius: 1rem; box-shadow: 0 4px 24px #0003; position: relative;}
+    .modal label { font-weight: bold; display: block; margin-top: 1rem;}
+    .modal input, .modal select { width: 100%; padding: 0.6em; margin-top: .5em;}
+    .modal-actions { margin-top: 1.2em; text-align: right;}
+    .modal-close { position: absolute; right: 1rem; top: .6rem; font-size: 1.5em; cursor: pointer;}
+    .log-table { width: 100%; background: #fff; border-collapse: collapse;}
+    .log-table th, .log-table td { padding: .5em .7em; border: 1px solid #e0e0e0; }
+    .log-table th { background: #f5f5f5;}
+    @media (max-width: 900px) {
+      .kpi-boxes { flex-direction: column; gap: 1rem; }
+      .cards { flex-direction: column; }
+      .modal { padding: 1rem;}
+    }
+    @media (max-width:600px) {
+      main { padding: 0.3rem;}
+    }
+.modal { 
+  max-height: 90vh; 
+  overflow-y: auto; 
+  position: relative; 
+}
+.modal-actions {
+  background: #fff; 
+  position: sticky; 
+  bottom: 0; 
+  padding-bottom: 1rem; 
+  margin-bottom: 0;
+}
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Partner-Dashboard v4.5</h1>
+    <div class="file-upload">
+      <input type="file" id="csvFile" accept=".csv" />
+      <label for="csvFile">Partnerdaten als CSV importieren</label>
+      <button class="export-btn" id="demoDataBtn" style="margin-left:2rem;background:#888;">Demo-Daten laden</button>
+    </div>
+    <div id="msg"></div>
+  </header>
+  <nav>
+    <button class="tab-btn active" data-tab="overview">Übersicht</button>
+    <button class="tab-btn" data-tab="table">Tabelle</button>
+    <button class="tab-btn" data-tab="cards">Karten</button>
+    <button class="tab-btn" data-tab="charts">Diagramme</button>
+    <button class="tab-btn" data-tab="changelog">Änderungsprotokoll</button>
+  </nav>
+  <main>
+    <!-- Übersicht -->
+    <section id="overview" class="active">
+      <div class="kpi-boxes" id="kpiBoxes"></div>
+      <div>
+        <p>Lade eine <strong>partner.csv</strong> hoch oder nutze Demo-Daten. Tabellenansicht zeigt alle Spalten, Filter und Editierfunktionen für wichtige Felder.</p>
+      </div>
+    </section>
+    <!-- Tabelle -->
+    <section id="table">
+      <div class="search-filter" id="filters"></div>
+      <div class="table-scroll">
+        <table id="partnerTable">
+          <thead></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </section>
+    <!-- Kartenansicht -->
+    <section id="cards">
+      <div class="search-filter">
+        <input type="text" id="cardSearchInput" placeholder="Suche Partner...">
+      </div>
+      <div class="cards" id="partnerCards"></div>
+    </section>
+    <!-- Chart-Tab -->
+    <section id="charts">
+      <div style="display:flex;flex-wrap:wrap;gap:2rem;">
+        <div style="flex:1 1 320px; min-width:260px;">
+          <h3>Vertragstypen (Pie)</h3>
+          <canvas id="pieVertragstyp"></canvas>
+        </div>
+        <div style="flex:1 1 320px; min-width:260px;">
+          <h3>Developer Portal Zugang (Pie)</h3>
+          <canvas id="pieDevPortal"></canvas>
+        </div>
+        <div style="flex:1 1 320px; min-width:260px;">
+          <h3>Partnertyp (Bar)</h3>
+          <canvas id="barPartnertyp"></canvas>
+        </div>
+        <div style="flex:1 1 320px; min-width:260px;">
+          <h3>Trainingsstatus (Bar)</h3>
+          <canvas id="barTraining"></canvas>
+        </div>
+      </div>
+    </section>
+    <!-- Änderungsprotokoll -->
+    <section id="changelog">
+      <h3>Änderungsprotokoll</h3>
+      <table class="log-table" id="changelogTable">
+        <thead>
+          <tr>
+            <th>Zeit</th>
+            <th>Feld</th>
+            <th>Vorher</th>
+            <th>Nachher</th>
+            <th>Partner</th>
+            <th>System</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </section>
+
+    <!-- Modal Popup Editor -->
+    <div class="modal-bg" id="modalBg">
+      <div class="modal">
+        <span class="modal-close" id="modalCloseBtn">&times;</span>
+        <h3>Partnerdaten bearbeiten</h3>
+        <form id="editForm"></form>
+      </div>
+    </div>
+  </main>
+<script>
+// === GLOBAL DATA STRUCTURES ===
+let partnerData = [];
+let csvHeaders = [];
+let changelog = [];
+let charts = {};
+
+const editableFields = [
+  "Partnername","Systemname","Partnertyp","Branche","Vertragsstatus","Vertragstyp",
+  "Developer_Portal_Zugang","Trainingsstatus","Score"
+];
+
+// === TAB NAVIGATION ===
+document.querySelectorAll('.tab-btn').forEach(btn => {
+  btn.onclick = () => {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    document.querySelectorAll('main section').forEach(sec => sec.classList.remove('active'));
+    document.getElementById(btn.dataset.tab).classList.add('active');
+    if (btn.dataset.tab === "charts") renderCharts();
+    if (btn.dataset.tab === "changelog") renderChangelog();
+  }
+});
+
+// === CSV IMPORT & PARSE ===
+document.getElementById('csvFile').addEventListener('change', function (e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  Papa.parse(file, {
+    header: true,
+    skipEmptyLines: true,
+    complete: function (results) {
+      partnerData = results.data;
+      csvHeaders = results.meta.fields;
+      showMsg(`Import erfolgreich: ${partnerData.length} Partner geladen.`, "success");
+      changelog = [];
+      renderAll();
+    },
+    error: function (err) {
+      showMsg("Fehler beim Parsen der CSV: "+err, "error");
+    }
+  });
+});
+
+// === DEMO-DATEN ===
+document.getElementById('demoDataBtn').onclick = () => {
+  partnerData = [
+    {"Partnername":"Aareon AG","Systemname":"Blue Eagle","Partnertyp":"ERP","Branche":"Wohnungswirtschaft","Land":"DE",
+      "Webseite":"https://aareon.de","Vertragsstatus":"Laufend","Vertragstyp":"AVV","Score":"91","Developer_Portal_Zugang":"Ja","Trainingsstatus":"Abgeschlossen"},
+    {"Partnername":"Aareon AG","Systemname":"Wodis Yuneo","Partnertyp":"ERP","Branche":"Wohnungswirtschaft","Land":"DE",
+      "Webseite":"https://aareon.de","Vertragsstatus":"Laufend","Vertragstyp":"SLA","Score":"89","Developer_Portal_Zugang":"Ja","Trainingsstatus":"Offen"},
+    {"Partnername":"Hausbank München","Systemname":"VS3","Partnertyp":"ERP","Branche":"Banken","Land":"DE",
+      "Webseite":"https://hausbank.de","Vertragsstatus":"Laufend","Vertragstyp":"Lizenz","Score":"74","Developer_Portal_Zugang":"Nein","Trainingsstatus":"Offen"},
+    {"Partnername":"DOMUS GmbH","Systemname":"DOMUS 1000","Partnertyp":"ERP","Branche":"Wohnungswirtschaft","Land":"DE",
+      "Webseite":"https://domus.de","Vertragsstatus":"Laufend","Vertragstyp":"AVV","Score":"63","Developer_Portal_Zugang":"Nein","Trainingsstatus":"Abgeschlossen"}
+  ];
+  csvHeaders = Object.keys(partnerData[0]);
+  showMsg("Demo-Daten geladen.", "success");
+  changelog = [];
+  renderAll();
+};
+
+// === INIT RENDER ALL ===
+function renderAll() {
+  renderKPIs();
+  renderFilters();
+  renderTable();
+  renderCards();
+}
+window.onload = () => document.getElementById('demoDataBtn').click();
+
+// === UI MESSAGES ===
+function showMsg(txt, type="success") {
+  const msgDiv = document.getElementById("msg");
+  msgDiv.innerHTML = `<span class="${type}-msg">${txt}</span>`;
+  setTimeout(() => { msgDiv.innerHTML = ""; }, 4000);
+}
+
+// === KPIs ===
+function renderKPIs() {
+  const kpis = [
+    { label: "Partner", value: new Set(partnerData.map(r=>r.Partnername)).size },
+    { label: "Systeme", value: new Set(partnerData.map(r=>r.Systemname)).size },
+    { label: "Laufende Verträge", value: partnerData.filter(r=>String(r.Vertragsstatus||"").toLowerCase().includes("lauf")).length },
+    { label: "Abgeschl. Trainings", value: partnerData.filter(r=>String(r.Trainingsstatus||"").toLowerCase().includes("abgeschlossen")).length },
+    { label: "DevPortal aktiv", value: partnerData.filter(r=>String(r.Developer_Portal_Zugang||"").toLowerCase()==="ja").length }
+  ];
+  document.getElementById("kpiBoxes").innerHTML = kpis.map(kpi =>
+    `<div class="kpi"><div style="font-size:2rem;font-weight:bold">${kpi.value}</div><div>${kpi.label}</div></div>`
+  ).join("");
+}
+
+// === FILTER + EXPORT ===
+function getUniqueValues(field) {
+  return [...new Set(partnerData.map(r=>r[field]||"").filter(Boolean))].sort();
+}
+function renderFilters() {
+  const fields = [
+    {key:"Vertragstyp", label:"Vertragstyp"},
+    {key:"Partnertyp", label:"Partnertyp"},
+    {key:"Developer_Portal_Zugang", label:"DevPortal"},
+    {key:"Trainingsstatus", label:"Training"},
+    {key:"Vertragsstatus", label:"Vertragsstatus"},
+    {key:"Branche", label:"Branche"}
+  ];
+  let html = `<input type="text" id="searchInput" placeholder="Suche...">`;
+  fields.forEach(f => {
+    html += `<select id="filter_${f.key}">
+      <option value="">${f.label} (alle)</option>
+      ${getUniqueValues(f.key).map(val =>
+        `<option value="${val}">${val}</option>`).join("")
+      }
+    </select>`;
+  });
+  html += `<button class="export-btn" onclick="exportTableCSV()">CSV Export</button>`;
+  document.getElementById("filters").innerHTML = html;
+  document.getElementById("searchInput").oninput = renderTable;
+  fields.forEach(f => {
+    document.getElementById(`filter_${f.key}`).onchange = renderTable;
+  });
+}
+function getFilteredData() {
+  const search = (document.getElementById("searchInput")?.value||"").toLowerCase();
+  const filterFields = ["Vertragstyp","Partnertyp","Developer_Portal_Zugang","Trainingsstatus","Vertragsstatus","Branche"];
+  return partnerData.filter(r =>
+    filterFields.every(f =>
+      !document.getElementById(`filter_${f}`) ||
+      !document.getElementById(`filter_${f}`).value ||
+      (r[f]||"") == document.getElementById(`filter_${f}`).value
+    ) &&
+    Object.values(r).some(val=>String(val||"").toLowerCase().includes(search))
+  );
+}
+
+// === TABELLE + EDITOR ===
+function renderTable() {
+  if (!partnerData.length) {
+    document.getElementById("partnerTable").querySelector("thead").innerHTML = "";
+    document.getElementById("partnerTable").querySelector("tbody").innerHTML = "";
+    return;
+  }
+  let ths = csvHeaders.map(h=>`<th>${h}</th>`).join("") + "<th>Aktion</th>";
+  document.getElementById("partnerTable").querySelector("thead").innerHTML = `<tr>${ths}</tr>`;
+  let rows = "";
+  getFilteredData().forEach((row,idx) => {
+    let tds = csvHeaders.map(h=>`<td>${row[h]||""}</td>`).join("");
+    tds += `<td><button class="edit-btn" onclick="openEditor(${partnerData.indexOf(row)})">Edit</button></td>`;
+    rows += `<tr>${tds}</tr>`;
+  });
+  document.getElementById("partnerTable").querySelector("tbody").innerHTML = rows;
+}
+
+// === KARTEN ===
+function renderCards() {
+  const cardsDiv = document.getElementById("partnerCards");
+  if (!partnerData.length) { cardsDiv.innerHTML = ""; return; }
+  const search = (document.getElementById("cardSearchInput")?.value||"").toLowerCase();
+  const grouped = {};
+  partnerData.forEach(r => {
+    if (!grouped[r.Partnername]) grouped[r.Partnername]=[];
+    grouped[r.Partnername].push(r);
+  });
+  cardsDiv.innerHTML = Object.keys(grouped).filter(partner =>
+    partner.toLowerCase().includes(search)
+  ).map(partner => {
+    const sysList = grouped[partner].map(r => `
+      <div style="margin-bottom:0.6rem;padding:0.6rem;background:#f5f6fa;border-radius:0.6rem;">
+        <b>System:</b> ${r.Systemname||""}<br>
+        <b>Partnertyp:</b> ${r.Partnertyp||""}<br>
+        <b>Vertragstyp:</b> ${r.Vertragstyp||""}<br>
+        <b>Vertragsstatus:</b> ${r.Vertragsstatus||""}<br>
+        <b>Score:</b> ${r.Score||""}<br>
+        <b>DevPortal:</b> ${r.Developer_Portal_Zugang||""}
+      </div>
+    `).join('');
+    return `<div class="card"><h3>${partner}</h3>${sysList}</div>`;
+  }).join('');
+  document.getElementById("cardSearchInput").oninput = renderCards;
+}
+
+// === POPUP EDITOR ===
+window.openEditor = function(idx) {
+  const row = {...partnerData[idx]};
+  let html = `<input type="hidden" id="editIdx" value="${idx}">`;
+  csvHeaders.forEach(h => {
+    if (editableFields.includes(h)) {
+      html += `<label>${h}<input type="text" id="edit_${h.replace(/[^\w\-]/g,"_")}" value="${row[h]||""}"></label>`;
+    } else {
+      html += `<label>${h}<input type="text" value="${row[h]||""}" disabled></label>`;
+    }
+  });
+  html += `<div class="modal-actions"><button type="submit" class="export-btn" style="background:#32b14d;">Speichern</button></div>`;
+  document.getElementById("editForm").innerHTML = html;
+  document.getElementById("modalBg").style.display = "block";
+  document.getElementById("editForm").onsubmit = function(e) {
+    e.preventDefault();
+    let changed = false;
+    editableFields.forEach(h => {
+      const safeId = h.replace(/[^\w\-]/g,"_");
+      const oldVal = partnerData[idx][h]||"";
+      const newVal = document.getElementById(`edit_${safeId}`).value;
+      if (oldVal !== newVal) {
+        partnerData[idx][h] = newVal;
+        changelog.push({
+          time: new Date().toLocaleString(),
+          field: h,
+          old: oldVal,
+          new: newVal,
+          partner: partnerData[idx].Partnername,
+          system: partnerData[idx].Systemname
+        });
+        changed = true;
+      }
+    });
+    document.getElementById("modalBg").style.display = "none";
+    if (changed) { showMsg("Änderung gespeichert!","success"); renderAll(); }
+  };
+  document.getElementById("modalCloseBtn").onclick = ()=>{ document.getElementById("modalBg").style.display = "none"; }
+};
+
+// === CHANGELOG ===
+function renderChangelog() {
+  let html = changelog.map(l =>
+    `<tr>
+      <td>${l.time}</td>
+      <td>${l.field}</td>
+      <td>${l.old}</td>
+      <td>${l.new}</td>
+      <td>${l.partner}</td>
+      <td>${l.system}</td>
+    </tr>`
+  ).join('');
+  document.getElementById("changelogTable").querySelector("tbody").innerHTML = html;
+}
+
+// === CSV EXPORT ===
+window.exportTableCSV = function() {
+  const rows = [csvHeaders];
+  getFilteredData().forEach(r => {
+    rows.push(csvHeaders.map(h => r[h]||""));
+  });
+  const csv = Papa.unparse(rows);
+  const blob = new Blob([csv],{type:"text/csv"});
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "partner_export.csv";
+  a.click();
+};
+
+// === CHARTS ===
+function renderCharts() {
+  if (!partnerData.length) return;
+  chartPie('pieVertragstyp', "Vertragstyp");
+  chartPie('pieDevPortal', "Developer_Portal_Zugang");
+  chartBar('barPartnertyp', "Partnertyp");
+  chartBar('barTraining', "Trainingsstatus");
+}
+function chartPie(canvasId, field) {
+  const ctx = document.getElementById(canvasId).getContext("2d");
+  const data = {};
+  partnerData.forEach(r=>{
+    const k = r[field]||"unbekannt";
+    data[k] = (data[k]||0)+1;
+  });
+  if (charts[canvasId]) charts[canvasId].destroy();
+  charts[canvasId] = new Chart(ctx, {
+    type: 'pie',
+    data: { labels: Object.keys(data), datasets: [{data: Object.values(data)}] },
+    options: { responsive:true, plugins:{legend:{position:'bottom'}} }
+  });
+}
+function chartBar(canvasId, field) {
+  const ctx = document.getElementById(canvasId).getContext("2d");
+  const data = {};
+  partnerData.forEach(r=>{
+    const k = r[field]||"unbekannt";
+    data[k] = (data[k]||0)+1;
+  });
+  if (charts[canvasId]) charts[canvasId].destroy();
+  charts[canvasId] = new Chart(ctx, {
+    type: 'bar',
+    data: { labels: Object.keys(data), datasets: [{data: Object.values(data)}] },
+    options: { responsive:true, plugins:{legend:{display:false}} }
+  });
+}
+</script>
+</body>
+</html>
