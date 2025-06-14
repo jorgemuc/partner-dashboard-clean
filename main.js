@@ -1,1 +1,16 @@
-js\nconst {app, BrowserWindow} = require('electron');\nconst path = require('path');\n\nfunction create () {\n const win = new BrowserWindow({width:1200, height:800});\n win.loadFile(path.join(__dirname, 'index.html'));\n}\n\napp.whenReady().then(create);\napp.on('window-all-closed', () => app.quit());\n
+const {app, BrowserWindow} = require('electron');
+const path = require('path');
+
+function create () {
+  const win = new BrowserWindow({
+    width: 1200,
+    height: 800,
+    webPreferences: {
+      preload: path.join(__dirname, 'preload.js')
+    }
+  });
+  win.loadFile(path.join(__dirname, 'index.html'));
+}
+
+app.whenReady().then(create);
+app.on('window-all-closed', () => app.quit());
