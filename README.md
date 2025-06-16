@@ -46,4 +46,7 @@ npm install
 # 3) App starten
 npm start
 
+# 4) Tests ausführen
+npm test
+
 Für einen kompletten UI-Test kann die Datei demo/PARTNER.csv mit allen Spalten importiert werden.

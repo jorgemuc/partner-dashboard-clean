@@ -26,4 +26,4 @@ EPIC,User Story (Akzeptanzkriterien),Kern-Tasks,Status
 3. Troubleshooting-Abschnitt (häufige CSV-Fehler)",""
 "E9 · Qualität & Automatisierung","Als Maintainer möchte ich sicherstellen, dass Grundfunktionen nach jedem Commit laufen.","1. Headless Electron-Smoke-Test (Playwright) lädt partner_full.csv
 2. ESLint + Prettier Hook
-3. Dependabot für npm-Updates",""
+3. Dependabot für npm-Updates","parser tests"
