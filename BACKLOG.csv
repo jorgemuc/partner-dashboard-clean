@@ -11,13 +11,13 @@ EPIC,User Story (Akzeptanzkriterien),Kern-Tasks,Status
 3. Gespeicherte Filter-Presets","done"
 "E4 · Bearbeiten & Änderungsprotokoll","Als Power-User will ich Datensätze inline oder via Modal bearbeiten und die Änderungen als CSV exportieren.","1. Erweiterung des Modal-Editors auf alle Felder (scrollbar)
 2. Undo-/Redo-Stack im changelog-Array
-3. Export ‚partner_export.csv‘ mit gleicher Spaltenreihenfolge",""
+3. Export ‚partner_export.csv‘ mit gleicher Spaltenreihenfolge","done"
 "E5 · Leistungsfähige Visualisierung","Als Manager möchte ich auch bei >1000 Zeilen KPI-Boxen und Diagramme ohne Wartezeit sehen.","1. Daten-Aggregation im Web Worker
 2. Lazy Rendering der Chart.js-Plots (IntersectionObserver)
-3. Optionale Paginierung / Virtual Scrolling in Tabelle",""
+3. Optionale Paginierung / Virtual Scrolling in Tabelle","done"
 "E6 · Packaging & Distribution","Als Entwickler will ich mit einem Befehl eine signierte Windows-Installer-EXE erzeugen.","1. Electron-Builder Konfig (NSIS, Icon, Auto-Update off)
 2. npm run build:win-Script
-3. GitHub Actions CI-Workflow",""
+3. GitHub Actions CI-Workflow","done"
 "E7 · Demo- & Test-Daten","Als QA will ich mehrere Beispiel-CSV-Dateien mit Voll-Schema haben, um UI-Regressionen zu testen.","1. partner_full.csv (36 Spalten × ≥ 50 Zeilen, realistische Daten)
 2. partner_edge.csv (Extremwerte, lange URLs, Umlaut-Mix, leere Felder)
 3. Download-Knopf ‚Demo-CSV auswählen‘ im Header",""
