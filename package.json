@@ -4,7 +4,7 @@
   "main": "main.js",
   "scripts": {
     "start": "electron .",
-    "test": "echo \"no tests\""
+    "test": "echo \"(no tests)\""
   },
   "devDependencies": {
     "electron": "^26.2.0"
