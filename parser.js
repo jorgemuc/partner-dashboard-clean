@@ -1,7 +1,14 @@
 const Papa = require('papaparse');
 
 const referenceSchema = [
-  "Partnername","Systemname","Partnertyp","Branche","Land","Vertragsbeginn","Vertragsende","Vertragstyp","Vertragsstatus","Score","Developer_Portal_Zugang"
+  "Partnername","Systemname","Partnertyp","Branche","Land","Website",
+  "Vertragsstatus","Vertragstyp","Vertragsbeginn","Vertragsende","Kündigungsfrist",
+  "Modul/Zweck","Schnittstelle","Format","API URL","Schnittstellenstatus",
+  "Anzahl_Kunden","Anzahl_Liegenschaften","Anzahl_NE","Nutzungsfrequenz",
+  "Störungen_90d","Score","Ansprechpartner_Name","Ansprechpartner_E-Mail",
+  "Telefon","Rolle","Landingpage","Webinar_Termine","Marketingkampagne",
+  "Produktflyer_URL","Präsentation_URL","Referenzprojekte","Schulungstypen",
+  "Schulungsunterlagen","Trainingsstatus","Developer_Portal_Zugang"
 ];
 
 const headerAliases = {
@@ -32,6 +39,7 @@ function parseCsv(raw){
   }});
   const data = results.data.map(row => {
     Object.keys(row).forEach(k => { if(row[k]==null) row[k]=''; });
+    referenceSchema.forEach(f => { if(!(f in row)) row[f]=''; });
     return row;
   });
   const csvHeaders = results.meta.fields;

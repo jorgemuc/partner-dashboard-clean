@@ -20,10 +20,11 @@ EPIC,User Story (Akzeptanzkriterien),Kern-Tasks,Status
 3. GitHub Actions CI-Workflow","done"
 "E7 · Demo- & Test-Daten","Als QA will ich mehrere Beispiel-CSV-Dateien mit Voll-Schema haben, um UI-Regressionen zu testen.","1. partner_full.csv (36 Spalten × ≥ 50 Zeilen, realistische Daten)
 2. partner_edge.csv (Extremwerte, lange URLs, Umlaut-Mix, leere Felder)
-3. Download-Knopf ‚Demo-CSV auswählen‘ im Header",""
+3. Download-Knopf ‚Demo-CSV auswählen‘ im Header","done"
 "E8 · Dokumentation & Onboarding","Als neuer Mitarbeiter möchte ich in 5 Minuten verstehen, wie ich die App starte, baue und verteile.","1. README-Abschnitt ‚CSV-Schema v1.0 (Tabelle)‘
 2. GIF oder Screenshot-Tour
-3. Troubleshooting-Abschnitt (häufige CSV-Fehler)",""
+3. Troubleshooting-Abschnitt (häufige CSV-Fehler)","done"
 "E9 · Qualität & Automatisierung","Als Maintainer möchte ich sicherstellen, dass Grundfunktionen nach jedem Commit laufen.","1. Headless Electron-Smoke-Test (Playwright) lädt partner_full.csv
 2. ESLint + Prettier Hook
-3. Dependabot für npm-Updates","parser tests"
+3. Dependabot für npm-Updates","done"
+"E10 · Portable Win-Build","Als Entwickler möchte ich eine portable Win32-EXE erzeugen, die ohne Installer läuft.","1. electron-builder portable config, 2. build:win32 script, 3. Workflow upload","done (2025-06-16)"
