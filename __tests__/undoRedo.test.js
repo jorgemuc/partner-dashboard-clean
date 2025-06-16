@@ -11,4 +11,15 @@ describe('undo/redo stack', () => {
     idx = redo(data, changelog, idx);
     expect(data[1].name).toBe('C');
   });
+
+  test('limits changelog to five entries', () => {
+    const data = [{v:0}];
+    const log = [];
+    let idx = 0;
+    for(let i=0;i<7;i++){
+      idx = applyChange(data,{index:0,field:'v',old:i,new:i+1},log,idx,5);
+    }
+    expect(log.length).toBe(5);
+    expect(idx).toBe(5);
+  });
 });

@@ -11,6 +11,10 @@ jobs:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
         with:
-          node-version: 18
-      - run: npm install
-      - run: npm run build:win
+          node-version: 20
+      - run: npm ci
+      - run: npm run build:win32
+      - uses: actions/upload-artifact@v3
+        with:
+          name: windows-portable
+          path: dist/*.exe

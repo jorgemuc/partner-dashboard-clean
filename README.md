@@ -49,4 +49,9 @@ npm start
 # 4) Tests ausführen
 npm test
 
+# 5) Windows Build erzeugen
+npm run build:win32
+
+Die portable EXE findet sich anschließend unter `dist/Partner Cockpit Dashboard.exe`.
+
 Für einen kompletten UI-Test kann die Datei demo/PARTNER.csv mit allen Spalten importiert werden.
