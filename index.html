@@ -98,6 +98,8 @@ body.dark .log-table th { background: #3a3a3a; }
       <input type="file" id="csvFile" accept=".csv" />
       <label for="csvFile">Partnerdaten als CSV importieren</label>
       <button class="export-btn" id="demoDataBtn" style="margin-left:2rem;background:#888;">Demo-Daten laden</button>
+      <button class="export-btn" id="undoBtn" style="background:#aaa;margin-left:2rem;">Undo</button>
+      <button class="export-btn" id="redoBtn" style="background:#aaa;">Redo</button>
     </div>
     <div id="msg"></div>
   </header>
@@ -129,6 +131,7 @@ body.dark .log-table th { background: #3a3a3a; }
           <tbody></tbody>
         </table>
       </div>
+      <div id="pagination" style="margin-top:.5rem;"><button id="prevPage" class="export-btn" style="background:#777;margin-right:.5rem;">Prev</button><span id="pageInfo"></span><button id="nextPage" class="export-btn" style="background:#777;margin-left:.5rem;">Next</button></div>
     </section>
     <!-- Kartenansicht -->
     <section id="cards">
@@ -209,17 +212,18 @@ const headerAliases = {
 let partnerData = [];
 let csvHeaders = [];
 let changelog = [];
+let changeIndex = 0;
 let charts = {};
+let chartWorker = new Worker('chartWorker.js');
 let hiddenColumns = JSON.parse(localStorage.getItem('hiddenColumns')||'[]');
+let currentPage = 1;
+const rowsPerPage = 20;
 
 function debounce(fn, wait=300) {
   let t; return (...args)=>{ clearTimeout(t); t=setTimeout(()=>fn(...args), wait); };
 }
 
-const editableFields = [
-  "Partnername","Systemname","Partnertyp","Branche","Vertragsstatus","Vertragstyp",
-  "Developer_Portal_Zugang","Trainingsstatus","Score"
-];
+let editableFields = [];
 
 // === TAB NAVIGATION ===
 document.querySelectorAll('.tab-btn').forEach(btn => {
@@ -261,6 +265,7 @@ document.getElementById('csvFile').addEventListener('change', function (e) {
           return r;
         });
         csvHeaders = results.meta.fields;
+        editableFields = [...csvHeaders];
         const canon = s => s.toLowerCase().replace(/[^a-z0-9]/g,'');
         const parsedCanon = csvHeaders.map(canon);
         const refCanon = referenceSchema.map(canon);
@@ -273,6 +278,7 @@ document.getElementById('csvFile').addEventListener('change', function (e) {
         }
         showMsg(msg, 'success');
         changelog = [];
+        currentPage = 1;
         renderAll();
       },
       error: err => showMsg("Fehler beim Parsen der CSV: "+err, "error")
@@ -294,8 +300,10 @@ document.getElementById('demoDataBtn').onclick = () => {
       "Webseite":"https://domus.de","Vertragsstatus":"Laufend","Vertragstyp":"AVV","Score":"63","Developer_Portal_Zugang":"Nein","Trainingsstatus":"Abgeschlossen"}
   ];
   csvHeaders = Object.keys(partnerData[0]);
+  editableFields = [...csvHeaders];
   showMsg("Demo-Daten geladen.", "success");
   changelog = [];
+  currentPage = 1;
   renderAll();
 };
 
@@ -320,6 +328,10 @@ window.onload = () => {
     const menu = document.getElementById('columnMenu');
     menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
   };
+  document.getElementById('prevPage').onclick = ()=>{ if(currentPage>1){ currentPage--; renderTable(); }};
+  document.getElementById('nextPage').onclick = ()=>{ currentPage++; renderTable(); };
+  document.getElementById('undoBtn').onclick = undoChange;
+  document.getElementById('redoBtn').onclick = redoChange;
 };
 
 // === UI MESSAGES ===
@@ -483,13 +495,17 @@ function renderTable() {
   }
   let ths = csvHeaders.map((h,i)=>`<th data-col="${i}" ${hiddenColumns.includes(h)?'style="display:none"':''}>${h}</th>`).join("") + "<th>Aktion</th>";
   document.getElementById("partnerTable").querySelector("thead").innerHTML = `<tr>${ths}</tr>`;
+  const filtered = getFilteredData();
+  const totalPages = Math.max(1, Math.ceil(filtered.length / rowsPerPage));
+  if(currentPage>totalPages) currentPage = totalPages;
   let rows = "";
-  getFilteredData().forEach((row,idx) => {
+  filtered.slice((currentPage-1)*rowsPerPage, currentPage*rowsPerPage).forEach((row,idx) => {
     let tds = csvHeaders.map((h,i)=>`<td data-col="${i}" ${hiddenColumns.includes(h)?'style="display:none"':''}>${row[h]||""}</td>`).join("");
     tds += `<td><button class="edit-btn" onclick="openEditor(${partnerData.indexOf(row)})">Edit</button></td>`;
     rows += `<tr>${tds}</tr>`;
   });
   document.getElementById("partnerTable").querySelector("tbody").innerHTML = rows;
+  document.getElementById('pageInfo').textContent = `${currentPage}/${totalPages}`;
 }
 
 // === KARTEN ===
@@ -525,11 +541,7 @@ window.openEditor = function(idx) {
   const row = {...partnerData[idx]};
   let html = `<input type="hidden" id="editIdx" value="${idx}">`;
   csvHeaders.forEach(h => {
-    if (editableFields.includes(h)) {
       html += `<label>${h}<input type="text" id="edit_${h.replace(/[^\w\-]/g,"_")}" value="${row[h]||""}"></label>`;
-    } else {
-      html += `<label>${h}<input type="text" value="${row[h]||""}" disabled></label>`;
-    }
   });
   html += `<div class="modal-actions"><button type="submit" class="export-btn" style="background:#32b14d;">Speichern</button></div>`;
   document.getElementById("editForm").innerHTML = html;
@@ -537,20 +549,23 @@ window.openEditor = function(idx) {
   document.getElementById("editForm").onsubmit = function(e) {
     e.preventDefault();
     let changed = false;
-    editableFields.forEach(h => {
+    csvHeaders.forEach(h => {
       const safeId = h.replace(/[^\w\-]/g,"_");
       const oldVal = partnerData[idx][h]||"";
       const newVal = document.getElementById(`edit_${safeId}`).value;
       if (oldVal !== newVal) {
         partnerData[idx][h] = newVal;
+        changelog.splice(changeIndex);
         changelog.push({
           time: new Date().toLocaleString(),
+          index: idx,
           field: h,
           old: oldVal,
           new: newVal,
           partner: partnerData[idx].Partnername,
           system: partnerData[idx].Systemname
         });
+        changeIndex = changelog.length;
         changed = true;
       }
     });
@@ -562,7 +577,7 @@ window.openEditor = function(idx) {
 
 // === CHANGELOG ===
 function renderChangelog() {
-  let html = changelog.map(l =>
+  let html = changelog.slice(0, changeIndex).map(l =>
     `<tr>
       <td>${l.time}</td>
       <td>${l.field}</td>
@@ -574,6 +589,24 @@ function renderChangelog() {
   ).join('');
   document.getElementById("changelogTable").querySelector("tbody").innerHTML = html;
 }
+
+window.undoChange = function(){
+  if(changeIndex===0) return;
+  const c = changelog[changeIndex-1];
+  partnerData[c.index][c.field] = c.old;
+  changeIndex--;
+  renderAll();
+  showMsg('Undo','success');
+};
+
+window.redoChange = function(){
+  if(changeIndex===changelog.length) return;
+  const c = changelog[changeIndex];
+  partnerData[c.index][c.field] = c.new;
+  changeIndex++;
+  renderAll();
+  showMsg('Redo','success');
+};
 
 // === CSV EXPORT ===
 window.exportTableCSV = function() {
@@ -592,39 +625,38 @@ window.exportTableCSV = function() {
 // === CHARTS ===
 function renderCharts() {
   if (!partnerData.length) return;
-  chartPie('pieVertragstyp', "Vertragstyp");
-  chartPie('pieDevPortal', "Developer_Portal_Zugang");
-  chartBar('barPartnertyp', "Partnertyp");
-  chartBar('barTraining', "Trainingsstatus");
-}
-function chartPie(canvasId, field) {
-  const ctx = document.getElementById(canvasId).getContext("2d");
-  const data = {};
-  partnerData.forEach(r=>{
-    const k = r[field]||"unbekannt";
-    data[k] = (data[k]||0)+1;
+  const mapping = {
+    pieVertragstyp: 'Vertragstyp',
+    pieDevPortal: 'Developer_Portal_Zugang',
+    barPartnertyp: 'Partnertyp',
+    barTraining: 'Trainingsstatus'
+  };
+  const observer = new IntersectionObserver(entries=>{
+    entries.forEach(e=>{
+      if(e.isIntersecting && !e.target.dataset.rendered){
+        const field = mapping[e.target.id];
+        chartWorker.postMessage({canvasId:e.target.id, field, data: partnerData});
+        e.target.dataset.rendered = '1';
+      }
+    });
+  },{threshold:0.2});
+  Object.keys(mapping).forEach(id=>{
+    const canvas=document.getElementById(id);
+    if(canvas){ observer.observe(canvas); }
   });
-  if (charts[canvasId]) charts[canvasId].destroy();
+}
+
+chartWorker.onmessage = function(e){
+  const {canvasId, labels, values} = e.data;
+  const ctx = document.getElementById(canvasId).getContext('2d');
+  const type = canvasId.startsWith('pie') ? 'pie' : 'bar';
+  if(charts[canvasId]) charts[canvasId].destroy();
   charts[canvasId] = new Chart(ctx, {
-    type: 'pie',
-    data: { labels: Object.keys(data), datasets: [{data: Object.values(data)}] },
-    options: { responsive:true, plugins:{legend:{position:'bottom'}} }
+    type,
+    data: { labels, datasets:[{data: values}] },
+    options: { responsive:true, plugins:{legend:{position:type==='pie'?'bottom':'none'}} }
   });
-}
-function chartBar(canvasId, field) {
-  const ctx = document.getElementById(canvasId).getContext("2d");
-  const data = {};
-  partnerData.forEach(r=>{
-    const k = r[field]||"unbekannt";
-    data[k] = (data[k]||0)+1;
-  });
-  if (charts[canvasId]) charts[canvasId].destroy();
-  charts[canvasId] = new Chart(ctx, {
-    type: 'bar',
-    data: { labels: Object.keys(data), datasets: [{data: Object.values(data)}] },
-    options: { responsive:true, plugins:{legend:{display:false}} }
-  });
-}
+};
 </script>
 </body>
 </html>
