@@ -1,5 +1,9 @@
-function applyChange(data, change) {
+function applyChange(data, change, log=[], index=log.length, limit=5) {
   data[change.index][change.field] = change.new;
+  log.splice(index);
+  log.push(change);
+  if(log.length > limit) log.shift();
+  return log.length;
 }
 
 function undo(data, changelog, index) {

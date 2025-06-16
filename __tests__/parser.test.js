@@ -15,4 +15,10 @@ describe('parseCsv', () => {
     expect(res.unexpected).toContain('Extra');
     expect(res.data[0]['Vertragsbeginn']).toBe('2024-01-01');
   });
+
+  test('fills missing schema fields with empty strings', () => {
+    const csv = 'Partnername,Systemname\nFoo,Sys';
+    const res = parseCsv(csv);
+    expect(res.data[0]['Vertragsbeginn']).toBe('');
+  });
 });
