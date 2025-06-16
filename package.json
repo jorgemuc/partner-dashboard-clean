@@ -8,9 +8,15 @@
   },
   "devDependencies": {
     "electron": "^26.2.0",
-    "electron-builder": "^24.14.1"
+    "electron-builder": "^26.0.12"
   },
   "dependencies": {
     "papaparse": "^5.5.3"
+  },
+  "build": {
+    "productName": "Partner Cockpit Dashboard",
+    "asar": true,
+    "files": ["**/*", "!dist/**"],
+    "win": { "target": "portable", "icon": "assets/icon.ico" }
   }
 }
