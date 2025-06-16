@@ -25,7 +25,7 @@
     .table-scroll { overflow-x: auto; }
     table { width: 100%; border-collapse: collapse; background: #fff; }
     th, td { padding: 0.6rem 0.8rem; border: 1px solid #e0e0e0; text-align: left; }
-    th { background: #f5f5f5; position: sticky; left: 0; z-index: 1;}
+    th { background: #f5f5f5; position: sticky; top: 0; z-index: 2; }
     .kpi-boxes { display: flex; gap: 2rem; margin-bottom: 2rem; flex-wrap: wrap;}
     .kpi {
       background: #fff; border-radius: 1rem; box-shadow: 0 2px 8px #0001; padding: 1.2rem 2rem;
@@ -39,6 +39,8 @@
     .card h3 { margin-top: 0; }
     .export-btn { margin: 1rem 0; padding: 0.7rem 1.3rem; border-radius: 1rem; border: none; background: #0057b8; color: #fff; font-weight: bold; cursor: pointer;}
     .export-btn:hover { background: #004080;}
+    .column-menu { display:none; position:absolute; background:#fff; border:1px solid #ccc; padding:0.5rem; max-height:200px; overflow:auto; z-index:10; }
+    body.dark .column-menu { background:#2b2b2b; color:#eee; }
     .edit-btn { background: #f1b21b; color: #222; border: none; padding: 0.4em 0.9em; border-radius: .5em; cursor: pointer; margin-left: 0.4em;}
     .edit-btn:hover { background: #ffe19c;}
     .success-msg, .error-msg { margin: 1rem 0; padding: .7rem 1rem; border-radius: .6rem; font-weight: bold;}
@@ -117,6 +119,10 @@ body.dark .log-table th { background: #3a3a3a; }
     <!-- Tabelle -->
     <section id="table">
       <div class="search-filter" id="filters"></div>
+      <div style="position:relative;margin-bottom:.5rem;">
+        <button id="columnBtn" class="export-btn" style="background:#777;margin-right:.5rem;">Spalten</button>
+        <div id="columnMenu" class="column-menu"></div>
+      </div>
       <div class="table-scroll">
         <table id="partnerTable">
           <thead></thead>
@@ -181,10 +187,34 @@ body.dark .log-table th { background: #3a3a3a; }
   </main>
 <script>
 // === GLOBAL DATA STRUCTURES ===
+const referenceSchema = [
+  "Partnername","Systemname","Partnertyp","Branche","Land","Website",
+  "Vertragsstatus","Vertragstyp","Vertragsbeginn","Vertragsende","Kündigungsfrist",
+  "Modul/Zweck","Schnittstelle","Format","API URL","Schnittstellenstatus",
+  "Anzahl_Kunden","Anzahl_Liegenschaften","Anzahl_NE","Nutzungsfrequenz",
+  "Störungen_90d","Score","Ansprechpartner_Name","Ansprechpartner_E-Mail",
+  "Telefon","Rolle","Landingpage","Webinar_Termine","Marketingkampagne",
+  "Produktflyer_URL","Präsentation_URL","Referenzprojekte","Schulungstypen",
+  "Schulungsunterlagen","Trainingsstatus","Developer_Portal_Zugang"
+];
+
+const headerAliases = {
+  contract_start: "Vertragsbeginn",
+  contract_end: "Vertragsende",
+  partner_name: "Partnername",
+  system_name: "Systemname",
+  api_url: "API URL"
+};
+
 let partnerData = [];
 let csvHeaders = [];
 let changelog = [];
 let charts = {};
+let hiddenColumns = JSON.parse(localStorage.getItem('hiddenColumns')||'[]');
+
+function debounce(fn, wait=300) {
+  let t; return (...args)=>{ clearTimeout(t); t=setTimeout(()=>fn(...args), wait); };
+}
 
 const editableFields = [
   "Partnername","Systemname","Partnertyp","Branche","Vertragsstatus","Vertragstyp",
@@ -207,20 +237,48 @@ document.querySelectorAll('.tab-btn').forEach(btn => {
 document.getElementById('csvFile').addEventListener('change', function (e) {
   const file = e.target.files[0];
   if (!file) return;
-  Papa.parse(file, {
-    header: true,
-    skipEmptyLines: true,
-    complete: function (results) {
-      partnerData = results.data;
-      csvHeaders = results.meta.fields;
-      showMsg(`Import erfolgreich: ${partnerData.length} Partner geladen.`, "success");
-      changelog = [];
-      renderAll();
-    },
-    error: function (err) {
-      showMsg("Fehler beim Parsen der CSV: "+err, "error");
-    }
-  });
+  const reader = new FileReader();
+  reader.onload = function(evt) {
+    const raw = (evt.target.result || '').replace(/^\uFEFF/, '');
+    const first = raw.split(/\r?\n/)[0] || '';
+    const comma = (first.match(/,/g)||[]).length;
+    const semi = (first.match(/;/g)||[]).length;
+    const delimiter = semi > comma ? ';' : ',';
+    Papa.parse(raw, {
+      header: true,
+      skipEmptyLines: true,
+      delimiter,
+      transformHeader: h => {
+        const norm = h.trim();
+        const key = norm.toLowerCase().replace(/[^a-z0-9]/g,'');
+        return headerAliases[key] ||
+          referenceSchema.find(r => r.toLowerCase().replace(/[^a-z0-9]/g,'')===key) ||
+          norm;
+      },
+      complete: function(results) {
+        partnerData = results.data.map(r => {
+          Object.keys(r).forEach(k => { if(r[k]==null) r[k]=''; });
+          return r;
+        });
+        csvHeaders = results.meta.fields;
+        const canon = s => s.toLowerCase().replace(/[^a-z0-9]/g,'');
+        const parsedCanon = csvHeaders.map(canon);
+        const refCanon = referenceSchema.map(canon);
+        const missing = referenceSchema.filter(r => !parsedCanon.includes(canon(r)));
+        const unexpected = csvHeaders.filter(h => !refCanon.includes(canon(h)));
+        let msg = `Import erfolgreich: ${partnerData.length} Partner geladen.`;
+        if (missing.length || unexpected.length) {
+          if (missing.length) msg += ` Fehlende Spalten: ${missing.join(', ')}.`;
+          if (unexpected.length) msg += ` Unerwartete Spalten: ${unexpected.join(', ')}.`;
+        }
+        showMsg(msg, 'success');
+        changelog = [];
+        renderAll();
+      },
+      error: err => showMsg("Fehler beim Parsen der CSV: "+err, "error")
+    });
+  };
+  reader.readAsText(file, 'UTF-8');
 });
 
 // === DEMO-DATEN ===
@@ -245,6 +303,7 @@ document.getElementById('demoDataBtn').onclick = () => {
 function renderAll() {
   renderKPIs();
   renderFilters();
+  renderColumnMenu();
   renderTable();
   renderCards();
 }
@@ -257,6 +316,10 @@ window.onload = () => {
     localStorage.setItem('prefers-dark', document.body.classList.contains('dark'));
   };
   document.getElementById('demoDataBtn').click();
+  document.getElementById('columnBtn').onclick = () => {
+    const menu = document.getElementById('columnMenu');
+    menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
+  };
 };
 
 // === UI MESSAGES ===
@@ -282,44 +345,133 @@ function renderKPIs() {
 
 // === FILTER + EXPORT ===
 function getUniqueValues(field) {
-  return [...new Set(partnerData.map(r=>r[field]||"").filter(Boolean))].sort();
+  return [...new Set(partnerData.map(r=>r[field]||"").filter(v=>v!==""))].sort();
+}
+function detectType(field) {
+  const vals = partnerData.map(r=>r[field]).filter(v=>v!=="" && v!=null);
+  const numeric = vals.every(v => !isNaN(parseFloat(v)));
+  if (numeric) return "number";
+  if (getUniqueValues(field).length <= 10) return "select";
+  return "text";
 }
 function renderFilters() {
-  const fields = [
-    {key:"Vertragstyp", label:"Vertragstyp"},
-    {key:"Partnertyp", label:"Partnertyp"},
-    {key:"Developer_Portal_Zugang", label:"DevPortal"},
-    {key:"Trainingsstatus", label:"Training"},
-    {key:"Vertragsstatus", label:"Vertragsstatus"},
-    {key:"Branche", label:"Branche"}
-  ];
+  if (!partnerData.length) { document.getElementById("filters").innerHTML=""; return; }
+  const presets = JSON.parse(localStorage.getItem('filterPresets')||'[]');
   let html = `<input type="text" id="searchInput" placeholder="Suche...">`;
-  fields.forEach(f => {
-    html += `<select id="filter_${f.key}">
-      <option value="">${f.label} (alle)</option>
-      ${getUniqueValues(f.key).map(val =>
-        `<option value="${val}">${val}</option>`).join("")
-      }
-    </select>`;
+  csvHeaders.forEach(h => {
+    const type = detectType(h);
+    if (type==="select") {
+      html += `<select id="filter_${h}"><option value="">${h} (alle)</option>`+
+        getUniqueValues(h).map(v=>`<option value="${v}">${v}</option>`).join('')+
+        `</select>`;
+    } else if (type==="number") {
+      html += `<input type="number" id="filter_${h}_min" placeholder="${h} min">`+
+              `<input type="number" id="filter_${h}_max" placeholder="max">`;
+    } else {
+      html += `<input type="text" id="filter_${h}" placeholder="${h}">`;
+    }
   });
+  html += `<select id="presetSelect"><option value="">Preset wählen</option>`+
+    presets.map((p,i)=>`<option value="${i}">${p.name}</option>`).join('')+
+    `</select>`;
+  html += `<button id="savePreset" class="export-btn" style="background:#888;">Preset speichern</button>`;
   html += `<button class="export-btn" onclick="exportTableCSV()">CSV Export</button>`;
   document.getElementById("filters").innerHTML = html;
-  document.getElementById("searchInput").oninput = renderTable;
-  fields.forEach(f => {
-    document.getElementById(`filter_${f.key}`).onchange = renderTable;
+  document.getElementById("searchInput").oninput = debounce(renderTable,300);
+  csvHeaders.forEach(h => {
+    const type = detectType(h);
+    if (type==="select") {
+      document.getElementById(`filter_${h}`).onchange = renderTable;
+    } else if (type==="number") {
+      document.getElementById(`filter_${h}_min`).oninput = renderTable;
+      document.getElementById(`filter_${h}_max`).oninput = renderTable;
+    } else {
+      document.getElementById(`filter_${h}`).oninput = debounce(renderTable,300);
+    }
+  });
+  document.getElementById('savePreset').onclick = savePreset;
+  document.getElementById('presetSelect').onchange = function(){
+    const idx = this.value; if(idx==='') return;
+    const p = JSON.parse(localStorage.getItem('filterPresets')||'[]')[idx];
+    if(!p) return; applyFilters(p.filters); };
+}
+function getCurrentFilters(){
+  const obj={};
+  csvHeaders.forEach(h=>{
+    const type=detectType(h);
+    if(type==='number'){
+      const min=document.getElementById(`filter_${h}_min`).value;
+      const max=document.getElementById(`filter_${h}_max`).value;
+      if(min!=='') obj[`${h}_min`]=min;
+      if(max!=='') obj[`${h}_max`]=max;
+    } else {
+      const val=document.getElementById(`filter_${h}`)?.value;
+      if(val) obj[h]=val;
+    }
+  });
+  obj.search=document.getElementById('searchInput').value;
+  return obj;
+}
+function applyFilters(f){
+  document.getElementById('searchInput').value=f.search||'';
+  csvHeaders.forEach(h=>{
+    const type=detectType(h);
+    if(type==='number'){
+      if(f[`${h}_min`]) document.getElementById(`filter_${h}_min`).value=f[`${h}_min`];
+      if(f[`${h}_max`]) document.getElementById(`filter_${h}_max`).value=f[`${h}_max`];
+    }else{
+      if(f[h]) document.getElementById(`filter_${h}`).value=f[h];
+    }
+  });
+  renderTable();
+}
+function savePreset(){
+  const name=prompt('Preset Name?');
+  if(!name) return;
+  const presets=JSON.parse(localStorage.getItem('filterPresets')||'[]');
+  presets.push({name,filters:getCurrentFilters()});
+  localStorage.setItem('filterPresets',JSON.stringify(presets));
+  renderFilters();
+}
+function getFilteredData(){
+  const search=(document.getElementById('searchInput')?.value||'').toLowerCase();
+  return partnerData.filter(r=>{
+    if(search && !Object.values(r).some(v=>String(v||'').toLowerCase().includes(search))) return false;
+    for(const h of csvHeaders){
+      const type=detectType(h);
+      if(type==='select'){
+        const val=document.getElementById(`filter_${h}`)?.value;
+        if(val && String(r[h]||'')!==val) return false;
+      }else if(type==='number'){
+        const min=document.getElementById(`filter_${h}_min`).value;
+        const max=document.getElementById(`filter_${h}_max`).value;
+        const num=parseFloat(r[h]);
+        if(min!=='' && !(num>=parseFloat(min))) return false;
+        if(max!=='' && !(num<=parseFloat(max))) return false;
+      }else{
+        const val=document.getElementById(`filter_${h}`)?.value.toLowerCase();
+        if(val && !String(r[h]||'').toLowerCase().includes(val)) return false;
+      }
+    }
+    return true;
   });
 }
-function getFilteredData() {
-  const search = (document.getElementById("searchInput")?.value||"").toLowerCase();
-  const filterFields = ["Vertragstyp","Partnertyp","Developer_Portal_Zugang","Trainingsstatus","Vertragsstatus","Branche"];
-  return partnerData.filter(r =>
-    filterFields.every(f =>
-      !document.getElementById(`filter_${f}`) ||
-      !document.getElementById(`filter_${f}`).value ||
-      (r[f]||"") == document.getElementById(`filter_${f}`).value
-    ) &&
-    Object.values(r).some(val=>String(val||"").toLowerCase().includes(search))
-  );
+
+function renderColumnMenu(){
+  if(!csvHeaders.length){document.getElementById('columnMenu').innerHTML='';return;}
+  hiddenColumns = hiddenColumns.filter(c=>csvHeaders.includes(c));
+  const menu = csvHeaders.map(h=>`<label style="display:block"><input type="checkbox" data-col="${h}" ${hiddenColumns.includes(h)?'':'checked'}> ${h}</label>`).join('');
+  const cm = document.getElementById('columnMenu');
+  cm.innerHTML = menu;
+  document.querySelectorAll('#columnMenu input').forEach(cb=>{
+    cb.onchange = () => {
+      const col = cb.dataset.col;
+      if(!cb.checked){ if(!hiddenColumns.includes(col)) hiddenColumns.push(col); }
+      else hiddenColumns = hiddenColumns.filter(c=>c!==col);
+      localStorage.setItem('hiddenColumns', JSON.stringify(hiddenColumns));
+      renderTable();
+    };
+  });
 }
 
 // === TABELLE + EDITOR ===
@@ -329,11 +481,11 @@ function renderTable() {
     document.getElementById("partnerTable").querySelector("tbody").innerHTML = "";
     return;
   }
-  let ths = csvHeaders.map(h=>`<th>${h}</th>`).join("") + "<th>Aktion</th>";
+  let ths = csvHeaders.map((h,i)=>`<th data-col="${i}" ${hiddenColumns.includes(h)?'style="display:none"':''}>${h}</th>`).join("") + "<th>Aktion</th>";
   document.getElementById("partnerTable").querySelector("thead").innerHTML = `<tr>${ths}</tr>`;
   let rows = "";
   getFilteredData().forEach((row,idx) => {
-    let tds = csvHeaders.map(h=>`<td>${row[h]||""}</td>`).join("");
+    let tds = csvHeaders.map((h,i)=>`<td data-col="${i}" ${hiddenColumns.includes(h)?'style="display:none"':''}>${row[h]||""}</td>`).join("");
     tds += `<td><button class="edit-btn" onclick="openEditor(${partnerData.indexOf(row)})">Edit</button></td>`;
     rows += `<tr>${tds}</tr>`;
   });
