@@ -4,9 +4,13 @@
   "main": "main.js",
   "scripts": {
     "start": "electron .",
-    "test": "echo \"(no tests)\""
+    "test": "jest"
   },
   "devDependencies": {
-    "electron": "^26.2.0"
+    "electron": "^26.2.0",
+    "jest": "^30.0.0"
+  },
+  "dependencies": {
+    "papaparse": "^5.5.3"
   }
 }
