@@ -116,6 +116,7 @@ body.dark .log-table th { background: #3a3a3a; }
     <!-- Übersicht -->
     <section id="overview" class="active">
       <div class="kpi-boxes" id="kpiBoxes"></div>
+      <div class="chart-box" style="margin:auto;max-width:380px;"><canvas id="barStatus"></canvas></div>
       <div>
         <p>Lade eine <strong>partner.csv</strong> hoch oder nutze Demo-Daten. Tabellenansicht zeigt alle Spalten, Filter und Editierfunktionen für wichtige Felder.</p>
       </div>
@@ -153,19 +154,19 @@ body.dark .log-table th { background: #3a3a3a; }
     <!-- Chart-Tab -->
     <section id="charts">
       <div style="display:flex;flex-wrap:wrap;gap:2rem;">
-        <div style="flex:1 1 320px; min-width:260px;">
+        <div class="chart-box">
           <h3>Vertragstypen (Pie)</h3>
           <canvas id="pieVertragstyp"></canvas>
         </div>
-        <div style="flex:1 1 320px; min-width:260px;">
+        <div class="chart-box">
           <h3>Developer Portal Zugang (Pie)</h3>
           <canvas id="pieDevPortal"></canvas>
         </div>
-        <div style="flex:1 1 320px; min-width:260px;">
+        <div class="chart-box">
           <h3>Partnertyp (Bar)</h3>
           <canvas id="barPartnertyp"></canvas>
         </div>
-        <div style="flex:1 1 320px; min-width:260px;">
+        <div class="chart-box">
           <h3>Trainingsstatus (Bar)</h3>
           <canvas id="barTraining"></canvas>
         </div>
@@ -341,6 +342,7 @@ document.getElementById('demoDataBtn').onclick = () => {
 // === INIT RENDER ALL ===
 function renderAll() {
   renderKPIs();
+  renderStatusChart();
   renderColumnMenu();
   renderTable();
   renderFilters();
@@ -388,6 +390,25 @@ function renderKPIs() {
   document.getElementById("kpiBoxes").innerHTML = kpis.map(kpi =>
     `<div class="kpi"><div style="font-size:2rem;font-weight:bold">${kpi.value}</div><div>${kpi.label}</div></div>`
   ).join("");
+}
+
+function renderStatusChart(){
+  const counts={aktiv:0,teilaktiv:0,geplant:0};
+  const seen=new Set();
+  partnerData.forEach(r=>{
+    const p=r.Partnername; if(seen.has(p)) return; seen.add(p);
+    const s=String(r.Vertragsstatus||'').toLowerCase();
+    if(s.includes('teil')) counts.teilaktiv++;
+    else if(s.includes('geplant')) counts.geplant++;
+    else counts.aktiv++;
+  });
+  const ctx=document.getElementById('barStatus').getContext('2d');
+  if(charts.barStatus) charts.barStatus.destroy();
+  charts.barStatus=new Chart(ctx,{type:'bar',data:{labels:['Partner'],datasets:[
+    {label:'aktiv',data:[counts.aktiv],backgroundColor:'#4caf50'},
+    {label:'teilaktiv',data:[counts.teilaktiv],backgroundColor:'#ff9800'},
+    {label:'geplant',data:[counts.geplant],backgroundColor:'#03a9f4'}]},
+    options:{responsive:true,scales:{x:{stacked:true},y:{stacked:true,beginAtZero:true}}}});
 }
 
 // === FILTER + EXPORT ===
