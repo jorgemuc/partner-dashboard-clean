@@ -29,3 +29,4 @@ EPIC,User Story (Akzeptanzkriterien),Kern-Tasks,Status
 3. Dependabot für npm-Updates","done (2025-06-17)"
 "E10 · Portable Win-Build","Als Entwickler möchte ich eine portable Win32-EXE erzeugen, die ohne Installer läuft.","1. electron-builder portable config, 2. build:win32 script, 3. Workflow upload","done (2025-06-17)"
 "E11 · Tabellen-Preset-Dropdown","Als Nutzer*in möchte ich per Dropdown zwischen vordefinierten Spalten-Ansichten umschalten können (Alle | Vertrag | Tech | Onboarding | Marketing), damit die Tabelle lesbar bleibt, ohne vertikalen Text.","1. Dropdown für Spaltenansicht 2. columnViews Objekt 3. Change-Event blendet Spalten aus","done"
+"E12 · Preset-Fix + Simple Filters","...","1. Bugfix Alle 2. Filter-UI","done"
