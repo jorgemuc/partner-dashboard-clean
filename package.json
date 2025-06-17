@@ -15,6 +15,7 @@
   },
   "build": {
     "productName": "Partner Cockpit Dashboard",
+    "appId": "com.jorgemuc.partnerdashboard",
     "asar": true,
     "files": ["**/*", "!dist/**"],
     "win": { "target": "portable", "icon": "assets/icon.ico" }
