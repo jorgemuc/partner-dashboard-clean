@@ -15,12 +15,9 @@ jobs:
         with:
           node-version: 20
 
-      # *** einzig Wichtige Änderung hier: ***
-      - run: npm install --no-audit --no-fund      # statt npm ci
-
+      - run: npm ci
       - run: npm run build:win32
-
-      - uses: actions/upload-artifact@v4           # v4 ist richtig
+      - uses: actions/upload-artifact@v4
         with:
           name: windows-portable
           path: dist/*.exe

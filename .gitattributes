@@ -1,1 +1,1 @@
-*.ico binary
+*.ico -text -diff
