@@ -6,6 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
   <script src="filterUtils.js"></script>
   <link rel="stylesheet" href="styles.css">
   <style>
@@ -208,7 +209,8 @@ const referenceSchema = [
   "Störungen_90d","Score","Ansprechpartner_Name","Ansprechpartner_E-Mail",
   "Telefon","Rolle","Landingpage","Webinar_Termine","Marketingkampagne",
   "Produktflyer_URL","Präsentation_URL","Referenzprojekte","Schulungstypen",
-  "Schulungsunterlagen","Trainingsstatus","Developer_Portal_Zugang"
+  "Schulungsunterlagen","Trainingsstatus","Developer_Portal_Zugang",
+  "Umsatz","Pipeline"
 ];
 
 const headerAliases = {
@@ -232,7 +234,7 @@ const columnViews = {
   Tech:["Partnername","Systemname","Schnittstelle","Format","API URL","Schnittstellenstatus","Developer_Portal_Zugang"],
   Onboarding:["Partnername","Systemname","Trainingsstatus","Schulungstypen","Schulungsunterlagen","Webinar_Termine"],
   Marketing:["Partnername","Systemname","Branche","Landingpage","Marketingkampagne","Produktflyer_URL","Präsentation_URL"],
-  KPI:["Partnername","Systemname","Anzahl_Kunden","Anzahl_Liegenschaften","Anzahl_NE","Nutzungsfrequenz","Störungen_90d","Score"]
+  KPI:["Partnername","Systemname","Umsatz","Pipeline","Anzahl_Kunden","Anzahl_Liegenschaften","Anzahl_NE","Nutzungsfrequenz","Störungen_90d","Score"]
 };
 let currentPage = 1;
 const rowsPerPage = 20;
@@ -268,12 +270,25 @@ document.querySelectorAll('.tab-btn').forEach(btn => {
 });
 
 // === CSV IMPORT & PARSE ===
-document.getElementById('csvFile').addEventListener('change', function (e) {
-  const file = e.target.files[0];
-  if (!file) return;
+
+function validateCsvRaw(raw){
+  const res = Papa.parse(raw,{skipEmptyLines:true});
+  if(res.errors && res.errors.length){
+    return {valid:false, errors:res.errors.map(e=>e.message)};
+  }
+  const cols = res.data[0] ? res.data[0].length : 0;
+  const bad = res.data.some(r=>r.length!==cols);
+  if(bad) return {valid:false, errors:["Inconsistent column count"]};
+  return {valid:true, errors:[]};
+}
+
+function handleFile(file){
+  if(!file) return;
   const reader = new FileReader();
-  reader.onload = function(evt) {
+  reader.onload = function(evt){
     const raw = (evt.target.result || '').replace(/^\uFEFF/, '');
+    const validation = validateCsvRaw(raw);
+    if(!validation.valid){ showMsg('CSV Fehler: '+validation.errors.join('; '), 'error'); return; }
     const first = raw.split(/\r?\n/)[0] || '';
     const comma = (first.match(/,/g)||[]).length;
     const semi = (first.match(/;/g)||[]).length;
@@ -314,8 +329,12 @@ document.getElementById('csvFile').addEventListener('change', function (e) {
       error: err => showMsg("Fehler beim Parsen der CSV: "+err, "error")
     });
   };
-  reader.readAsText(file, 'UTF-8');
-});
+  reader.readAsText(file,'UTF-8');
+}
+
+document.getElementById('csvFile').addEventListener('change', e => handleFile(e.target.files[0]));
+document.body.addEventListener('dragover', e => { e.preventDefault(); });
+document.body.addEventListener('drop', e => { e.preventDefault(); handleFile(e.dataTransfer.files[0]); });
 
 // === DEMO-DATEN ===
 document.getElementById('demoDataBtn').onclick = () => {
@@ -378,7 +397,11 @@ function showMsg(txt, type="success") {
 
 // === KPIs ===
 function renderKPIs() {
+  const totalUmsatz = partnerData.reduce((sum,r)=>sum+(parseFloat(r.Umsatz)||0),0);
+  const totalPipeline = partnerData.reduce((sum,r)=>sum+(parseFloat(r.Pipeline)||0),0);
   const kpis = [
+    { label: "Umsatz", value: totalUmsatz.toFixed(0) },
+    { label: "Pipeline", value: totalPipeline.toFixed(0) },
     { label: "Partner", value: new Set(partnerData.map(r=>r.Partnername)).size },
     { label: "Systeme", value: new Set(partnerData.map(r=>r.Systemname)).size },
     { label: "Laufende Verträge", value: partnerData.filter(r=>String(r.Vertragsstatus||"").toLowerCase().includes("lauf")).length },
@@ -407,6 +430,7 @@ function renderFilters() {
     presets.map((p,i)=>`<option value="${i}">${p.name}</option>`).join('')+`</select>`;
   html += `<button id="savePreset" class="export-btn" style="background:#888;">Preset speichern</button>`;
   html += `<button class="export-btn" onclick="exportTableCSV()">CSV Export</button>`;
+  html += `<button class="export-btn" onclick="exportTableXLSX()">XLSX Export</button>`;
   thead.querySelector('.filter-row')?.remove();
   if(csvHeaders.length>20){
     div.innerHTML='';
@@ -608,6 +632,24 @@ window.exportTableCSV = function() {
   const a = document.createElement("a");
   a.href = URL.createObjectURL(blob);
   a.download = "partner_export.csv";
+  a.click();
+};
+
+window.exportTableXLSX = function(){
+  const headers = getVisibleColumns();
+  const data = getFilteredData().map(r => {
+    const obj = {};
+    headers.forEach(h=>{obj[h]=r[h]||"";});
+    return obj;
+  });
+  const ws = XLSX.utils.json_to_sheet(data,{header:headers});
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, 'Partner');
+  const out = XLSX.write(wb,{bookType:'xlsx',type:'array'});
+  const blob = new Blob([out],{type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'partner_export.xlsx';
   a.click();
 };
 
