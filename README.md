@@ -15,6 +15,7 @@ komplexe Build-Kette oder Cloud-Abhängigkeiten.
 | Automatisches Tabellen-Rendering mit Kopfzeile |
 | Sofort-Suche & Zeilenfilter |
 | Dark-/Light-Umstellung (Tailwind) |
+| Undo-/Redo-Stack (max. 5 Schritte) |
 | 100 % offline, keine Install/Rights nötig |
 
 > *Roadmap:* XLSX-Export · KPI-Tiles · Drag-&-Drop-Upload · Karten-Ansicht  
@@ -55,3 +56,18 @@ npm run build:win32
 Die portable EXE findet sich anschließend unter `dist/Partner Cockpit Dashboard.exe`.
 
 Für einen kompletten UI-Test kann die Datei demo/PARTNER.csv mit allen Spalten importiert werden.
+
+## CSV-Schema v1.0
+
+```
+Partnername, Systemname, Partnertyp, Branche, Land, Website, Vertragsstatus,
+Vertragstyp, Vertragsbeginn, Vertragsende, Kündigungsfrist, Modul/Zweck,
+Schnittstelle, Format, API URL, Schnittstellenstatus, Anzahl_Kunden,
+Anzahl_Liegenschaften, Anzahl_NE, Nutzungsfrequenz, Störungen_90d, Score,
+Ansprechpartner_Name, Ansprechpartner_E-Mail, Telefon, Rolle, Landingpage,
+Webinar_Termine, Marketingkampagne, Produktflyer_URL, Präsentation_URL,
+Referenzprojekte, Schulungstypen, Schulungsunterlagen, Trainingsstatus,
+Developer_Portal_Zugang
+```
+
+Fehlende Spalten werden beim Import automatisch ergänzt; zusätzliche Spalten werden ans Tabellenende angefügt.
