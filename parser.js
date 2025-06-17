@@ -8,7 +8,8 @@ const referenceSchema = [
   "Störungen_90d","Score","Ansprechpartner_Name","Ansprechpartner_E-Mail",
   "Telefon","Rolle","Landingpage","Webinar_Termine","Marketingkampagne",
   "Produktflyer_URL","Präsentation_URL","Referenzprojekte","Schulungstypen",
-  "Schulungsunterlagen","Trainingsstatus","Developer_Portal_Zugang"
+  "Schulungsunterlagen","Trainingsstatus","Developer_Portal_Zugang",
+  "Umsatz","Pipeline"
 ];
 
 const headerAliases = {
@@ -50,4 +51,16 @@ function parseCsv(raw){
   return {data, missing, unexpected, delimiter};
 }
 
-module.exports = { parseCsv };
+function validateCsv(raw){
+  raw = (raw || '').replace(/^\uFEFF/, '');
+  const res = Papa.parse(raw, { skipEmptyLines: true });
+  if(res.errors && res.errors.length){
+    return { valid:false, errors: res.errors.map(e=>e.message) };
+  }
+  const cols = res.data[0] ? res.data[0].length : 0;
+  const inconsistent = res.data.some(r => r.length !== cols);
+  if(inconsistent) return { valid:false, errors:["Inconsistent column count"] };
+  return { valid:true, errors:[] };
+}
+
+module.exports = { parseCsv, validateCsv };
