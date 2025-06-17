@@ -5,7 +5,7 @@ EPIC,User Story (Akzeptanzkriterien),Kern-Tasks,Status
 4. Leere Felder normalisieren ("")","done"
 "E2 · Skalierbare Tabellen-UI","Als Benutzer möchte ich alle Spalten horizontal scrollen können und per Spalten-Menü Spalten ein/ausblenden, damit die Ansicht übersichtlich bleibt.","1. Sticky Header + X-Scrollbar (Tailwind-Klassen anpassen)
 2. Toggle-Menü mit Checkboxen → display:none auf <th>/<td>
-3. Persistente Sichtbarkeits-Prefs (localStorage)","done"
+3. Persistente Sichtbarkeits-Prefs (localStorage)","done (2025-06-18)"
 "E3 · Erweiterte Filter + Suche","Als Analyst will ich jede beliebige Spalte filtern (Text, Range, Dropdown), um gezielt Datensätze zu finden.","1. Dynamische Filter-Komponente pro Spalte (Typ-Erkennung)
 2. Debounced Volltext-Suche über alle Spalten
 3. Gespeicherte Filter-Presets","done"

@@ -1,2 +1,6 @@
 .hidden{display:none}
 @media(max-width:600px){#viewSelect{width:100%;margin-bottom:.5rem}}
+
+table{table-layout:auto}
+th,td{white-space:nowrap;padding:0.6rem 0.8rem;border:1px solid #e0e0e0;max-width:320px}
+.table-scroll{overflow-x:auto}
