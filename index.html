@@ -6,6 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <script src="filterUtils.js"></script>
   <link rel="stylesheet" href="styles.css">
   <style>
     body { font-family: Arial, sans-serif; margin: 0; background: #f9f9fb;}
@@ -128,8 +129,9 @@ body.dark .log-table th { background: #3a3a3a; }
           <option value="Vertrag">Vertrag</option>
           <option value="Tech">Tech</option>
           <option value="Onboarding">Onboarding</option>
-          <option value="Marketing">Marketing</option>
-        </select>
+        <option value="Marketing">Marketing</option>
+        <option value="KPI">KPI</option>
+      </select>
         <button id="columnBtn" class="export-btn" style="background:#777;margin-right:.5rem;">Spalten</button>
         <div id="columnMenu" class="column-menu"></div>
       </div>
@@ -229,7 +231,8 @@ const columnViews = {
   Vertrag:["Partnername","Systemname","Vertragstyp","Vertragsstatus","Vertragsbeginn","Vertragsende","Kündigungsfrist"],
   Tech:["Partnername","Systemname","Schnittstelle","Format","API URL","Schnittstellenstatus","Developer_Portal_Zugang"],
   Onboarding:["Partnername","Systemname","Trainingsstatus","Schulungstypen","Schulungsunterlagen","Webinar_Termine"],
-  Marketing:["Partnername","Systemname","Branche","Landingpage","Marketingkampagne","Produktflyer_URL","Präsentation_URL"]
+  Marketing:["Partnername","Systemname","Branche","Landingpage","Marketingkampagne","Produktflyer_URL","Präsentation_URL"],
+  KPI:["Partnername","Systemname","Anzahl_Kunden","Anzahl_Liegenschaften","Anzahl_NE","Nutzungsfrequenz","Störungen_90d","Score"]
 };
 let currentPage = 1;
 const rowsPerPage = 20;
@@ -248,8 +251,8 @@ function applyView(name){
   const cols = columnViews[name] || csvHeaders;
   hiddenColumns = name==='Alle' ? [] : csvHeaders.filter(h=>!cols.includes(h));
   localStorage.setItem('hiddenColumns', JSON.stringify(hiddenColumns));
-  renderFilters();
   renderTable();
+  renderFilters();
 }
 
 // === TAB NAVIGATION ===
@@ -338,9 +341,9 @@ document.getElementById('demoDataBtn').onclick = () => {
 // === INIT RENDER ALL ===
 function renderAll() {
   renderKPIs();
-  renderFilters();
   renderColumnMenu();
   renderTable();
+  renderFilters();
   renderCards();
 }
 window.onload = () => {
@@ -392,27 +395,29 @@ function detectType(field) {
   return "text";
 }
 function renderFilters() {
-  if (!partnerData.length) { document.getElementById("filters").innerHTML=""; return; }
+  const div = document.getElementById('filters');
+  const thead = document.getElementById('partnerTable').querySelector('thead');
+  if (!partnerData.length) { div.innerHTML=''; thead.querySelector('.filter-row')?.remove(); return; }
   const presets = JSON.parse(localStorage.getItem('filterPresets')||'[]');
+  const view = document.getElementById('viewSelect').value || 'Alle';
+  const fields = getFilterFields(view, getVisibleColumns());
   let html = `<input type="text" id="searchInput" placeholder="Suche...">`;
-  getVisibleColumns().forEach(h => {
-    html += `<input type="text" id="filter_${h}" placeholder="${h}">`;
-  });
+  fields.forEach(h=>{ html+=`<input type="text" id="filter_${h}" placeholder="${h}">`; });
   html += `<select id="presetSelect"><option value="">Preset wählen</option>`+
-    presets.map((p,i)=>`<option value="${i}">${p.name}</option>`).join('')+
-    `</select>`;
+    presets.map((p,i)=>`<option value="${i}">${p.name}</option>`).join('')+`</select>`;
   html += `<button id="savePreset" class="export-btn" style="background:#888;">Preset speichern</button>`;
   html += `<button class="export-btn" onclick="exportTableCSV()">CSV Export</button>`;
-  document.getElementById("filters").innerHTML = html;
-  document.getElementById("searchInput").oninput = debounce(renderTable,300);
-  getVisibleColumns().forEach(h => {
-    document.getElementById(`filter_${h}`).oninput = debounce(renderTable,300);
-  });
+  thead.querySelector('.filter-row')?.remove();
+  if(csvHeaders.length>20){
+    div.innerHTML='';
+    thead.insertAdjacentHTML('beforeend', `<tr class="filter-row"><th colspan="${csvHeaders.length+1}"><div class="search-filter">${html}</div></th></tr>`);
+  } else {
+    div.innerHTML = html;
+  }
+  document.getElementById('searchInput').oninput = debounce(renderTable,300);
+  fields.forEach(h=>{document.getElementById(`filter_${h}`).oninput = debounce(renderTable,300);});
   document.getElementById('savePreset').onclick = savePreset;
-  document.getElementById('presetSelect').onchange = function(){
-    const idx = this.value; if(idx==='') return;
-    const p = JSON.parse(localStorage.getItem('filterPresets')||'[]')[idx];
-    if(!p) return; applyFilters(p.filters); };
+  document.getElementById('presetSelect').onchange = function(){ const idx=this.value; if(idx==='') return; const p=presets[idx]; if(p) applyFilters(p.filters); };
 }
 function getCurrentFilters(){
   const obj={};
