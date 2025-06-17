@@ -24,7 +24,7 @@
     .search-filter input, .search-filter select { padding: 0.5rem; }
     .table-scroll { overflow-x: auto; }
     table { width: 100%; border-collapse: collapse; background: #fff; }
-    th, td { padding: 0.6rem 0.8rem; border: 1px solid #e0e0e0; text-align: left; word-break: break-word; }
+    th, td { padding: 0.6rem 0.8rem; border: 1px solid #e0e0e0; text-align: left; word-break: break-word; max-width:300px; overflow-wrap:anywhere; }
     th { background: #f5f5f5; position: sticky; top: 0; z-index: 2; }
     .kpi-boxes { display: flex; gap: 2rem; margin-bottom: 2rem; flex-wrap: wrap;}
     .kpi {
@@ -265,18 +265,17 @@ document.getElementById('csvFile').addEventListener('change', function (e) {
           referenceSchema.forEach(f=>{ if(!(f in r)) r[f]=''; });
           return r;
         });
-        csvHeaders = results.meta.fields;
-        editableFields = [...csvHeaders];
         const canon = s => s.toLowerCase().replace(/[^a-z0-9]/g,'');
-        const parsedCanon = csvHeaders.map(canon);
+        const parsed = results.meta.fields;
         const refCanon = referenceSchema.map(canon);
-        const missing = referenceSchema.filter(r => !parsedCanon.includes(canon(r)));
-        const unexpected = csvHeaders.filter(h => !refCanon.includes(canon(h)));
+        const unexpected = parsed.filter(h => !refCanon.includes(canon(h)));
+        csvHeaders = [...referenceSchema, ...unexpected];
+        editableFields = [...csvHeaders];
+        const missing = referenceSchema.filter(r => !parsed.map(canon).includes(canon(r)));
+        const unexpectedMsg = unexpected.length ? ` Unerwartete Spalten: ${unexpected.join(', ')}.` : '';
         let msg = `Import erfolgreich: ${partnerData.length} Partner geladen.`;
-        if (missing.length || unexpected.length) {
-          if (missing.length) msg += ` Fehlende Spalten: ${missing.join(', ')}.`;
-          if (unexpected.length) msg += ` Unerwartete Spalten: ${unexpected.join(', ')}.`;
-        }
+        if (missing.length) msg += ` Fehlende Spalten: ${missing.join(', ')}.`;
+        msg += unexpectedMsg;
         showMsg(msg, 'success');
         changelog = [];
         currentPage = 1;
@@ -300,7 +299,8 @@ document.getElementById('demoDataBtn').onclick = () => {
     {"Partnername":"DOMUS GmbH","Systemname":"DOMUS 1000","Partnertyp":"ERP","Branche":"Wohnungswirtschaft","Land":"DE",
       "Webseite":"https://domus.de","Vertragsstatus":"Laufend","Vertragstyp":"AVV","Score":"63","Developer_Portal_Zugang":"Nein","Trainingsstatus":"Abgeschlossen"}
   ];
-  csvHeaders = Object.keys(partnerData[0]);
+  partnerData = partnerData.map(r=>{referenceSchema.forEach(f=>{if(!(f in r)) r[f]='';}); return r;});
+  csvHeaders = [...referenceSchema];
   editableFields = [...csvHeaders];
   showMsg("Demo-Daten geladen.", "success");
   changelog = [];
