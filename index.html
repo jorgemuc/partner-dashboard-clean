@@ -246,8 +246,9 @@ let editableFields = [];
 
 function applyView(name){
   const cols = columnViews[name] || csvHeaders;
-  hiddenColumns = csvHeaders.filter(h=>!cols.includes(h));
+  hiddenColumns = name==='Alle' ? [] : csvHeaders.filter(h=>!cols.includes(h));
   localStorage.setItem('hiddenColumns', JSON.stringify(hiddenColumns));
+  renderFilters();
   renderTable();
 }
 
@@ -351,6 +352,7 @@ window.onload = () => {
     localStorage.setItem('prefers-dark', document.body.classList.contains('dark'));
   };
   document.getElementById('demoDataBtn').click();
+  applyView('Alle');
   document.getElementById('columnBtn').onclick = () => {
     const menu = document.getElementById('columnMenu');
     menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
@@ -386,32 +388,15 @@ function renderKPIs() {
 }
 
 // === FILTER + EXPORT ===
-function getUniqueValues(field) {
-  return [...new Set(partnerData.map(r=>r[field]||"").filter(v=>v!==""))].sort();
-}
 function detectType(field) {
-  const vals = partnerData.map(r=>r[field]).filter(v=>v!=="" && v!=null);
-  const numeric = vals.every(v => !isNaN(parseFloat(v)));
-  if (numeric) return "number";
-  if (getUniqueValues(field).length <= 10) return "select";
   return "text";
 }
 function renderFilters() {
   if (!partnerData.length) { document.getElementById("filters").innerHTML=""; return; }
   const presets = JSON.parse(localStorage.getItem('filterPresets')||'[]');
   let html = `<input type="text" id="searchInput" placeholder="Suche...">`;
-  csvHeaders.forEach(h => {
-    const type = detectType(h);
-    if (type==="select") {
-      html += `<select id="filter_${h}"><option value="">${h} (alle)</option>`+
-        getUniqueValues(h).map(v=>`<option value="${v}">${v}</option>`).join('')+
-        `</select>`;
-    } else if (type==="number") {
-      html += `<input type="number" id="filter_${h}_min" placeholder="${h} min">`+
-              `<input type="number" id="filter_${h}_max" placeholder="max">`;
-    } else {
-      html += `<input type="text" id="filter_${h}" placeholder="${h}">`;
-    }
+  getVisibleColumns().forEach(h => {
+    html += `<input type="text" id="filter_${h}" placeholder="${h}">`;
   });
   html += `<select id="presetSelect"><option value="">Preset wählen</option>`+
     presets.map((p,i)=>`<option value="${i}">${p.name}</option>`).join('')+
@@ -420,16 +405,8 @@ function renderFilters() {
   html += `<button class="export-btn" onclick="exportTableCSV()">CSV Export</button>`;
   document.getElementById("filters").innerHTML = html;
   document.getElementById("searchInput").oninput = debounce(renderTable,300);
-  csvHeaders.forEach(h => {
-    const type = detectType(h);
-    if (type==="select") {
-      document.getElementById(`filter_${h}`).onchange = renderTable;
-    } else if (type==="number") {
-      document.getElementById(`filter_${h}_min`).oninput = renderTable;
-      document.getElementById(`filter_${h}_max`).oninput = renderTable;
-    } else {
-      document.getElementById(`filter_${h}`).oninput = debounce(renderTable,300);
-    }
+  getVisibleColumns().forEach(h => {
+    document.getElementById(`filter_${h}`).oninput = debounce(renderTable,300);
   });
   document.getElementById('savePreset').onclick = savePreset;
   document.getElementById('presetSelect').onchange = function(){
@@ -439,31 +416,17 @@ function renderFilters() {
 }
 function getCurrentFilters(){
   const obj={};
-  csvHeaders.forEach(h=>{
-    const type=detectType(h);
-    if(type==='number'){
-      const min=document.getElementById(`filter_${h}_min`).value;
-      const max=document.getElementById(`filter_${h}_max`).value;
-      if(min!=='') obj[`${h}_min`]=min;
-      if(max!=='') obj[`${h}_max`]=max;
-    } else {
-      const val=document.getElementById(`filter_${h}`)?.value;
-      if(val) obj[h]=val;
-    }
+  getVisibleColumns().forEach(h=>{
+    const val=document.getElementById(`filter_${h}`)?.value;
+    if(val) obj[h]=val;
   });
   obj.search=document.getElementById('searchInput').value;
   return obj;
 }
 function applyFilters(f){
   document.getElementById('searchInput').value=f.search||'';
-  csvHeaders.forEach(h=>{
-    const type=detectType(h);
-    if(type==='number'){
-      if(f[`${h}_min`]) document.getElementById(`filter_${h}_min`).value=f[`${h}_min`];
-      if(f[`${h}_max`]) document.getElementById(`filter_${h}_max`).value=f[`${h}_max`];
-    }else{
-      if(f[h]) document.getElementById(`filter_${h}`).value=f[h];
-    }
+  getVisibleColumns().forEach(h=>{
+    if(f[h]) document.getElementById(`filter_${h}`).value=f[h];
   });
   renderTable();
 }
@@ -481,20 +444,8 @@ function getFilteredData(){
   return partnerData.filter(r=>{
     if(search && !Object.values(r).some(v=>String(v||'').toLowerCase().includes(search))) return false;
     for(const h of headers){
-      const type=detectType(h);
-      if(type==='select'){
-        const val=document.getElementById(`filter_${h}`)?.value;
-        if(val && String(r[h]||'')!==val) return false;
-      }else if(type==='number'){
-        const min=document.getElementById(`filter_${h}_min`).value;
-        const max=document.getElementById(`filter_${h}_max`).value;
-        const num=parseFloat(r[h]);
-        if(min!=='' && !(num>=parseFloat(min))) return false;
-        if(max!=='' && !(num<=parseFloat(max))) return false;
-      }else{
-        const val=document.getElementById(`filter_${h}`)?.value.toLowerCase();
-        if(val && !String(r[h]||'').toLowerCase().includes(val)) return false;
-      }
+      const val=document.getElementById(`filter_${h}`)?.value.toLowerCase();
+      if(val && !String(r[h]||'').toLowerCase().includes(val)) return false;
     }
     return true;
   });

@@ -14,6 +14,7 @@ komplexe Build-Kette oder Cloud-Abhängigkeiten.
 | CSV-Upload per Dateidialog |
 | Automatisches Tabellen-Rendering mit Kopfzeile |
 | Sofort-Suche & Zeilenfilter |
+| Einfache Text-Filter pro Spalte |
 | Dark-/Light-Umstellung (Tailwind) |
 | Undo-/Redo-Stack (max. 5 Schritte) |
 | Spalten-Ansichten (Alle/Vertrag/Tech/Onboarding/Marketing) |
