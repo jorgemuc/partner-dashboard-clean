@@ -8,7 +8,7 @@
   },
   "devDependencies": {
     "electron": "^26.2.0",
-    "electron-builder": "^24.14.1"
+    "electron-builder": "^24.14.0"
   },
   "dependencies": {
     "papaparse": "^5.5.3"
