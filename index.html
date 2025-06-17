@@ -6,6 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <link rel="stylesheet" href="styles.css">
   <style>
     body { font-family: Arial, sans-serif; margin: 0; background: #f9f9fb;}
     header { background: #222; color: #fff; padding: 1rem; text-align: center;}
@@ -122,6 +123,13 @@ body.dark .log-table th { background: #3a3a3a; }
     <section id="table">
       <div class="search-filter" id="filters"></div>
       <div style="position:relative;margin-bottom:.5rem;">
+        <select id="viewSelect" style="margin-right:.5rem;">
+          <option value="Alle">Alle</option>
+          <option value="Vertrag">Vertrag</option>
+          <option value="Tech">Tech</option>
+          <option value="Onboarding">Onboarding</option>
+          <option value="Marketing">Marketing</option>
+        </select>
         <button id="columnBtn" class="export-btn" style="background:#777;margin-right:.5rem;">Spalten</button>
         <div id="columnMenu" class="column-menu"></div>
       </div>
@@ -216,14 +224,32 @@ let changeIndex = 0;
 let charts = {};
 let chartWorker = new Worker('chartWorker.js');
 let hiddenColumns = JSON.parse(localStorage.getItem('hiddenColumns')||'[]');
+const columnViews = {
+  Alle: [],
+  Vertrag:["Partnername","Systemname","Vertragstyp","Vertragsstatus","Vertragsbeginn","Vertragsende","Kündigungsfrist"],
+  Tech:["Partnername","Systemname","Schnittstelle","Format","API URL","Schnittstellenstatus","Developer_Portal_Zugang"],
+  Onboarding:["Partnername","Systemname","Trainingsstatus","Schulungstypen","Schulungsunterlagen","Webinar_Termine"],
+  Marketing:["Partnername","Systemname","Branche","Landingpage","Marketingkampagne","Produktflyer_URL","Präsentation_URL"]
+};
 let currentPage = 1;
 const rowsPerPage = 20;
+
+function getVisibleColumns(){
+  return csvHeaders.filter(h=>!hiddenColumns.includes(h));
+}
 
 function debounce(fn, wait=300) {
   let t; return (...args)=>{ clearTimeout(t); t=setTimeout(()=>fn(...args), wait); };
 }
 
 let editableFields = [];
+
+function applyView(name){
+  const cols = columnViews[name] || csvHeaders;
+  hiddenColumns = csvHeaders.filter(h=>!cols.includes(h));
+  localStorage.setItem('hiddenColumns', JSON.stringify(hiddenColumns));
+  renderTable();
+}
 
 // === TAB NAVIGATION ===
 document.querySelectorAll('.tab-btn').forEach(btn => {
@@ -328,6 +354,9 @@ window.onload = () => {
   document.getElementById('columnBtn').onclick = () => {
     const menu = document.getElementById('columnMenu');
     menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
+  };
+  document.getElementById('viewSelect').onchange = function(){
+    applyView(this.value);
   };
   document.getElementById('prevPage').onclick = ()=>{ if(currentPage>1){ currentPage--; renderTable(); }};
   document.getElementById('nextPage').onclick = ()=>{ currentPage++; renderTable(); };
@@ -448,9 +477,10 @@ function savePreset(){
 }
 function getFilteredData(){
   const search=(document.getElementById('searchInput')?.value||'').toLowerCase();
+  const headers=getVisibleColumns();
   return partnerData.filter(r=>{
     if(search && !Object.values(r).some(v=>String(v||'').toLowerCase().includes(search))) return false;
-    for(const h of csvHeaders){
+    for(const h of headers){
       const type=detectType(h);
       if(type==='select'){
         const val=document.getElementById(`filter_${h}`)?.value;
@@ -494,14 +524,14 @@ function renderTable() {
     document.getElementById("partnerTable").querySelector("tbody").innerHTML = "";
     return;
   }
-  let ths = csvHeaders.map((h,i)=>`<th data-col="${i}" ${hiddenColumns.includes(h)?'style="display:none"':''}>${h}</th>`).join("") + "<th>Aktion</th>";
+  let ths = csvHeaders.map(h=>`<th data-col="${h}" class="${hiddenColumns.includes(h)?'hidden':''}">${h}</th>`).join("") + "<th>Aktion</th>";
   document.getElementById("partnerTable").querySelector("thead").innerHTML = `<tr>${ths}</tr>`;
   const filtered = getFilteredData();
   const totalPages = Math.max(1, Math.ceil(filtered.length / rowsPerPage));
   if(currentPage>totalPages) currentPage = totalPages;
   let rows = "";
   filtered.slice((currentPage-1)*rowsPerPage, currentPage*rowsPerPage).forEach((row,idx) => {
-    let tds = csvHeaders.map((h,i)=>`<td data-col="${i}" ${hiddenColumns.includes(h)?'style="display:none"':''}>${row[h]||""}</td>`).join("");
+    let tds = csvHeaders.map(h=>`<td data-col="${h}" class="${hiddenColumns.includes(h)?'hidden':''}">${row[h]||""}</td>`).join("");
     tds += `<td><button class="edit-btn" onclick="openEditor(${partnerData.indexOf(row)})">Edit</button></td>`;
     rows += `<tr>${tds}</tr>`;
   });
@@ -612,9 +642,10 @@ window.redoChange = function(){
 
 // === CSV EXPORT ===
 window.exportTableCSV = function() {
-  const rows = [csvHeaders];
+  const headers = getVisibleColumns();
+  const rows = [headers];
   getFilteredData().forEach(r => {
-    rows.push(csvHeaders.map(h => r[h]||""));
+    rows.push(headers.map(h => r[h]||""));
   });
   const csv = Papa.unparse(rows);
   const blob = new Blob([csv],{type:"text/csv"});

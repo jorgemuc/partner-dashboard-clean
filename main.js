@@ -1,6 +1,14 @@
 const { app, BrowserWindow } = require('electron');
 const path = require('path');
 
+const columnViews = {
+  Alle: [],
+  Vertrag:["Partnername","Systemname","Vertragstyp","Vertragsstatus","Vertragsbeginn","Vertragsende","Kündigungsfrist"],
+  Tech:["Partnername","Systemname","Schnittstelle","Format","API URL","Schnittstellenstatus","Developer_Portal_Zugang"],
+  Onboarding:["Partnername","Systemname","Trainingsstatus","Schulungstypen","Schulungsunterlagen","Webinar_Termine"],
+  Marketing:["Partnername","Systemname","Branche","Landingpage","Marketingkampagne","Produktflyer_URL","Präsentation_URL"]
+};
+
 function createWindow() {
   const win = new BrowserWindow({
     width: 1200,

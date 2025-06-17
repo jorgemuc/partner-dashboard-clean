@@ -16,6 +16,7 @@ komplexe Build-Kette oder Cloud-Abhängigkeiten.
 | Sofort-Suche & Zeilenfilter |
 | Dark-/Light-Umstellung (Tailwind) |
 | Undo-/Redo-Stack (max. 5 Schritte) |
+| Spalten-Ansichten (Alle/Vertrag/Tech/Onboarding/Marketing) |
 | 100 % offline, keine Install/Rights nötig |
 
 > *Roadmap:* XLSX-Export · KPI-Tiles · Drag-&-Drop-Upload · Karten-Ansicht  
