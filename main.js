@@ -38,7 +38,6 @@ function createWindow() {
     title: `Partner-Dashboard v${pkg.appVersion}`
   });
   win.loadFile(path.join(__dirname, 'index.html'));
-  if (app.isPackaged) win.webContents.openDevTools();
   createMenu(win);
 }
 
