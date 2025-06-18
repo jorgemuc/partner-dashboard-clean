@@ -420,12 +420,20 @@ function renderStatusChart(){
   const b=getStatusBuckets(partnerData);
   const ctx=document.getElementById('barStatus').getContext('2d');
   charts.barStatus?.destroy();
-  charts.barStatus=new Chart(ctx,{type:'bar',data:{labels:['Partner'],datasets:[
-    {label:'aktiv',data:[b.aktiv],stack:'s'},
-    {label:'teilaktiv',data:[b.teilaktiv],stack:'s'},
-    {label:'geplant',data:[b.geplant],stack:'s'},
-    {label:'unbekannt',data:[b.unbekannt],stack:'s'}]},
-    options:{responsive:true,plugins:{legend:{position:'bottom'}},scales:{x:{stacked:true},y:{stacked:true}}});
+  charts.barStatus=new Chart(ctx,{type:'bar', data:{
+    labels:['Partner'],
+      datasets:[
+        {label:'aktiv',      data:[b.aktiv],      stack:'s'},
+        {label:'teilaktiv',  data:[b.teilaktiv],  stack:'s'},
+        {label:'geplant',    data:[b.geplant],    stack:'s'},
+        {label:'unbekannt',  data:[b.unbekannt],  stack:'s'}
+      ]
+    },
+    options:{
+      responsive:true,
+      plugins:{legend:{position:'bottom'}},
+      scales:{x:{stacked:true},y:{stacked:true}}
+    });
 }
 
 // === FILTER + EXPORT ===
