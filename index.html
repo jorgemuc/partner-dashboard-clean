@@ -2,7 +2,7 @@
 <html lang="de">
 <head>
   <meta charset="UTF-8">
-  <title>Partner-Dashboard v4.5</title>
+  <title>Partner-Dashboard v0.1.1</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
@@ -30,6 +30,7 @@
     th, td { white-space: nowrap; padding: 0.6rem 0.8rem; border: 1px solid #e0e0e0; text-align: left; max-width:320px; }
     th { background: #f5f5f5; position: sticky; top: 0; z-index: 2; }
     .kpi-boxes { display: flex; gap: 2rem; margin-bottom: 2rem; flex-wrap: wrap;}
+    .chart-box { flex:1 1 320px; max-height:380px; }
     .kpi {
       background: #fff; border-radius: 1rem; box-shadow: 0 2px 8px #0001; padding: 1.2rem 2rem;
       flex: 1 1 120px; min-width: 120px; text-align: center; margin-bottom: 1rem;
@@ -95,7 +96,7 @@ body.dark .log-table th { background: #3a3a3a; }
 </head>
 <body>
   <header>
-    <h1>Partner-Dashboard v4.5</h1>
+    <h1>Partner-Dashboard v0.1.1</h1>
     <button id="darkModeToggle" class="export-btn" style="background:#555;margin-left:1rem;">Dark Mode</button>
     <div class="file-upload">
       <input type="file" id="csvFile" accept=".csv" />
@@ -116,6 +117,7 @@ body.dark .log-table th { background: #3a3a3a; }
   <main>
     <!-- Übersicht -->
     <section id="overview" class="active">
+      <canvas id="barStatus" class="chart-box"></canvas>
       <div class="kpi-boxes" id="kpiBoxes"></div>
       <div>
         <p>Lade eine <strong>partner.csv</strong> hoch oder nutze Demo-Daten. Tabellenansicht zeigt alle Spalten, Filter und Editierfunktionen für wichtige Felder.</p>
@@ -154,19 +156,19 @@ body.dark .log-table th { background: #3a3a3a; }
     <!-- Chart-Tab -->
     <section id="charts">
       <div style="display:flex;flex-wrap:wrap;gap:2rem;">
-        <div style="flex:1 1 320px; min-width:260px;">
+        <div class="chart-box">
           <h3>Vertragstypen (Pie)</h3>
           <canvas id="pieVertragstyp"></canvas>
         </div>
-        <div style="flex:1 1 320px; min-width:260px;">
+        <div class="chart-box">
           <h3>Developer Portal Zugang (Pie)</h3>
           <canvas id="pieDevPortal"></canvas>
         </div>
-        <div style="flex:1 1 320px; min-width:260px;">
+        <div class="chart-box">
           <h3>Partnertyp (Bar)</h3>
           <canvas id="barPartnertyp"></canvas>
         </div>
-        <div style="flex:1 1 320px; min-width:260px;">
+        <div class="chart-box">
           <h3>Trainingsstatus (Bar)</h3>
           <canvas id="barTraining"></canvas>
         </div>
@@ -411,6 +413,19 @@ function renderKPIs() {
   document.getElementById("kpiBoxes").innerHTML = kpis.map(kpi =>
     `<div class="kpi"><div style="font-size:2rem;font-weight:bold">${kpi.value}</div><div>${kpi.label}</div></div>`
   ).join("");
+  renderStatusChart();
+}
+
+function renderStatusChart(){
+  const b=getStatusBuckets(partnerData);
+  const ctx=document.getElementById('barStatus').getContext('2d');
+  charts.barStatus?.destroy();
+  charts.barStatus=new Chart(ctx,{type:'bar',data:{labels:['Partner'],datasets:[
+    {label:'aktiv',data:[b.aktiv],stack:'s'},
+    {label:'teilaktiv',data:[b.teilaktiv],stack:'s'},
+    {label:'geplant',data:[b.geplant],stack:'s'},
+    {label:'unbekannt',data:[b.unbekannt],stack:'s'}]},
+    options:{responsive:true,plugins:{legend:{position:'bottom'}},scales:{x:{stacked:true},y:{stacked:true}}});
 }
 
 // === FILTER + EXPORT ===

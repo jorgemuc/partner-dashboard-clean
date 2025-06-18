@@ -1,10 +1,12 @@
 {
   "name": "partner-dashboard-clean",
   "version": "0.1.0",
+  "appVersion": "0.1.1",
   "main": "main.js",
   "scripts": {
     "start": "electron .",
-    "build:win32": "electron-builder --win portable"
+    "build:win32": "electron-builder --win portable",
+    "version-bump": "node -e \"const fs=require('fs');const p=JSON.parse(fs.readFileSync('package.json','utf8'));const o=p.appVersion.split('.');o[2]=+o[2]+1;const n=o.join('.');['index.html','README.md'].forEach(f=>{let c=fs.readFileSync(f,'utf8');fs.writeFileSync(f,c.replace(new RegExp('v'+p.appVersion,'g'),'v'+n));});p.appVersion=n;fs.writeFileSync('package.json',JSON.stringify(p,null,2)+'\\n');\""
   },
   "devDependencies": {
     "electron": "^26.2.0",
@@ -18,6 +20,6 @@
     "appId": "com.jorgemuc.partnerdashboard",
     "asar": true,
     "files": ["**/*", "!dist/**"],
-    "win": { "target": "portable", "icon": "assets/icon.ico" }
+    "win": { "target": "portable", "icon": "assets/icon.ico", "artifactName": "Portable ${productName} ${appVersion}.exe" }
   }
 }
