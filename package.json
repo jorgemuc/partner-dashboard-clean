@@ -20,6 +20,6 @@
     "appId": "com.jorgemuc.partnerdashboard",
     "asar": true,
     "files": ["**/*", "!dist/**"],
-    "win": { "target": "portable", "icon": "assets/icon.ico", "artifactName": "Portable ${productName} ${appVersion}.exe" }
+    "win": { "target": "portable", "icon": "assets/icon.ico", "artifactName": "Portable ${productName} ${version}.exe" }
   }
 }
