@@ -11,11 +11,19 @@ const columnViews = {
   KPI:["Partnername","Systemname","Anzahl_Kunden","Anzahl_Liegenschaften","Anzahl_NE","Nutzungsfrequenz","Störungen_90d","Score"]
 };
 
-function createMenu(win){
-  const template=[
+function getMenuTemplate(win){
+  return [
     {label:'File',submenu:[
       {label:'Info',click:()=>dialog.showMessageBox(win,{message:`Version ${pkg.appVersion}`})},
       {role:'quit'}]},
+    {label:'View',submenu:[
+      {role:'reload'},
+      {role:'forcereload'},
+      {type:'separator'},
+      {label:'Toggle Developer Tools',
+        accelerator:process.platform==='darwin'?'Alt+Command+I':'Ctrl+Shift+I',
+        click:(_,w)=>w&&w.webContents.toggleDevTools()}
+    ]},
     {label:'Help',submenu:[
       {label:'About ...',click:()=>{
         const about=new BrowserWindow({parent:win,modal:true,width:400,height:300,title:'About'});
@@ -28,7 +36,10 @@ function createMenu(win){
         help.loadFile('help.html');
       }}]}
   ];
-  Menu.setApplicationMenu(Menu.buildFromTemplate(template));
+}
+
+function createMenu(win){
+  Menu.setApplicationMenu(Menu.buildFromTemplate(getMenuTemplate(win)));
 }
 
 function createWindow() {
@@ -41,7 +52,11 @@ function createWindow() {
   createMenu(win);
 }
 
-app.whenReady().then(createWindow);
-app.on('window-all-closed', () => {
-  if (process.platform !== 'darwin') app.quit();
-});
+if (require.main === module) {
+  app.whenReady().then(createWindow);
+  app.on('window-all-closed', () => {
+    if (process.platform !== 'darwin') app.quit();
+  });
+}
+
+module.exports = { getMenuTemplate, createMenu };
