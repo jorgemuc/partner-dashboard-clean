@@ -1,4 +1,4 @@
-EPIC,User Story (Akzeptanzkriterien),Kern-Tasks,Status,2025-06-17,2025-06-18,2025-06-18b,2025-06-23
+EPIC,User Story (Akzeptanzkriterien),Kern-Tasks,Status,2025-06-17,2025-06-18,2025-06-18b,2025-06-23,2025-06-23b
 E1 · Robustes CSV-Handling,"Als Admin möchte ich beliebige Partner-CSV-Dateien mit ≥ 30 Spalten laden, damit ich sie ohne Vorarbeit in der App ansehen kann.","1. Header-Validierung gegen Referenz-Schema (fehlende/unerwartete Spalten kennzeichnen),
 2. Fallback-Mapping (Alias-Namen wie ‚Vertragsbeginn‘/‚Contract_Start‘ erkennen),
 3. Graceful Parsing (UTF-8 +BOM, Semikolon oder Komma, Quotes, Umlaut-Handling),
@@ -30,4 +30,4 @@ E9 · Qualität & Automatisierung,"Als Maintainer möchte ich sicherstellen, das
 E10 · Portable Win-Build,"Als Entwickler möchte ich eine portable Win32-EXE erzeugen, die ohne Installer läuft.","1. electron-builder portable config, 2. build:win32 script, 3. Workflow upload",done (2025-06-17),,,
 E11 · Tabellen-Preset-Dropdown,"Als Nutzer*in möchte ich per Dropdown zwischen vordefinierten Spalten-Ansichten umschalten können (Alle | Vertrag | Tech | Onboarding | Marketing), damit die Tabelle lesbar bleibt, ohne vertikalen Text.",1. Dropdown für Spaltenansicht 2. columnViews Objekt 3. Change-Event blendet Spalten aus,done,,,
 E12 · Preset-Fix + Simple Filters,...,1. Bugfix Alle 2. Filter-UI,done (2025-06-17),,,
-S1 · Backlog Items,"Drag-&-Drop Upload, XLSX Export, Umsatz/Pipeline KPI, CSV Validator",Implementation,done (2025-06-23 csv reload fix),,,
+S1 · Backlog Items,"Drag-&-Drop Upload, XLSX Export, Umsatz/Pipeline KPI, CSV Validator",Implementation,done (2025-06-23 data load fix),,,,

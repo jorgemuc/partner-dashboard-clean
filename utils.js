@@ -1,4 +1,4 @@
-export function getStatusBuckets(rows){
+function getStatusBuckets(rows){
   return rows.reduce((o,r)=>{
     const s = String(r.Vertragsstatus||'').toLowerCase();
     if(s.includes('teil'))      o.teilaktiv++;
@@ -8,5 +8,4 @@ export function getStatusBuckets(rows){
     return o;
   },{aktiv:0,teilaktiv:0,geplant:0,unbekannt:0});
 }
-
-if(typeof module!=='undefined') module.exports={ getStatusBuckets };
+module.exports = { getStatusBuckets };
