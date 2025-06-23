@@ -1,6 +1,11 @@
-const { app, BrowserWindow, Menu, shell, dialog } = require('electron');
+const { app, BrowserWindow, Menu, shell, dialog, ipcMain } = require('electron');
+const fs = require('fs');
+const { parseCsv } = require('./parser');
 const path = require('path');
-const pkg = require('./package.json');
+
+if (process.env.NODE_ENV !== 'test') {
+  ipcMain.handle('getVersion', () => app.getVersion());
+}
 
 const columnViews = {
   Alle: [],
@@ -14,7 +19,7 @@ const columnViews = {
 function getMenuTemplate(win){
   return [
     {label:'File',submenu:[
-      {label:'Info',click:()=>dialog.showMessageBox(win,{message:`Version ${pkg.appVersion}`})},
+      {label:'Info',click:()=>win.webContents.send('show-info')},
       {role:'quit'}]},
     {label:'View',submenu:[
       {role:'reload'},
@@ -26,9 +31,9 @@ function getMenuTemplate(win){
     ]},
     {label:'Help',submenu:[
       {label:'About ...',click:()=>{
-        const about=new BrowserWindow({parent:win,modal:true,width:400,height:300,title:'About'});
+        const about=new BrowserWindow({parent:win,modal:true,width:400,height:300,title:'About',webPreferences:{nodeIntegration:true,contextIsolation:false}});
         about.setMenu(null);
-        about.loadFile('about.html',{query:{v:pkg.appVersion}});
+        about.loadFile('about.html');
       }},
       {label:'Hilfe (Online README)',click:()=>{
         const help=new BrowserWindow({width:600,height:700,title:'Hilfe'});
@@ -46,7 +51,8 @@ function createWindow() {
   const win = new BrowserWindow({
     width: 1200,
     height: 800,
-    title: `Partner-Dashboard v${pkg.appVersion}`
+    title: `Partner-Dashboard v${app.getVersion()}`,
+    webPreferences:{nodeIntegration:true,contextIsolation:false}
   });
   win.loadFile(path.join(__dirname, 'index.html'));
   createMenu(win);
@@ -60,3 +66,20 @@ if (require.main === module) {
 }
 
 module.exports = { getMenuTemplate, createMenu };
+
+// test helpers
+let _rows = [];
+function loadCsv(fp){
+  const raw = fs.readFileSync(fp,'utf8');
+  _rows = parseCsv(raw).data;
+}
+function getTableRows(){
+  return _rows;
+}
+function _reset(){
+  _rows = [];
+}
+
+module.exports.loadCsv = loadCsv;
+module.exports.getTableRows = getTableRows;
+module.exports._reset = _reset;
