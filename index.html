@@ -2,7 +2,7 @@
 <html lang="de">
 <head>
   <meta charset="UTF-8">
-  <title>Partner-Dashboard v0.1.4</title>
+  <title>Partner-Dashboard v0.1.5</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
@@ -98,7 +98,7 @@ body.dark .log-table th { background: #3a3a3a; }
 </head>
 <body>
   <header>
-  <h1>Partner-Dashboard v0.1.4</h1>
+  <h1>Partner-Dashboard v0.1.5</h1>
     <button id="darkModeToggle" class="export-btn" style="background:#555;margin-left:1rem;">Dark Mode</button>
     <div class="file-upload">
       <input type="file" id="csvFile" accept=".csv" />
@@ -203,9 +203,9 @@ body.dark .log-table th { background: #3a3a3a; }
       </div>
     </div>
   </main>
-<script type="module">
-import {ipcRenderer, dialog, shell} from 'electron';
-import {getStatusBuckets} from './utils.js';
+<script>
+const { ipcRenderer, dialog, shell } = require('electron');
+const { getStatusBuckets } = require('./utils.js');
 const I18N={
   de:{demoBtn:"Demo-Daten laden"}
 }; // TODO(Epic-9)
@@ -396,7 +396,6 @@ window.onload = () => {
     localStorage.setItem('prefers-dark', document.body.classList.contains('dark'));
   };
   applyView('Alle');
-  document.getElementById('demoDataBtn').click();
   document.getElementById('demoDataBtn').click();
   applyView('Alle');
   document.getElementById('columnBtn').onclick = () => {
