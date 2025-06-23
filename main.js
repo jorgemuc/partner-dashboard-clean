@@ -1,5 +1,7 @@
 const { app, BrowserWindow, Menu, shell, dialog, ipcMain } = require('electron');
 const path = require('path');
+const fs = require('fs');
+const { parseCsv } = require('./parser');
 
 ipcMain.handle('getVersion', () => app.getVersion());
 
@@ -11,6 +13,10 @@ const columnViews = {
   Marketing:["Partnername","Systemname","Branche","Landingpage","Marketingkampagne","Produktflyer_URL","Präsentation_URL"],
   KPI:["Partnername","Systemname","Anzahl_Kunden","Anzahl_Liegenschaften","Anzahl_NE","Nutzungsfrequenz","Störungen_90d","Score"]
 };
+
+// simple state for tests
+let __rows = [];
+let __headers = [];
 
 function getMenuTemplate(win){
   return [
@@ -54,6 +60,22 @@ function createWindow() {
   createMenu(win);
 }
 
+function loadCsv(file){
+  const raw = fs.readFileSync(file, 'utf8');
+  const res = parseCsv(raw);
+  __rows = res.data;
+  __headers = [...res.data.length ? Object.keys(res.data[0]) : []];
+}
+
+function getTableRows(){
+  return __rows.map(r => __headers.map(h => r[h]));
+}
+
+function _reset(){
+  __rows = [];
+  __headers = [];
+}
+
 if (require.main === module) {
   app.whenReady().then(createWindow);
   app.on('window-all-closed', () => {
@@ -61,4 +83,4 @@ if (require.main === module) {
   });
 }
 
-module.exports = { getMenuTemplate, createMenu };
+module.exports = { getMenuTemplate, createMenu, loadCsv, getTableRows, _reset };
