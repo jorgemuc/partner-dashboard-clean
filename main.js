@@ -1,7 +1,11 @@
 const { app, BrowserWindow, Menu, shell, dialog, ipcMain } = require('electron');
+const fs = require('fs');
+const { parseCsv } = require('./parser');
 const path = require('path');
 
-ipcMain.handle('getVersion', () => app.getVersion());
+if (process.env.NODE_ENV !== 'test') {
+  ipcMain.handle('getVersion', () => app.getVersion());
+}
 
 const columnViews = {
   Alle: [],
@@ -62,3 +66,20 @@ if (require.main === module) {
 }
 
 module.exports = { getMenuTemplate, createMenu };
+
+// test helpers
+let _rows = [];
+function loadCsv(fp){
+  const raw = fs.readFileSync(fp,'utf8');
+  _rows = parseCsv(raw).data;
+}
+function getTableRows(){
+  return _rows;
+}
+function _reset(){
+  _rows = [];
+}
+
+module.exports.loadCsv = loadCsv;
+module.exports.getTableRows = getTableRows;
+module.exports._reset = _reset;
