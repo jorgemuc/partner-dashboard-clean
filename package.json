@@ -1,10 +1,11 @@
 {
   "name": "partner-dashboard-clean",
-  "version": "0.1.1",
+  "version": "0.1.5",
   "main": "main.js",
   "scripts": {
     "start": "electron .",
     "build:win32": "electron-builder --win portable",
+    "postinstall": "node scripts/decode-icons.js",
     "version-bump": "node -e \"const fs=require('fs');const p=JSON.parse(fs.readFileSync('package.json','utf8'));const o=p.version.split('.');o[2]=+o[2]+1;const n=o.join('.');['index.html','README.md'].forEach(f=>{let c=fs.readFileSync(f,'utf8');fs.writeFileSync(f,c.replace(new RegExp('v'+p.version,'g'),'v'+n));});p.version=n;fs.writeFileSync('package.json',JSON.stringify(p,null,2)+'\\n');\""
   },
   "devDependencies": {
@@ -18,7 +19,15 @@
     "productName": "Partner Cockpit Dashboard",
     "appId": "com.jorgemuc.partnerdashboard",
     "asar": true,
-    "files": ["**/*", "!dist/**"],
-    "win": { "target": "portable", "icon": "assets/icon.ico", "artifactName": "Portable ${productName} ${version}.exe" }
+    "files": [
+      "**/*",
+      "!dist/**"
+    ],
+    "win": {
+      "target": "portable",
+      "icon": "assets/icon.ico",
+      "artifactName": "Portable ${productName} ${version}.exe"
+    },
+    "icon": "assets/icons/partner_dashboard_icon_1024.png"
   }
 }
