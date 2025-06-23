@@ -7,7 +7,7 @@ komplexe Build-Kette oder Cloud-Abhängigkeiten.
 
 ---
 
-## Features (v0.1.1)
+## Features (v0.1.4)
 
 | ✔ | Funktion |
 |---|-----------|
@@ -44,7 +44,7 @@ git clone https://github.com/<your-name>/partner-dashboard-clean.git
 cd partner-dashboard-clean
 
 # 2) Abhängigkeiten einmalig installieren
-npm install
+npm install   # dekodiert auch Icons aus *.b64
 
 # 3) App starten
 npm start
