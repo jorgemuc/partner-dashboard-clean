@@ -11,17 +11,22 @@ komplexe Build-Kette oder Cloud-Abhängigkeiten.
 
 | ✔ | Funktion |
 |---|-----------|
-| CSV-Upload per Dateidialog |
+| CSV-Upload per Dateidialog & Drag-and-Drop |
 | Automatisches Tabellen-Rendering mit Kopfzeile |
 | Sofort-Suche & Zeilenfilter |
 | Einfache Text-Filter pro Spalte |
+| Paginierung & Spalten-Menü |
 | Dark-/Light-Umstellung (Tailwind) |
+| KPI-Tiles & Diagramme |
+| Kartenansicht für Partner |
 | Undo-/Redo-Stack (max. 5 Schritte) |
-| Spalten-Ansichten (Alle/Vertrag/Tech/Onboarding/Marketing) |
+| Spalten-Ansichten (Alle/Vertrag/Tech/Onboarding/Marketing/KPI) |
+| CSV & XLSX Export |
 | 100 % offline, keine Install/Rights nötig |
 
-> *Roadmap:* XLSX-Export · KPI-Tiles · Drag-&-Drop-Upload · Karten-Ansicht  
-> → Siehe [Issues](../../issues).
+![Dashboard Screenshot](data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z/C/HwAFAgH+OhzCEwAAAABJRU5ErkJggg==)
+
+> *Roadmap:* CI-Workflow & erweiterte Dokumentation
 
 ---
 
@@ -58,6 +63,13 @@ npm run build:win32
 Die portable EXE findet sich anschließend unter `dist/Partner Cockpit Dashboard.exe`.
 
 Für einen kompletten UI-Test kann die Datei demo/PARTNER.csv mit allen Spalten importiert werden.
+
+## Troubleshooting
+
+- **Fehlerhafte Spaltenanzahl** – prüfen, ob jede Zeile gleich viele Trennzeichen besitzt.
+- **Falsche Kodierung** – CSV am besten als UTF‑8 ohne BOM speichern.
+- **Unerwartete Trennzeichen** – Komma oder Semikolon müssen einheitlich sein.
+
 
 ## CSV-Schema v1.0
 
