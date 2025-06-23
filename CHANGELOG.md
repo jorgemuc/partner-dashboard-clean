@@ -1,5 +1,9 @@
 # Changelog
 
+## v0.1.5
+- revert renderer to CommonJS and enable nodeIntegration
+- fixed demo data initialization and CSV reload
+
 ## v0.1.4
 - fix CSV reload bug and reset headers
 
