@@ -15,7 +15,7 @@ const columnViews = {
 function getMenuTemplate(win){
   return [
     {label:'File',submenu:[
-      {label:'Info',click:()=>dialog.showMessageBox(win,{message:`${app.getName()}  v${app.getVersion()}`})},
+      {label:'Info',click:()=>win.webContents.send('show-info')},
       {role:'quit'}]},
     {label:'View',submenu:[
       {role:'reload'},

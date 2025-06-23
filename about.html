@@ -9,13 +9,17 @@
 <img src="assets/icon.ico" alt="logo" style="width:64px">
 <h2>Partner Cockpit Dashboard <span id="ver"></span></h2>
 <p>Author: Jorge Muc</p>
-<p><a href="https://github.com/jorgemuc/partner-dashboard-clean" target="_blank" rel="noopener">GitHub Repository</a></p>
+<p><a id="repoLink" href="#">GitHub Repository</a></p>
 </div>
 <script>
-const {ipcRenderer}=require('electron');
+const {ipcRenderer,shell}=require('electron');
 ipcRenderer.invoke('getVersion').then(v=>{
   document.getElementById('ver').textContent='v'+v;
 });
+document.getElementById('repoLink').onclick=e=>{
+  e.preventDefault();
+  shell.openExternal('https://github.com/jorgemuc/partner-dashboard-clean');
+};
 </script>
 </body>
 </html>
