@@ -1,0 +1,47 @@
+const fs = require('fs');
+const path = require('path');
+const {JSDOM, ResourceLoader} = require('jsdom');
+
+async function run(){
+  const html = fs.readFileSync(path.join(__dirname,'../index.html'),'utf8');
+  const dom = new JSDOM(html,{runScripts:'dangerously',resources:new (class extends ResourceLoader{
+      fetch(url,options){
+        if(url.startsWith('https://app.local')){
+          const p = path.join(__dirname,'..',url.replace('https://app.local/',''));
+          return Promise.resolve(fs.readFileSync(p));
+        }
+        if(url.includes('cdn.jsdelivr')){
+          return Promise.resolve(Buffer.from(''));
+        }
+        return super.fetch(url,options);
+      }
+    })(),url:'https://app.local'});
+  await new Promise(r=>dom.window.addEventListener('load',r));
+  global.window = dom.window;
+  global.document = dom.window.document;
+  global.localStorage = dom.window.localStorage;
+  global.sessionStorage = dom.window.sessionStorage;
+  global.window.api = {version:()=>Promise.resolve('0.0.0'),onOpenCsvDialog:()=>{}};
+  global.getFilterFields = dom.window.getFilterFields;
+  dom.window.HTMLCanvasElement.prototype.getContext = () => ({})
+  global.Chart = function(){ return {destroy(){}} };
+  global.Chart.register = () => {};
+  global.Papa = {parse:()=>({data:[]}), unparse:()=>''};
+  global.XLSX = {utils:{json_to_sheet:()=>({}),book_new:()=>({}),book_append_sheet(){}} ,write:()=>''};
+  await import('../src/renderer/eventBus.js');
+  await import('../src/renderer/dataStore.js');
+  await import('../src/renderer/renderer.js');
+  dom.window.document.getElementById('demoDataBtn').click();
+  await new Promise(r=>setTimeout(r,100));
+  const boxes = dom.window.document.querySelectorAll('#kpiBoxes .kpi');
+  let text = '';
+  boxes.forEach(b=>{if(/Partner/.test(b.textContent)) text=b.textContent;});
+  if(/^[1-9].*Partner/.test(text)){
+    console.log('smoke ok');
+    process.exit(0);
+  }else{
+    console.error('smoke fail', text);
+    process.exit(1);
+  }
+}
+run();

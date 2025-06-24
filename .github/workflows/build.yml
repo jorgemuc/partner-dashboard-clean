@@ -8,13 +8,16 @@ on:
 
 jobs:
   build:
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
         with:
           node-version: 20
       - run: npm install --no-audit --no-fund
+      - name: Run tests
+        shell: bash
+        run: cross-env NODE_OPTIONS=--experimental-vm-modules npm test && node scripts/e2e-smoke.js
       - run: npm run build:win32
       - uses: actions/upload-artifact@v4
         with:
