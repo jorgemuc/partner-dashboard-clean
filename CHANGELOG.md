@@ -1,5 +1,12 @@
 # Changelog
 
+## v0.1.6
+- KPI flex layout fix
+- status chart buckets fix
+- card view refresh after import
+- info dialog shows app version
+
+
 ## v0.1.5
 - revert renderer to CommonJS and enable nodeIntegration
 - fixed demo data initialization and CSV reload
