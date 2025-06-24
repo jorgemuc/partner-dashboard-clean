@@ -7,17 +7,18 @@
     "build:win32": "electron-builder --win portable",
     "pack": "electron-builder --dir",
     "postinstall": "node scripts/decode-icons.js",
-    "test": "NODE_OPTIONS=--experimental-vm-modules jest __tests__/eventBus.test.js __tests__/dataStore.test.js",
+    "test": "NODE_OPTIONS=--experimental-vm-modules jest __tests__/eventBus.test.js __tests__/dataStore.test.js tests/eventBus.spec.js",
     "version-bump": "node -e \"const fs=require('fs');const p=JSON.parse(fs.readFileSync('package.json','utf8'));const o=p.version.split('.');o[2]=+o[2]+1;const n=o.join('.');['index.html','README.md'].forEach(f=>{let c=fs.readFileSync(f,'utf8');fs.writeFileSync(f,c.replace(new RegExp('v'+p.version,'g'),'v'+n));});p.version=n;fs.writeFileSync('package.json',JSON.stringify(p,null,2)+'\\n');\""
   },
   "devDependencies": {
     "electron": "^26.2.0",
     "electron-builder": "^26.0.12",
-    "jest": "^29.7.0"
+    "jest": "^29.7.0",
+    "jsdom": "^26.1.0"
   },
   "dependencies": {
-    "papaparse": "^5.5.3",
-    "mitt": "^3.0.1"
+    "mitt": "^3.0.1",
+    "papaparse": "^5.5.3"
   },
   "build": {
     "productName": "Partner Cockpit Dashboard",
