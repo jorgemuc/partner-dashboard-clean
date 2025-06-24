@@ -1,4 +1,7 @@
-const bus = require('../app/eventBus.js');
+let bus;
+beforeAll(async () => {
+  bus = (await import('../src/renderer/eventBus.js')).default;
+});
 
 describe('event bus', () => {
   test('emit calls handler registered via on', () => {

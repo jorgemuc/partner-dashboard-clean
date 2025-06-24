@@ -7,7 +7,7 @@
     "build:win32": "electron-builder --win portable",
     "pack": "electron-builder --dir",
     "postinstall": "node scripts/decode-icons.js",
-    "test": "jest __tests__/eventBus.test.js",
+    "test": "NODE_OPTIONS=--experimental-vm-modules jest __tests__/eventBus.test.js __tests__/dataStore.test.js",
     "version-bump": "node -e \"const fs=require('fs');const p=JSON.parse(fs.readFileSync('package.json','utf8'));const o=p.version.split('.');o[2]=+o[2]+1;const n=o.join('.');['index.html','README.md'].forEach(f=>{let c=fs.readFileSync(f,'utf8');fs.writeFileSync(f,c.replace(new RegExp('v'+p.version,'g'),'v'+n));});p.version=n;fs.writeFileSync('package.json',JSON.stringify(p,null,2)+'\\n');\""
   },
   "devDependencies": {

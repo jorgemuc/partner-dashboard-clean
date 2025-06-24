@@ -1,14 +1,18 @@
-const test = require('node:test');
-const assert = require('node:assert/strict');
-const { getData, setData } = require('../app/dataStore.js');
-const { subscribe } = require('../app/eventBus.js');
+let store, bus;
+beforeAll(async () => {
+  store = await import('../src/renderer/dataStore.js');
+  bus = (await import('../src/renderer/eventBus.js')).default;
+});
 
-test('setData stores array and emits update', t => {
+test('setData stores array and emits update', () => {
   return new Promise(resolve => {
-    subscribe('dataUpdated', () => {
-      assert.deepStrictEqual(getData(), [1,2]);
+    const handler = rows => {
+      expect(store.getData()).toEqual([1,2]);
+      expect(rows).toEqual([1,2]);
+      bus.off('data:updated', handler);
       resolve();
-    });
-    setData([1,2]);
+    };
+    bus.on('data:updated', handler);
+    store.setData([1,2]);
   });
 });

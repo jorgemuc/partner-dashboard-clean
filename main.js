@@ -38,7 +38,7 @@ function getMenuTemplate(win){
           height:300,
           title:'About',
           webPreferences:{
-            nodeIntegration:true,
+            nodeIntegration:false,
             contextIsolation:true,
             preload:path.join(__dirname,'preload.js')
           }
@@ -52,7 +52,7 @@ function getMenuTemplate(win){
           height:700,
           title:'Hilfe',
           webPreferences:{
-            nodeIntegration:true,
+            nodeIntegration:false,
             contextIsolation:true,
             preload:path.join(__dirname,'preload.js')
           }
@@ -73,7 +73,7 @@ function createWindow() {
     height: 800,
     title: `Partner-Dashboard v${app.getVersion()}`,
     webPreferences:{
-      nodeIntegration:true,
+      nodeIntegration:false,
       contextIsolation:true,
       preload:path.join(__dirname,'preload.js')
     }

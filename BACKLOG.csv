@@ -1,4 +1,4 @@
-EPIC,User Story (Akzeptanzkriterien),Kern-Tasks,Status,2025-06-17,2025-06-18,2025-06-18b,2025-06-23,2025-06-23b,2025-06-24,2025-06-25,2025-06-26,2025-06-27,2025-06-28,2025-06-29
+EPIC,User Story (Akzeptanzkriterien),Kern-Tasks,Status,2025-06-17,2025-06-18,2025-06-18b,2025-06-23,2025-06-23b,2025-06-24,2025-06-25,2025-06-26,2025-06-27,2025-06-28,2025-06-29,2025-06-30
 S1 · Backlog Items,Drag-&-Drop Upload", XLSX Export, Umsatz/Pipeline KPI," CSV Validator""",Implementation,done (2025-06-23 data load fix; icon b64),charts+export fix 2025-06-26,event bus refactor start,,,,,,
 ,,,
 3. Persistente Sichtbarkeits-Prefs (localStorage)",done (2025-06-18),,,
@@ -56,7 +56,7 @@ E11 · Tabellen-Preset-Dropdown,"Als Nutzer*in möchte ich per Dropdown zwischen
 ,
 E12 · Preset-Fix + Simple Filters,...,1. Bugfix Alle 2. Filter-UI,done (2025-06-17),,,
 ,
-S1 · Backlog Items,"Drag-&-Drop Upload, XLSX Export, Umsatz/Pipeline KPI, CSV Validator",Implementation,done (2025-06-23 data load fix; icon b64),charts+export fix 2025-06-26,event bus refactor done 2025-06-27,electron import fix 2025-06-28,contextIsolation+mitt bus 2025-06-29
+S1 · Backlog Items,"Drag-&-Drop Upload, XLSX Export, Umsatz/Pipeline KPI, CSV Validator",Implementation,done (2025-06-23 data load fix; icon b64),charts+export fix 2025-06-26,event bus refactor done 2025-06-27,electron import fix 2025-06-28,contextIsolation+mitt bus 2025-06-29,esm modules refactor 2025-06-30
 E6 · Packaging & Distribution,Als Entwickler will ich mit einem Befehl eine signierte Windows-Installer-EXE erzeugen.,"1. Electron-Builder Konfig (NSIS, Icon, Auto-Update off),
 ,,,
 2. npm run build:win-Script,
