@@ -1,7 +1,7 @@
 const { ipcRenderer, shell, dialog } = require('electron');
 const fs = require('fs');
 const { getData, setData } = require('./dataStore.js');
-const { subscribe, publish } = require('./eventBus.js');
+const bus = require('./eventBus.js');
 const { getStatusBuckets } = require('../assets/utils.js');
 const I18N={
   de:{demoBtn:"Demo-Daten laden"}
@@ -215,7 +215,7 @@ function renderAll() {
   renderCards();
   renderCharts();
 }
-subscribe('dataUpdated', () => {
+bus.on('dataUpdated', () => {
   renderTable();
   renderFilters();
   renderCards();

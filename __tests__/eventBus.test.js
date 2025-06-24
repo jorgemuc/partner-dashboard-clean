@@ -1,13 +1,27 @@
-const test = require('node:test');
-const assert = require('node:assert/strict');
-const { publish, subscribe } = require('../app/eventBus.js');
+const bus = require('../app/eventBus.js');
 
-test('publish triggers subscriber', t => {
-  return new Promise(resolve => {
-    subscribe('ping', e => {
-      assert.equal(e.detail.msg, 'hi');
-      resolve();
-    });
-    publish('ping', {msg:'hi'});
+describe('event bus', () => {
+  test('emit calls handler registered via on', () => {
+    const handler = jest.fn();
+    bus.on('ping', handler);
+    bus.emit('ping', 'hi');
+    expect(handler).toHaveBeenCalledWith('hi');
+    bus.off('ping', handler);
+  });
+
+  test('once handler fires only once', () => {
+    const handler = jest.fn();
+    bus.once('pong', handler);
+    bus.emit('pong', 1);
+    bus.emit('pong', 2);
+    expect(handler).toHaveBeenCalledTimes(1);
+  });
+
+  test('off removes handler', () => {
+    const handler = jest.fn();
+    bus.on('beep', handler);
+    bus.off('beep', handler);
+    bus.emit('beep');
+    expect(handler).not.toHaveBeenCalled();
   });
 });

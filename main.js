@@ -31,12 +31,32 @@ function getMenuTemplate(win){
     ]},
     {label:'Help',submenu:[
       {label:'About ...',click:()=>{
-        const about=new BrowserWindow({parent:win,modal:true,width:400,height:300,title:'About',webPreferences:{nodeIntegration:true,contextIsolation:false}});
+        const about=new BrowserWindow({
+          parent:win,
+          modal:true,
+          width:400,
+          height:300,
+          title:'About',
+          webPreferences:{
+            nodeIntegration:true,
+            contextIsolation:true,
+            preload:path.join(__dirname,'preload.js')
+          }
+        });
         about.setMenu(null);
         about.loadFile('about.html');
       }},
       {label:'Hilfe (Online README)',click:()=>{
-        const help=new BrowserWindow({width:600,height:700,title:'Hilfe'});
+        const help=new BrowserWindow({
+          width:600,
+          height:700,
+          title:'Hilfe',
+          webPreferences:{
+            nodeIntegration:true,
+            contextIsolation:true,
+            preload:path.join(__dirname,'preload.js')
+          }
+        });
         help.setMenu(null);
         help.loadFile('help.html');
       }}]}
@@ -54,7 +74,7 @@ function createWindow() {
     title: `Partner-Dashboard v${app.getVersion()}`,
     webPreferences:{
       nodeIntegration:true,
-      contextIsolation:false,
+      contextIsolation:true,
       preload:path.join(__dirname,'preload.js')
     }
   });
