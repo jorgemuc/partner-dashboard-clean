@@ -35,6 +35,9 @@
       "icon": "assets/icon.ico",
       "artifactName": "Portable ${productName} ${version}.exe"
     },
-    "icon": "assets/icons/partner_dashboard_icon_1024.png"
+    "icon": "assets/icons/partner_dashboard_icon_1024.png",
+    "asarUnpack": [
+      "node_modules/mitt/**"
+    ]
   }
 }
