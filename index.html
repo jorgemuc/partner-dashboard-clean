@@ -31,9 +31,10 @@
     th { background: #f5f5f5; position: sticky; top: 0; z-index: 2; }
     .kpi-boxes{
       display:flex;
-      flex-wrap:wrap;
-      gap:1.2rem;
+      flex-wrap:nowrap;
       justify-content:center;
+      gap:1.2rem;
+      overflow-x:auto;
     }
     .chart-box{flex:1 1 320px;max-height:380px;}
     .kpi{
@@ -244,6 +245,7 @@ let changelog = [];
 let changeIndex = 0;
 let charts = {};
 let chartWorker = new Worker('chartWorker.js');
+let chartObserver;
 let demoMode = false;
 let hiddenColumns = JSON.parse(localStorage.getItem('hiddenColumns')||'[]');
 const columnViews = {
@@ -351,6 +353,7 @@ function handleFile(file){
         currentPage = 1;
         renderAll();
         renderCards();
+        renderCharts();
       },
       error: err => showMsg("Fehler beim Parsen der CSV: "+err, "error")
     });
@@ -382,6 +385,7 @@ document.getElementById('demoDataBtn').onclick = () => {
   currentPage = 1;
   renderAll();
   renderCards();
+  renderCharts();
 };
 
 // === INIT RENDER ALL ===
@@ -391,6 +395,8 @@ function renderAll() {
   renderTable();
   renderFilters();
   renderCards();
+  if(chartWorker){chartWorker.terminate();}
+  chartWorker = new Worker('chartWorker.js');
   renderCharts();
 }
 window.onload = () => {
@@ -720,7 +726,7 @@ function renderCharts() {
     barPartnertyp: 'Partnertyp',
     barTraining: 'Trainingsstatus'
   };
-  const observer = new IntersectionObserver(entries=>{
+  const cb = entries=>{
     entries.forEach(e=>{
       if(e.isIntersecting && !e.target.dataset.rendered){
         const field = mapping[e.target.id];
@@ -728,10 +734,12 @@ function renderCharts() {
         e.target.dataset.rendered = '1';
       }
     });
-  },{threshold:0.2});
+  };
+  if(window.chartObserver){chartObserver.disconnect();}
+  chartObserver = new IntersectionObserver(cb,{threshold:0.2});
   Object.keys(mapping).forEach(id=>{
-    const canvas=document.getElementById(id);
-    if(canvas){ observer.observe(canvas); }
+    const c=document.getElementById(id);
+    if(c) chartObserver.observe(c);
   });
 }
 
