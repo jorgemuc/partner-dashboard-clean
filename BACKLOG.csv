@@ -79,7 +79,7 @@ E9 · Qualität & Automatisierung,"Als Maintainer möchte ich sicherstellen, das
 ,,,
 2. ESLint + Prettier Hook,
 ,,,
-3. Dependabot für npm-Updates",done (2025-06-17),,,,
+3. Dependabot für npm-Updates",done (2025-07-02 cross-env fix),,,,
 ,,,,
 E10 · Portable Win-Build,"Als Entwickler möchte ich eine portable Win32-EXE erzeugen, die ohne Installer läuft.","1. electron-builder portable config, 2. build:win32 script, 3. Workflow upload",done (2025-06-17),,,,
 ,,,,
