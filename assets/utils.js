@@ -1,4 +1,4 @@
-export function getStatusBuckets(arr){
+function getStatusBuckets(arr){
   const norm = s => (s || '').toLowerCase();
   return {
     aktiv:      arr.filter(r=>norm(r.Schnittstellenstatus).includes('aktiv') &&
@@ -8,3 +8,4 @@ export function getStatusBuckets(arr){
     unbekannt:  arr.filter(r=>!/(aktiv|teilaktiv|geplant)/i.test(norm(r.Schnittstellenstatus))).length
   };
 }
+module.exports = { getStatusBuckets };
