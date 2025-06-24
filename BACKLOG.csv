@@ -9,7 +9,7 @@ S1 · Backlog Items,"Drag-&-Drop Upload""", XLSX Export, Umsatz/Pipeline KPI," C
 ,,,,
 "3. Optionale Paginierung / Virtual Scrolling in Tabelle""",done,,,,
 ,,,,
-"3. GitHub Actions CI-Workflow""",done,,,,
+"3. GitHub Actions CI-Workflow""",done (2025-07-02 cross-env fix)
 ,,,,
 "3. Download-Knopf ‚Demo-CSV auswählen‘ im Header""",done (2025-06-17),,,,
 ,,,,
