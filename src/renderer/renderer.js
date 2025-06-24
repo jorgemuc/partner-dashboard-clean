@@ -1,6 +1,6 @@
 import { getData, setData } from './dataStore.js';
 import bus from './eventBus.js';
-import { getStatusBuckets } from '../../assets/utils.js';
+import { getStatusBuckets } from './utils.js';
 const I18N={
   de:{demoBtn:"Demo-Daten laden"}
 }; // TODO(Epic-9)
