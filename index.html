@@ -2,7 +2,7 @@
 <html lang="de">
 <head>
   <meta charset="UTF-8">
-  <title>Partner-Dashboard v0.1.5</title>
+  <title>Partner-Dashboard v0.1.6</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
@@ -29,11 +29,16 @@
     table { width: 100%; border-collapse: collapse; background: #fff; table-layout: auto; }
     th, td { white-space: nowrap; padding: 0.6rem 0.8rem; border: 1px solid #e0e0e0; text-align: left; max-width:320px; }
     th { background: #f5f5f5; position: sticky; top: 0; z-index: 2; }
-    .kpi-boxes{display:flex;flex-wrap:nowrap;gap:2rem;overflow-x:auto;margin-bottom:2rem;}
+    .kpi-boxes{
+      display:flex;
+      flex-wrap:wrap;
+      gap:1.2rem;
+      justify-content:center;
+    }
     .chart-box{flex:1 1 320px;max-height:380px;}
     .kpi{
       background:#fff;border-radius:1rem;box-shadow:0 2px 8px #0001;padding:1.2rem 2rem;
-      flex:0 0 140px;min-width:130px;text-align:center;margin-bottom:1rem;white-space:nowrap;
+      flex:1 1 120px;max-width:160px;text-align:center;margin-bottom:1rem;white-space:nowrap;
     }
     .kpi div:last-child{white-space:nowrap;}
     #charts canvas{min-height:240px;}
@@ -98,7 +103,7 @@ body.dark .log-table th { background: #3a3a3a; }
 </head>
 <body>
   <header>
-  <h1>Partner-Dashboard v0.1.5</h1>
+  <h1>Partner-Dashboard v0.1.6</h1>
     <button id="darkModeToggle" class="export-btn" style="background:#555;margin-left:1rem;">Dark Mode</button>
     <div class="file-upload">
       <input type="file" id="csvFile" accept=".csv" />
@@ -205,7 +210,8 @@ body.dark .log-table th { background: #3a3a3a; }
   </main>
 <script>
 const { ipcRenderer, dialog, shell } = require('electron');
-const { getStatusBuckets } = require('./utils.js');
+let getStatusBuckets;
+import('./assets/utils.js').then(m=>{getStatusBuckets=m.getStatusBuckets;});
 const I18N={
   de:{demoBtn:"Demo-Daten laden"}
 }; // TODO(Epic-9)
@@ -344,7 +350,7 @@ function handleFile(file){
         changelog = [];
         currentPage = 1;
         renderAll();
-        renderCharts();
+        renderCards();
       },
       error: err => showMsg("Fehler beim Parsen der CSV: "+err, "error")
     });
@@ -375,7 +381,7 @@ document.getElementById('demoDataBtn').onclick = () => {
   changelog = [];
   currentPage = 1;
   renderAll();
-  renderCharts();
+  renderCards();
 };
 
 // === INIT RENDER ALL ===
@@ -418,12 +424,11 @@ function showMsg(txt, type="success") {
   setTimeout(() => { msgDiv.innerHTML = ""; }, 4000);
 }
 
-async function showInfo(){
-  const v = await ipcRenderer.invoke('getVersion');
-  dialog.showMessageBox({title:'Partner-Dashboard', message:`Version ${v}`});
-}
+window.api.version().then(v=>{
+  window.showVersion=()=>dialog.showMessageBox({title:'Partner-Dashboard',message:`Version ${v}`});
+});
 
-ipcRenderer.on('show-info', showInfo);
+ipcRenderer.on('show-info',()=>window.showVersion());
 
 // === KPIs ===
 function renderKPIs() {

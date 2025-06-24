@@ -3,9 +3,7 @@ const fs = require('fs');
 const { parseCsv } = require('./parser');
 const path = require('path');
 
-if (process.env.NODE_ENV !== 'test') {
-  ipcMain.handle('getVersion', () => app.getVersion());
-}
+ipcMain.handle('get-version', () => app.getVersion());
 
 const columnViews = {
   Alle: [],
@@ -52,7 +50,11 @@ function createWindow() {
     width: 1200,
     height: 800,
     title: `Partner-Dashboard v${app.getVersion()}`,
-    webPreferences:{nodeIntegration:true,contextIsolation:false}
+    webPreferences:{
+      nodeIntegration:true,
+      contextIsolation:false,
+      preload:path.join(__dirname,'preload.js')
+    }
   });
   win.loadFile(path.join(__dirname, 'index.html'));
   createMenu(win);
