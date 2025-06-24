@@ -4,28 +4,28 @@ on: [push, pull_request]
 
 jobs:
   build-win:
-    runs-on: windows-latest          # ⬅ einziges OS
+    runs-on: windows-latest
+
     steps:
       - uses: actions/checkout@v3
 
       - uses: actions/setup-node@v3
         with:
-          node-version: 20           # gleiche Version wie vorher
+          node-version: 20
 
       - name: Install deps
         run: npm ci
 
       - name: Run unit + smoke tests
         run: |
-          npm test                  # über cross-env in package.json
-          node scripts/e2e-smoke.js
+          npm test
+          node scripts/e2e-smoke.js    # <- exakt 2 Leerstellen vor jeder Zeile
 
       - name: Build portable win32
-        run: npm run build:win32     # electron-builder --win portable
+        run: npm run build:win32       # electron-builder --win portable
 
-        - name: Upload portable EXE
-          uses: actions/upload-artifact@v4
-          with:
-            name: partner-dashboard-win
-            path: dist/*.exe
-
+      - name: Upload portable EXE
+        uses: actions/upload-artifact@v4
+        with:
+          name: partner-dashboard-win
+          path: dist/*.exe
