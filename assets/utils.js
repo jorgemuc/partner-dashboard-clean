@@ -1,8 +1,10 @@
 export function getStatusBuckets(arr){
+  const norm = s => (s || '').toLowerCase();
   return {
-    aktiv:      arr.filter(r=>/\baktiv\b/i.test(r.Vertragsstatus)).length,
-    teilaktiv:  arr.filter(r=>/teilaktiv/i.test(r.Vertragsstatus)).length,
-    geplant:    arr.filter(r=>/geplant/i.test(r.Vertragsstatus)).length,
-    unbekannt:  arr.filter(r=>!/(aktiv|teilaktiv|geplant)/i.test(r.Vertragsstatus)).length
+    aktiv:      arr.filter(r=>norm(r.Schnittstellenstatus).includes('aktiv') &&
+                               !norm(r.Schnittstellenstatus).includes('teil')).length,
+    teilaktiv:  arr.filter(r=>norm(r.Schnittstellenstatus).includes('teil')).length,
+    geplant:    arr.filter(r=>norm(r.Schnittstellenstatus).includes('geplant')).length,
+    unbekannt:  arr.filter(r=>!/(aktiv|teilaktiv|geplant)/i.test(norm(r.Schnittstellenstatus))).length
   };
 }
