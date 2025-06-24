@@ -1,4 +1,4 @@
-import mitt from '../../node_modules/mitt/dist/mitt.mjs';
+import mitt from 'mitt';
 
 let bus = (typeof window !== 'undefined' && window.eventBus) ? window.eventBus : mitt();
 if (typeof window !== 'undefined' && !window.eventBus) {
