@@ -17,7 +17,7 @@ const columnViews = {
 function getMenuTemplate(win){
   return [
     {label:'File',submenu:[
-      {label:'Info',click:()=>win.webContents.send('show-info')},
+      {label:'CSV laden…', click:()=>win.webContents.send('menu-open-csv')},
       {role:'quit'}]},
     {label:'View',submenu:[
       {role:'reload'},

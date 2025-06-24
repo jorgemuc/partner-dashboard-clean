@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.1.7
+- offline chart rendering fallback
+- working CSV/XLSX export
+- menu cleanup
+- KPI layout wrap fix
+
 ## v0.1.6
 - KPI flex layout fix
 - status chart buckets fix
