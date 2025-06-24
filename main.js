@@ -17,9 +17,8 @@ const columnViews = {
 function getMenuTemplate(win){
   return [
     {label:'File',submenu:[
-      {label:'CSV laden…', click: async (_item, focusedWindow) => {
-        const {canceled, filePaths} = await dialog.showOpenDialog(focusedWindow, {filters:[{name:'CSV',extensions:['csv']}], properties:['openFile']});
-        if (!canceled && filePaths[0]) focusedWindow.webContents.send('csv-path', filePaths[0]);
+      {label:'CSV laden…', click: (_item, focusedWindow) => {
+        focusedWindow.webContents.send('open-csv-dialog');
       }},
       {role:'quit'}]},
     {label:'View',submenu:[
@@ -32,12 +31,32 @@ function getMenuTemplate(win){
     ]},
     {label:'Help',submenu:[
       {label:'About ...',click:()=>{
-        const about=new BrowserWindow({parent:win,modal:true,width:400,height:300,title:'About',webPreferences:{nodeIntegration:true,contextIsolation:false}});
+        const about=new BrowserWindow({
+          parent:win,
+          modal:true,
+          width:400,
+          height:300,
+          title:'About',
+          webPreferences:{
+            nodeIntegration:false,
+            contextIsolation:true,
+            preload:path.join(__dirname,'preload.js')
+          }
+        });
         about.setMenu(null);
         about.loadFile('about.html');
       }},
       {label:'Hilfe (Online README)',click:()=>{
-        const help=new BrowserWindow({width:600,height:700,title:'Hilfe'});
+        const help=new BrowserWindow({
+          width:600,
+          height:700,
+          title:'Hilfe',
+          webPreferences:{
+            nodeIntegration:false,
+            contextIsolation:true,
+            preload:path.join(__dirname,'preload.js')
+          }
+        });
         help.setMenu(null);
         help.loadFile('help.html');
       }}]}
@@ -54,8 +73,8 @@ function createWindow() {
     height: 800,
     title: `Partner-Dashboard v${app.getVersion()}`,
     webPreferences:{
-      nodeIntegration:true,
-      contextIsolation:false,
+      nodeIntegration:false,
+      contextIsolation:true,
       preload:path.join(__dirname,'preload.js')
     }
   });
