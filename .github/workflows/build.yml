@@ -1,26 +1,25 @@
-name: Build
+name: build
 
-on:
-  push:
-    branches: [ main ]
-  pull_request:
-    branches: [ main ]
+on: [push, pull_request]
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
+  build-win:
+    runs-on: windows-latest          # ⬅ einziges OS
     steps:
       - uses: actions/checkout@v3
+
       - uses: actions/setup-node@v3
         with:
-          node-version: 20
-      - run: npm install --no-audit --no-fund
-      - name: Run tests
+          node-version: 20           # gleiche Version wie vorher
+
+      - name: Install deps
+        run: npm ci
+
+      - name: Run unit + smoke tests
         run: |
-          npm run test
+          npm test                  # über cross-env in package.json
           node scripts/e2e-smoke.js
-      - run: npm run build:win32
-      - uses: actions/upload-artifact@v4
-        with:
-          name: windows-portable
-          path: dist/*.exe
+
+      - name: Build portable win32
+        run: npm run build:win32     # electron-builder --win portable
+
