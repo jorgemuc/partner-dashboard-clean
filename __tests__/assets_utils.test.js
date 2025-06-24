@@ -1,8 +1,8 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
 
-test('ESM getStatusBuckets counts statuses', async () => {
-  const { getStatusBuckets } = await import('../assets/utils.js');
+test('getStatusBuckets counts statuses', () => {
+  const { getStatusBuckets } = require('../assets/utils.js');
   const data = [
     {Schnittstellenstatus:'aktiv'},
     {Schnittstellenstatus:'teilaktiv'},

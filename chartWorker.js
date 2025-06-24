@@ -4,17 +4,17 @@
  * @param {Array<Object>} data - Partner rows.
  * @returns {{labels:string[], values:number[]}}
  */
-export function buildChart(field, data){
+export function buildChart(field, rows){
   const counts = {};
-  data.forEach(r => {
+  rows.forEach(r => {
     const k = r[field] || 'unbekannt';
     counts[k] = (counts[k] || 0) + 1;
   });
   return { labels: Object.keys(counts), values: Object.values(counts) };
 }
 
-onmessage = function(e) {
-  const {canvasId, field, data} = e.data;
-  const { labels, values } = buildChart(field, data);
-  postMessage({canvasId, labels, values});
+self.onmessage = ({data}) => {
+  const {id, field, rows} = data;
+  const { labels, values } = buildChart(field, rows);
+  postMessage({id, labels, values});
 };

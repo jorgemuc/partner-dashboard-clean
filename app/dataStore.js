@@ -1,0 +1,7 @@
+const { publish } = require('./eventBus.js');
+let partnerData = [];
+module.exports.getData = () => partnerData;
+module.exports.setData = function(arr){
+  partnerData = Array.isArray(arr) ? arr : [];
+  publish('dataUpdated');
+};
