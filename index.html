@@ -33,13 +33,13 @@
       display:flex;
       flex-wrap:wrap;
       justify-content:center;
-      gap:.8rem;
+      gap:1.2rem;
       overflow-x:auto;
     }
     .chart-box{flex:1 1 320px;max-height:380px;}
     .kpi{
       background:#fff;border-radius:1rem;box-shadow:0 2px 8px #0001;padding:1.2rem 2rem;
-      flex:1 1 110px;max-width:160px;text-align:center;margin-bottom:1rem;white-space:nowrap;
+      flex:0 1 clamp(110px,9vw,160px);text-align:center;margin-bottom:1rem;white-space:nowrap;
     }
     .kpi div:last-child{white-space:nowrap;}
     #charts canvas{min-height:240px;}
@@ -209,9 +209,13 @@ body.dark .log-table th { background: #3a3a3a; }
       </div>
     </div>
   </main>
-<script>
+<script type="module">
+import { createRequire } from 'module';
+const require = createRequire(import.meta.url);
 const { ipcRenderer, dialog, shell } = require('electron');
 const fs = require('fs');
+import {getData, setData} from './app/dataStore.js';
+import {subscribe, publish} from './app/eventBus.js';
 let getStatusBuckets;
 import('./assets/utils.js').then(m=>{getStatusBuckets=m.getStatusBuckets;});
 const I18N={
@@ -240,7 +244,6 @@ const headerAliases = {
   api_url: "API URL"
 };
 
-let partnerData = [];
 let csvHeaders = [];
 let changelog = [];
 let changeIndex = 0;
@@ -257,8 +260,8 @@ function createChartWorker(){
   try{
     const w = new Worker(new URL('chartWorker.js', window.location.href));
     w.onmessage = e => {
-      const {canvasId, labels, values} = e.data;
-      drawChart(canvasId, labels, values);
+      const {id, labels, values} = e.data;
+      drawChart(id, labels, values);
     };
     return w;
   }catch(e){
@@ -274,10 +277,7 @@ async function prepareWorkers(){
 function resetCharts(){
   Object.values(charts).forEach(c=>c.destroy?.());
   charts={};
-  if(chartWorker) chartWorker.terminate();
-  prepareWorkers();
 }
-let chartObserver;
 let demoMode = false;
 let hiddenColumns = JSON.parse(localStorage.getItem('hiddenColumns')||'[]');
 const columnViews = {
@@ -338,7 +338,7 @@ function handleFile(file){
   // 🔄 reset global state on every import
   demoMode=false;
   resetCharts();
-  partnerData=[];
+  setData([]);
   csvHeaders=[];
   hiddenColumns = JSON.parse(localStorage.getItem('hiddenColumns')||'[]');
   document.getElementById('partnerTable').querySelector('tbody').innerHTML='';
@@ -361,7 +361,7 @@ function handleFile(file){
           norm;
       },
       complete: results => {
-        partnerData = results.data.map(r => {
+        const rows = results.data.map(r => {
           Object.keys(r).forEach(k => { if(r[k]==null) r[k]=''; });
           referenceSchema.forEach(f=>{ if(!(f in r)) r[f]=''; });
           return r;
@@ -373,13 +373,14 @@ function handleFile(file){
         csvHeaders = [...referenceSchema, ...unexpected];
         const missing = referenceSchema.filter(r => !parsed.map(canon).includes(canon(r)));
         const unexpectedMsg = unexpected.length ? ` Unerwartete Spalten: ${unexpected.join(', ')}.` : '';
-        let msg = `Import erfolgreich: ${partnerData.length} Partner geladen.`;
+        setData(rows);
+        let msg = `Import erfolgreich: ${rows.length} Partner geladen.`;
         if (missing.length) msg += ` Fehlende Spalten: ${missing.join(', ')}.`;
         msg += unexpectedMsg;
         showMsg(msg, 'success');
         changelog = [];
         currentPage = 1;
-        renderAll();
+        // render handled by dataUpdated subscriber
       },
       error: err => showMsg("Fehler beim Parsen der CSV: "+err, "error")
     });
@@ -401,7 +402,7 @@ document.body.addEventListener('drop', e => { e.preventDefault(); handleFile(e.d
 function loadDemoData(){
   demoMode=true;
   resetCharts();
-  partnerData = [
+  let rows = [
     {"Partnername":"Aareon AG","Systemname":"Blue Eagle","Partnertyp":"ERP","Branche":"Wohnungswirtschaft","Land":"DE",
       "Webseite":"https://aareon.de","Vertragsstatus":"Laufend","Vertragstyp":"AVV","Score":"91","Developer_Portal_Zugang":"Ja","Trainingsstatus":"Abgeschlossen"},
     {"Partnername":"Aareon AG","Systemname":"Wodis Yuneo","Partnertyp":"ERP","Branche":"Wohnungswirtschaft","Land":"DE",
@@ -411,12 +412,12 @@ function loadDemoData(){
     {"Partnername":"DOMUS GmbH","Systemname":"DOMUS 1000","Partnertyp":"ERP","Branche":"Wohnungswirtschaft","Land":"DE",
       "Webseite":"https://domus.de","Vertragsstatus":"Laufend","Vertragstyp":"AVV","Score":"63","Developer_Portal_Zugang":"Nein","Trainingsstatus":"Abgeschlossen"}
   ];
-  partnerData = partnerData.map(r=>{referenceSchema.forEach(f=>{if(!(f in r)) r[f]='';}); return r;});
+  rows = rows.map(r=>{referenceSchema.forEach(f=>{if(!(f in r)) r[f]='';}); return r;});
   csvHeaders = [...referenceSchema];
   showMsg("Demo-Daten geladen.", "success");
   changelog = [];
   currentPage = 1;
-  renderAll();
+  setData(rows);
 }
 document.getElementById('demoDataBtn').onclick = loadDemoData;
 
@@ -429,6 +430,13 @@ function renderAll() {
   renderCards();
   renderCharts();
 }
+subscribe('dataUpdated', () => {
+  renderTable();
+  renderFilters();
+  renderCards();
+  renderKPIs();
+  renderCharts();
+});
 window.onload = async () => {
   if (localStorage.getItem('prefers-dark') === 'true') {
     document.body.classList.add('dark');
@@ -464,20 +472,21 @@ window.api.version().then(v=>{
   window.showVersion=()=>dialog.showMessageBox({title:'Partner-Dashboard',message:`Version ${v}`});
 });
 
-ipcRenderer.on('csv-path', (_e, path) => handleFile(path));
+ipcRenderer.on('open-csv-dialog', () => document.getElementById('csvFile').click());
 
 // === KPIs ===
 function renderKPIs() {
-  const totalUmsatz = partnerData.reduce((sum,r)=>sum+(parseFloat(r.Umsatz)||0),0);
-  const totalPipeline = partnerData.reduce((sum,r)=>sum+(parseFloat(r.Pipeline)||0),0);
+  const data = getData();
+  const totalUmsatz = data.reduce((sum,r)=>sum+(parseFloat(r.Umsatz)||0),0);
+  const totalPipeline = data.reduce((sum,r)=>sum+(parseFloat(r.Pipeline)||0),0);
   const kpis = [
     { label: "Umsatz", value: totalUmsatz.toFixed(0) },
     { label: "Pipeline", value: totalPipeline.toFixed(0) },
-    { label: "Partner", value: new Set(partnerData.map(r=>r.Partnername)).size },
-    { label: "Systeme", value: new Set(partnerData.map(r=>r.Systemname)).size },
-    { label: "Laufende Verträge", value: partnerData.filter(r=>String(r.Vertragsstatus||"").toLowerCase().includes("lauf")).length },
-    { label: "Abgeschl. Trainings", value: partnerData.filter(r=>String(r.Trainingsstatus||"").toLowerCase().includes("abgeschlossen")).length },
-    { label: "DevPortal aktiv", value: partnerData.filter(r=>String(r.Developer_Portal_Zugang||"").toLowerCase()==="ja").length }
+    { label: "Partner", value: new Set(data.map(r=>r.Partnername)).size },
+    { label: "Systeme", value: new Set(data.map(r=>r.Systemname)).size },
+    { label: "Laufende Verträge", value: data.filter(r=>String(r.Vertragsstatus||"").toLowerCase().includes("lauf")).length },
+    { label: "Abgeschl. Trainings", value: data.filter(r=>String(r.Trainingsstatus||"").toLowerCase().includes("abgeschlossen")).length },
+    { label: "DevPortal aktiv", value: data.filter(r=>String(r.Developer_Portal_Zugang||"").toLowerCase()==="ja").length }
   ];
   document.getElementById("kpiBoxes").innerHTML = kpis.map(kpi =>
     `<div class="kpi"><div style="font-size:2rem;font-weight:bold">${kpi.value}</div><div>${kpi.label}</div></div>`
@@ -486,7 +495,7 @@ function renderKPIs() {
 }
 
 function renderStatusChart(){
-  const b=getStatusBuckets(partnerData);
+  const b=getStatusBuckets(getData());
   const ctx=document.getElementById('barStatus').getContext('2d');
   charts.barStatus?.destroy();
   charts.barStatus=new Chart(ctx,{type:'bar', data:{
@@ -514,7 +523,8 @@ function detectType(field) {
 function renderFilters() {
   const div = document.getElementById('filters');
   const thead = document.getElementById('partnerTable').querySelector('thead');
-  if (!partnerData.length) { div.innerHTML=''; thead.querySelector('.filter-row')?.remove(); return; }
+  const data = getData();
+  if (!data.length) { div.innerHTML=''; thead.querySelector('.filter-row')?.remove(); return; }
   const presets = JSON.parse(localStorage.getItem('filterPresets')||'[]');
   const view = document.getElementById('viewSelect').value || 'Alle';
   const fields = getFilterFields(view, getVisibleColumns());
@@ -564,7 +574,7 @@ function savePreset(){
 function getFilteredData(){
   const search=(document.getElementById('searchInput')?.value||'').toLowerCase();
   const headers=getVisibleColumns();
-  return partnerData.filter(r=>{
+  return getData().filter(r=>{
     if(search && !Object.values(r).some(v=>String(v||'').toLowerCase().includes(search))) return false;
     for(const h of headers){
       const val=document.getElementById(`filter_${h}`)?.value.toLowerCase();
@@ -593,7 +603,8 @@ function renderColumnMenu(){
 
 // === TABELLE + EDITOR ===
 function renderTable() {
-  if (!partnerData.length) {
+  const data = getData();
+  if (!data.length) {
     document.getElementById("partnerTable").querySelector("thead").innerHTML = "";
     document.getElementById("partnerTable").querySelector("tbody").innerHTML = "";
     return;
@@ -606,7 +617,7 @@ function renderTable() {
   let rows = "";
   filtered.slice((currentPage-1)*rowsPerPage, currentPage*rowsPerPage).forEach((row,idx) => {
     let tds = csvHeaders.map(h=>`<td data-col="${h}" class="${hiddenColumns.includes(h)?'hidden':''}">${row[h]||""}</td>`).join("");
-    tds += `<td><button class="edit-btn" onclick="openEditor(${partnerData.indexOf(row)})">Edit</button></td>`;
+    tds += `<td><button class="edit-btn" onclick="openEditor(${data.indexOf(row)})">Edit</button></td>`;
     rows += `<tr>${tds}</tr>`;
   });
   document.getElementById("partnerTable").querySelector("tbody").innerHTML = rows;
@@ -616,10 +627,11 @@ function renderTable() {
 // === KARTEN ===
 function renderCards() {
   const cardsDiv = document.getElementById("partnerCards");
-  if (!partnerData.length) { cardsDiv.innerHTML = ""; return; }
+  const data = getData();
+  if (!data.length) { cardsDiv.innerHTML = ""; return; }
   const search = (document.getElementById("cardSearchInput")?.value||"").toLowerCase();
   const grouped = {};
-  partnerData.forEach(r => {
+  data.forEach(r => {
     if (!grouped[r.Partnername]) grouped[r.Partnername]=[];
     grouped[r.Partnername].push(r);
   });
@@ -643,7 +655,8 @@ function renderCards() {
 
 // === POPUP EDITOR ===
 window.openEditor = function(idx) {
-  const row = {...partnerData[idx]};
+  const data = getData();
+  const row = {...data[idx]};
   let html = `<input type="hidden" id="editIdx" value="${idx}">`;
   csvHeaders.forEach(h => {
       html += `<label>${h}<input type="text" id="edit_${h.replace(/[^\w\-]/g,"_")}" value="${row[h]||""}"></label>`;
@@ -656,10 +669,10 @@ window.openEditor = function(idx) {
     let changed = false;
     csvHeaders.forEach(h => {
       const safeId = h.replace(/[^\w\-]/g,"_");
-      const oldVal = partnerData[idx][h]||"";
+      const oldVal = data[idx][h]||"";
       const newVal = document.getElementById(`edit_${safeId}`).value;
       if (oldVal !== newVal) {
-        partnerData[idx][h] = newVal;
+        data[idx][h] = newVal;
         changelog.splice(changeIndex);
         changelog.push({
           time: new Date().toLocaleString(),
@@ -667,8 +680,8 @@ window.openEditor = function(idx) {
           field: h,
           old: oldVal,
           new: newVal,
-          partner: partnerData[idx].Partnername,
-          system: partnerData[idx].Systemname
+          partner: data[idx].Partnername,
+          system: data[idx].Systemname
         });
         if(changelog.length>5){ changelog.shift(); }
         changeIndex = changelog.length;
@@ -676,7 +689,7 @@ window.openEditor = function(idx) {
       }
     });
     document.getElementById("modalBg").style.display = "none";
-    if (changed) { showMsg("Änderung gespeichert!","success"); renderAll(); }
+    if (changed) { setData(data); showMsg("Änderung gespeichert!","success"); }
   };
   document.getElementById("modalCloseBtn").onclick = ()=>{ document.getElementById("modalBg").style.display = "none"; }
 };
@@ -699,18 +712,20 @@ function renderChangelog() {
 window.undoChange = function(){
   if(changeIndex===0) return;
   const c = changelog[changeIndex-1];
-  partnerData[c.index][c.field] = c.old;
+  const data = getData();
+  data[c.index][c.field] = c.old;
+  setData(data);
   changeIndex--;
-  renderAll();
   showMsg('Undo','success');
 };
 
 window.redoChange = function(){
   if(changeIndex===changelog.length) return;
   const c = changelog[changeIndex];
-  partnerData[c.index][c.field] = c.new;
+  const data = getData();
+  data[c.index][c.field] = c.new;
+  setData(data);
   changeIndex++;
-  renderAll();
   showMsg('Redo','success');
 };
 
@@ -749,32 +764,22 @@ window.exportTableXLSX = function(){
 
 // === CHARTS ===
 function renderCharts() {
-  if (!partnerData.length) return;
+  const data = getData();
+  if (!data.length) return;
   const mapping = {
     pieVertragstyp: 'Vertragstyp',
     pieDevPortal: 'Developer_Portal_Zugang',
     barPartnertyp: 'Partnertyp',
     barTraining: 'Trainingsstatus'
   };
-  const cb = entries=>{
-    entries.forEach(e=>{
-      if(e.isIntersecting && !e.target.dataset.rendered){
-        const field = mapping[e.target.id];
-        if(chartWorker){
-          chartWorker.postMessage({canvasId:e.target.id, field, data: partnerData});
-        }else if(buildChart){
-          const {labels, values} = buildChart(field, partnerData);
-          drawChart(e.target.id, labels, values);
-        }
-        e.target.dataset.rendered = '1';
-      }
-    });
-  };
-  if(window.chartObserver){chartObserver.disconnect();}
-  chartObserver = new IntersectionObserver(cb,{threshold:0.2});
-  Object.keys(mapping).forEach(id=>{
-    const c=document.getElementById(id);
-    if(c) chartObserver.observe(c);
+  Object.entries(mapping).forEach(([id, field]) => {
+    charts[id]?.destroy();
+    if(chartWorker){
+      chartWorker.postMessage({id, field, rows:data});
+    }else if(buildChart){
+      const {labels, values} = buildChart(field, data);
+      drawChart(id, labels, values);
+    }
   });
 }
 

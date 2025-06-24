@@ -17,9 +17,8 @@ const columnViews = {
 function getMenuTemplate(win){
   return [
     {label:'File',submenu:[
-      {label:'CSV laden…', click: async (_item, focusedWindow) => {
-        const {canceled, filePaths} = await dialog.showOpenDialog(focusedWindow, {filters:[{name:'CSV',extensions:['csv']}], properties:['openFile']});
-        if (!canceled && filePaths[0]) focusedWindow.webContents.send('csv-path', filePaths[0]);
+      {label:'CSV laden…', click: (_item, focusedWindow) => {
+        focusedWindow.webContents.send('open-csv-dialog');
       }},
       {role:'quit'}]},
     {label:'View',submenu:[
