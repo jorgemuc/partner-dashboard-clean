@@ -14,3 +14,11 @@ No automated tests are currently defined. Before committing, ensure that `BACKLO
 - Follow a simple TDD workflow. For every new feature first add failing test cases and only mark them as passing once the feature is implemented.
 - Provide unit tests for all newly created functionality.
 - Keep the Electron wrapper minimal: a bare `main.js` without a preload script that simply loads `index.html`; `package.json` should only contain the necessary fields and scripts.
+
+## Coding-Guidelines
+- Renderer strictly uses ESM, Preload stays CommonJS
+- All imports must be relative ('./' or '../') – no bare specifiers
+- Worker Scripts: use importScripts only from /renderer/*.js
+
+## Pull-Request Checklist
+- BACKLOG.csv columns == 21

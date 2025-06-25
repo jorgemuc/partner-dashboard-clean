@@ -1,5 +1,12 @@
 # Changelog
 
+## v0.1.9 – 2025-07-04
+* Context-Isolation + mitt EventBus
+* Vollständiger ESM-Renderer
+* CSV-Validator verbessert (Fehlende Spaltenwarnung)
+* Build-Script alias `npm run dev`
+* Docs & Backlog aufgeräumt
+
 ## v0.1.7
 - offline chart rendering fallback
 - working CSV/XLSX export
