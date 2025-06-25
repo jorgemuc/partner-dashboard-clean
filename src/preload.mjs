@@ -1,8 +1,10 @@
+import { createRequire } from 'module';
+const require = createRequire(import.meta.url);
 const { contextBridge, ipcRenderer } = require('electron');
 
 let bus;
 try {
-  const mitt = require('mitt');
+  const { default: mitt } = await import('mitt');
   bus = mitt();
   bus.once = (t, h) => {
     const wrap = (...args) => {
