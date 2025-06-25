@@ -16,6 +16,9 @@ async function run(){
         return super.fetch(url,options);
       }
     })(),url:'https://app.local'});
+  const errors=[];
+  const origErr = console.error;
+  dom.window.console.error = (...a)=>{ errors.push(a.join(' ')); origErr(...a); };
   await new Promise(r=>dom.window.addEventListener('load',r));
   global.window = dom.window;
   global.document = dom.window.document;
@@ -36,6 +39,10 @@ async function run(){
   const boxes = dom.window.document.querySelectorAll('#kpiBoxes .kpi');
   let text = '';
   boxes.forEach(b=>{if(/Partner/.test(b.textContent)) text=b.textContent;});
+  if(errors.some(e=>e.includes('module specifier'))){
+    console.error('module specifier', errors);
+    process.exit(1);
+  }
   if(/^[1-9].*Partner/.test(text)){
     console.log('smoke ok');
     process.exit(0);

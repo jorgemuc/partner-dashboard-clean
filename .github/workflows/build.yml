@@ -16,6 +16,9 @@ jobs:
       - name: Install deps
         run: npm ci
 
+      - name: Check for bare imports
+        run: node scripts/lint-no-bare-imports.js
+
       - name: Run unit + smoke tests
         run: |
           npm test
