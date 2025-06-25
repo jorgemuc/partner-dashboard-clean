@@ -1,5 +1,5 @@
 import { getData, setData } from './dataStore.js';
-import bus from './eventBus.js';
+import eventBus from './eventBus.js';
 import { getStatusBuckets } from './utils.js';
 import { renderKPIs, setChartsRef } from './kpi.js';
 const I18N={
@@ -212,7 +212,7 @@ function renderAll() {
   renderCards();
   renderCharts();
 }
-bus.on('data:updated', () => {
+eventBus.on('data:updated', () => {
   renderTable();
   renderFilters();
   renderCards();
