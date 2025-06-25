@@ -37,3 +37,5 @@ Release-Check: `npm run lint:imports`
 - [ ] BACKLOG.csv → Status/Date Spalten
 - [ ] CHANGELOG.md → neuer Eintrag
 
+### Versioning
+Patch bumps fix bugs only. Increase minor for new features, major for breaking changes.
