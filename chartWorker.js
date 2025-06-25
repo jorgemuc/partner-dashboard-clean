@@ -13,6 +13,13 @@ export function buildChart(field, rows){
   return { labels: Object.keys(counts), values: Object.values(counts) };
 }
 
+let bus;
+try {
+  ({ default: bus } = await import('../src/renderer/eventBus.js'));
+} catch (e) {
+  self.postMessage({ error: 'eventBus import failed – see README#troubleshooting' });
+}
+
 self.onmessage = ({data}) => {
   const {id, field, rows} = data;
   const { labels, values } = buildChart(field, rows);
