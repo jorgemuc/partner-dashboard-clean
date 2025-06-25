@@ -9,7 +9,7 @@ E12 · Preset-Fix + Simple Filters,,"Bugfix Alle; Filter-UI",done,,,,
 E13 · Context-Isolation + mitt Bus,preload setup; migrate emit/on,done,1,Security,S,,
 E14 · ES-Module Refactor,all renderer imports/export,done,2,Maintainability,S,,
 E15 · NSIS Installer,sign & pack,done,3,Distribution,M,,
-E16 · Virtual Scrolling,render window 10k rows,in progress,4,Perf,M,,
+E16 · Virtual Scrolling,render window 10k rows,in progress,4,Perf,M,,session-fix-preload
 E17 · Release Upload,CI erstellt GH-Release + Assets,on hold,5,Automation,M,,
 ,Drag-&-Drop CSV Upload,,planned,1,Komfort,S,
 ,XLSX-Export,,planned,2,Exec Reporting,S,

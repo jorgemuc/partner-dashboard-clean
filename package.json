@@ -35,8 +35,7 @@
     "asar": true,
     "files": [
       "**/*",
-      "src/preload.js",
-      "!dist/**"
+      "src/preload.js"
     ],
     "win": {
       "target": "portable",
