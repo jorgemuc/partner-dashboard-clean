@@ -34,6 +34,10 @@ let changelog = [];
 let changeIndex = 0;
 let charts = {};
 setChartsRef(charts);
+eventBus.on('chart:empty', id => {
+  charts[id]?.destroy();
+  delete charts[id];
+});
 let appVersion;
 let chartWorker;
 let buildChart;
@@ -47,8 +51,12 @@ function createChartWorker(){
   try{
     const w = new Worker(new URL('chartWorker.js', window.location.href));
     w.onmessage = e => {
-      const {id, labels, values} = e.data;
-      drawChart(id, labels, values);
+      const {id, labels, values, empty} = e.data;
+      if(empty){
+        eventBus.emit('chart:empty', id);
+      }else{
+        drawChart(id, labels, values);
+      }
     };
     return w;
   }catch(e){

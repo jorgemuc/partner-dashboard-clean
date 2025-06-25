@@ -4,7 +4,10 @@
  * @param {Array<Object>} data - Partner rows.
  * @returns {{labels:string[], values:number[]}}
  */
-export function buildChart(field, rows){
+export function buildChart(field, rows = []){
+  if(!Array.isArray(rows) || rows.length === 0){
+    return { labels: [], values: [] };
+  }
   const counts = {};
   rows.forEach(r => {
     const k = r[field] || 'unbekannt';
@@ -22,6 +25,10 @@ try {
 
 self.onmessage = ({data}) => {
   const {id, field, rows} = data;
+  if(!Array.isArray(rows) || rows.length === 0){
+    postMessage({id, empty:true});
+    return;
+  }
   const { labels, values } = buildChart(field, rows);
   postMessage({id, labels, values});
 };
