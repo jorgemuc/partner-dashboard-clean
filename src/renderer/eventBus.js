@@ -1,4 +1,4 @@
-import mitt from 'mitt';
+import mitt from '../../node_modules/mitt/dist/mitt.mjs';
 
 let bus = (typeof window !== 'undefined' && window.eventBus) ? window.eventBus : mitt();
 if (typeof window !== 'undefined' && !window.eventBus) {
@@ -13,5 +13,4 @@ if (!bus.once) {
     bus.on(type, wrap);
   };
 }
-
 export default bus;
