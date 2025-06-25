@@ -7,7 +7,7 @@ komplexe Build-Kette oder Cloud-Abhängigkeiten.
 
 ---
 
-## Features (v0.1.8)
+## Features (v0.1.9)
 
 | ✔ | Funktion |
 |---|-----------|
@@ -23,10 +23,13 @@ komplexe Build-Kette oder Cloud-Abhängigkeiten.
 | Spalten-Ansichten (Alle/Vertrag/Tech/Onboarding/Marketing/KPI) |
 | CSV & XLSX Export |
 | 100 % offline, keine Install/Rights nötig |
+| Context-Isolation + mitt EventBus |
+| ES-Module Refactor (Renderer) |
+| Chart Worker Fallback entfernt |
 
 ![Dashboard Screenshot](data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z/C/HwAFAgH+OhzCEwAAAABJRU5ErkJggg==)
 
-> *Roadmap:* CI-Workflow & erweiterte Dokumentation
+> *Roadmap:* NSIS-Installer, Virtual Scrolling, Release Upload
 
 ---
 
@@ -52,7 +55,7 @@ cd partner-dashboard-clean
 npm install   # dekodiert auch Icons aus *.b64
 
 # 3) App starten
-npm start
+npm start  # alias: npm run dev
 
 # 4) Tests ausführen
 npm test
@@ -69,6 +72,8 @@ Für einen kompletten UI-Test kann die Datei demo/PARTNER.csv mit allen Spalten 
 - **Fehlerhafte Spaltenanzahl** – prüfen, ob jede Zeile gleich viele Trennzeichen besitzt.
 - **Falsche Kodierung** – CSV am besten als UTF‑8 ohne BOM speichern.
 - **Unerwartete Trennzeichen** – Komma oder Semikolon müssen einheitlich sein.
+- **Mitt-Import-Error** – tritt bei falscher Pfadangabe im Preload auf.
+- **NodeIntegration/ContextIsolation** – prüfen, ob Preload-Bridge korrekt geladen wird.
 
 
 ## CSV-Schema v1.0
