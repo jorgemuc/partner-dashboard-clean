@@ -22,3 +22,10 @@ No automated tests are currently defined. Before committing, ensure that `BACKLO
 
 ## Pull-Request Checklist
 - BACKLOG.csv columns == 21
+
+### ⏰ Release House-Keeping Checklist
+- [ ] README.md → version badge & headline
+- [ ] about.html / help.html → `data-version` + visible text
+- [ ] index.html → `window.APP_VERSION`
+- [ ] BACKLOG.csv → Status/Date Spalten
+- [ ] CHANGELOG.md → neuer Eintrag
