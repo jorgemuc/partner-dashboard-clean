@@ -5,7 +5,7 @@ jest.mock('electron', () => ({
 const { contextBridge } = require('electron');
 let bus;
 beforeAll(async () => {
-  await import('../src/preload.mjs');
+  await import('../src/preload.js');
   bus = contextBridge.exposeInMainWorld.mock.calls[0][1].bus;
 });
 
