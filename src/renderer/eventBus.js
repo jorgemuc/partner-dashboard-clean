@@ -1,17 +1,5 @@
 import mitt from 'mitt';
 
-let bus = (typeof window !== 'undefined' && window.eventBus) ? window.eventBus : mitt();
-if (typeof window !== 'undefined' && !window.eventBus) {
-  window.eventBus = bus;
-}
-if (!bus.once) {
-  bus.once = (type, handler) => {
-    const wrap = (...args) => {
-      bus.off(type, wrap);
-      handler(...args);
-    };
-    bus.on(type, wrap);
-  };
-}
+const bus = mitt();
 
 export default bus;
