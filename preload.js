@@ -13,7 +13,12 @@ try {
   };
 } catch (err) {
   console.error('preload failed to load mitt:', err);
-  bus = { on: () => {}, emit: () => {}, off: () => {} };
+  bus = {
+    on: () => {},
+    emit: () => {},
+    off: () => {},
+    once: () => {}
+  };
 }
 
 contextBridge.exposeInMainWorld('api', {

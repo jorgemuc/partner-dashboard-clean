@@ -1,8 +1,9 @@
 let store, bus;
 beforeAll(async () => {
-  global.window = { bus: require('mitt')() };
+  global.window = { api: { bus: require('mitt')() } };
   store = await import('../src/renderer/dataStore.js');
-  bus = global.window.bus;
+  bus = global.window.api.bus;
+
 });
 
 test('setData stores array and emits update', () => {

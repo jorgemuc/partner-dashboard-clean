@@ -32,7 +32,7 @@ async function run(){
   global.Chart.register = () => {};
   global.Papa = {parse:()=>({data:[]}), unparse:()=>''};
   global.XLSX = {utils:{json_to_sheet:()=>({}),book_new:()=>({}),book_append_sheet(){}} ,write:()=>''};
-  global.window.bus = require('mitt')();
+  global.window.api.bus = require('mitt')();
   await import('../src/renderer/dataStore.js');
   await import('../src/renderer/renderer.js');
   dom.window.document.getElementById('demoDataBtn').click();
