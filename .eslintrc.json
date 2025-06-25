@@ -1,0 +1,12 @@
+{
+  "env": {
+    "es2020": true,
+    "node": true
+  },
+  "plugins": ["node"],
+  "rules": {
+    "node/no-missing-require": "error",
+    "node/no-unsupported-features/es-syntax": "warn",
+    "node/no-missing-import": "error"
+  }
+}
