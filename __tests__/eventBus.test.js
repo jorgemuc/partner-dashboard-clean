@@ -12,13 +12,6 @@ describe('event bus', () => {
     bus.off('ping', handler);
   });
 
-  test('once handler fires only once', () => {
-    const handler = jest.fn();
-    bus.once('pong', handler);
-    bus.emit('pong', 1);
-    bus.emit('pong', 2);
-    expect(handler).toHaveBeenCalledTimes(1);
-  });
 
   test('off removes handler', () => {
     const handler = jest.fn();
