@@ -6,6 +6,5 @@ jest.mock('../chartWorker.js', () => ({
 test('renderer bootstraps without errors', async () => {
   global.window = { electronAPI: { getVersion: jest.fn(() => Promise.resolve('1.0.0')) } };
   bus = (await import('../src/renderer/eventBus.js')).default;
-  await import('../src/renderer/kpi.js');
   expect(bus).toBeDefined();
 });

@@ -57,7 +57,11 @@ function createChartWorker(){
 }
 
 async function prepareWorkers(){
-  if(!buildChart){ const m = await import('../../chartWorker.js'); buildChart = m.buildChart; }
+  if(!buildChart){
+    const url = new URL('../../chartWorker.js', import.meta.url);
+    const m = await import(url);
+    buildChart = m.buildChart;
+  }
   chartWorker = createChartWorker();
 }
 function resetCharts(){
