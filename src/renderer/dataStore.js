@@ -1,4 +1,4 @@
-import bus from './eventBus.js';
+const bus = window.api.bus;
 let partnerData = [];
 export const getData = () => partnerData;
 export function setData(arr){

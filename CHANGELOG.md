@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.1.10 – 2025-07-05
+* Fix: preload guards mitt dependency and exposes fallback bus
+* Chore: remove obsolete eventBus script and file
+* Chore: normalise BACKLOG schema
+* Docs: version bump references
+
 ## v0.1.9 – 2025-07-04
 * Fix: eventBus relative import (mitt)
 * Fix: Chart render guard for empty data
