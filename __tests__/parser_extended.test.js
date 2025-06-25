@@ -9,8 +9,7 @@ test('parseCsv adds Umsatz and Pipeline fields when missing', () => {
   assert.equal(res.data[0].Pipeline, '');
 });
 
-test('validateCsv detects row length mismatch', () => {
+test('validateCsv throws on row length mismatch', () => {
   const csv = 'A,B\n1,2,3';
-  const result = validateCsv(csv);
-  assert.equal(result.valid, false);
+  assert.throws(() => validateCsv(csv), /README#troubleshooting/);
 });

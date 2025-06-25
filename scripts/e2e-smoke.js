@@ -25,7 +25,8 @@ async function run(){
   global.localStorage = dom.window.localStorage;
   global.sessionStorage = dom.window.sessionStorage;
   global.window.api = {version:()=>Promise.resolve('0.0.0'),onOpenCsvDialog:()=>{}};
-  global.getFilterFields = dom.window.getFilterFields;
+  const utils = await import('../filterUtils.js');
+  global.getFilterFields = utils.getFilterFields;
   dom.window.HTMLCanvasElement.prototype.getContext = () => ({})
   global.Chart = function(){ return {destroy(){}} };
   global.Chart.register = () => {};

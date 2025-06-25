@@ -55,11 +55,13 @@ function validateCsv(raw){
   raw = (raw || '').replace(/^\uFEFF/, '');
   const res = Papa.parse(raw, { skipEmptyLines: true });
   if(res.errors && res.errors.length){
-    return { valid:false, errors: res.errors.map(e=>e.message) };
+    throw new Error(res.errors.map(e=>e.message).join('; '));
   }
   const cols = res.data[0] ? res.data[0].length : 0;
-  const inconsistent = res.data.some(r => r.length !== cols);
-  if(inconsistent) return { valid:false, errors:["Inconsistent column count"] };
+  const idx = res.data.findIndex(r => r.length !== cols);
+  if(idx !== -1){
+    throw new Error(`Row ${idx+1} has wrong column count – see README#troubleshooting`);
+  }
   return { valid:true, errors:[] };
 }
 

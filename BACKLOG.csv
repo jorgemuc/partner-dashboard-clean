@@ -8,6 +8,6 @@ E11 · Tabellen-Preset-Dropdown,Spalten-Ansichten umschalten,"Dropdown UI; colum
 E12 · Preset-Fix + Simple Filters,,"Bugfix Alle; Filter-UI",done (2025-06-17),,,,,,,,,,,,,,,,,
 E13 · Context-Isolation + mitt Bus,sichere Renderer-Kommunikation,"preload setup; migrate emit/on",done (2025-07-04),,,,,,,,,,,,,,,,,
 E14 · ES-Module Refactor,Renderer strictly ESM,"import/export; jest config",done (2025-07-04),,,,,,,,,,,,,,,,,
-E15 · NSIS-Installer,signierter Installer,"builder config; cert placeholder; GH Release",todo,,,,,,,,,,,,,,,,,
+E15 · NSIS-Installer,signierter Installer,"builder config; cert placeholder; GH Release",planned,,,,,,,,,,,,,,,,,
 E16 · Virtual Scrolling,10 k Rows < 60 fps,,planned,,,,,,,,,,,,,,,,,
 E17 · Release Upload,CI erstellt GH-Release + Assets,,planned,,,,,,,,,,,,,,,,,

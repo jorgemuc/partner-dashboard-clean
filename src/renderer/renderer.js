@@ -2,6 +2,7 @@ import { getData, setData } from './dataStore.js';
 import eventBus from './eventBus.js';
 import { getStatusBuckets } from './utils.js';
 import { renderKPIs, setChartsRef } from './kpi.js';
+import { getFilterFields } from '../../filterUtils.js';
 const I18N={
   de:{demoBtn:"Demo-Daten laden"}
 }; // TODO(Epic-9)
