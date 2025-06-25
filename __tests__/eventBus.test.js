@@ -1,7 +1,10 @@
-let bus;
-beforeAll(async () => {
-  bus = (await import('../src/renderer/eventBus.js')).default;
-});
+jest.mock('electron', () => ({
+  contextBridge: { exposeInMainWorld: jest.fn() },
+  ipcRenderer: { invoke: jest.fn(), on: jest.fn() }
+}));
+const { contextBridge } = require('electron');
+require('../preload.js');
+const bus = contextBridge.exposeInMainWorld.mock.calls[0][1].bus;
 
 describe('event bus', () => {
   test('emit calls handler registered via on', () => {
