@@ -24,6 +24,10 @@ try {
 }
 
 self.onmessage = ({data}) => {
+  if(!data || !data.rows){
+    postMessage({ type:'chart-empty' });
+    return;
+  }
   const {id, field, rows} = data;
   if(!Array.isArray(rows) || rows.length === 0){
     postMessage({id, empty:true});

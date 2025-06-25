@@ -30,5 +30,12 @@ Bei Bedarf:
 2.  bundeln & als relative Datei importieren.
 Release-Check: `npm run lint:imports`
 
+### ⏰ Release House-Keeping Checklist
+- [ ] README.md → version badge & headline
+- [ ] about.html / help.html → `data-version` + visible text
+- [ ] index.html → `window.APP_VERSION`
+- [ ] BACKLOG.csv → Status/Date Spalten
+- [ ] CHANGELOG.md → neuer Eintrag
+
 ### Versioning
 Patch bumps fix bugs only. Increase minor for new features, major for breaking changes.
