@@ -3,6 +3,7 @@ beforeAll(async () => {
   global.window = { api: { bus: require('mitt')() } };
   store = await import('../src/renderer/dataStore.js');
   bus = global.window.api.bus;
+
 });
 
 test('setData stores array and emits update', () => {
