@@ -23,9 +23,17 @@ No automated tests are currently defined. Before committing, ensure that `BACKLO
 ## Pull-Request Checklist
 - BACKLOG.csv columns == 21
 
+### 🛡 Renderer-Import-Rule
+Bare specifiers ( `import foo from 'foo'` ) sind verboten.
+Bei Bedarf:
+1.  Über preload via contextBridge exposen, **oder**
+2.  bundeln & als relative Datei importieren.
+Release-Check: `npm run lint:imports`
+
 ### ⏰ Release House-Keeping Checklist
 - [ ] README.md → version badge & headline
 - [ ] about.html / help.html → `data-version` + visible text
 - [ ] index.html → `window.APP_VERSION`
 - [ ] BACKLOG.csv → Status/Date Spalten
 - [ ] CHANGELOG.md → neuer Eintrag
+
