@@ -72,7 +72,7 @@ Für einen kompletten UI-Test kann die Datei demo/PARTNER.csv mit allen Spalten 
 - **Fehlerhafte Spaltenanzahl** – prüfen, ob jede Zeile gleich viele Trennzeichen besitzt.
 - **Falsche Kodierung** – CSV am besten als UTF‑8 ohne BOM speichern.
 - **Unerwartete Trennzeichen** – Komma oder Semikolon müssen einheitlich sein.
-- **Mitt-Import-Error** – tritt bei falscher Pfadangabe im Preload auf.
+- **mitt Import Error** – tritt bei falscher Pfadangabe im Preload auf.
 - **NodeIntegration/ContextIsolation** – prüfen, ob Preload-Bridge korrekt geladen wird.
 
 

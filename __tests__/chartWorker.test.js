@@ -11,3 +11,10 @@ test('buildChart counts field values', async () => {
   assert.deepEqual(labels.sort(), ['x','y']);
   assert.deepEqual(values.reduce((s,v)=>s+v,0), 3);
 });
+
+test('buildChart handles empty rows', async () => {
+  ({ buildChart } = await import('../chartWorker.js'));
+  const { labels, values } = buildChart('A', []);
+  assert.deepEqual(labels, []);
+  assert.deepEqual(values, []);
+});
