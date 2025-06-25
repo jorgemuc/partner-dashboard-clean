@@ -6,7 +6,7 @@ E9 · Qualität & Automatisierung,Dauerhafte Code-Qualität,"Smoke-Test; ESLint+
 E10 · Portable Win-Build,Portable EXE ohne Installer,"electron-builder portable; build:win32 script; upload",done (2025-06-17),,,,,,,,,,,,,,,,,
 E11 · Tabellen-Preset-Dropdown,Spalten-Ansichten umschalten,"Dropdown UI; columnViews Objekt; Spalten hide",done,,,,,,,,,,,,,,,,,
 E12 · Preset-Fix + Simple Filters,,"Bugfix Alle; Filter-UI",done (2025-06-17),,,,,,,,,,,,,,,,,
-E13 · Context-Isolation + mitt Bus,sichere Renderer-Kommunikation,"preload setup; migrate emit/on",done (2025-07-04),,,,,,,,,,,,,,,,,
+E13 · Context-Isolation + mitt Bus,sichere Renderer-Kommunikation,"preload setup; migrate emit/on",done (2025-07-05 via preload),,,,,,,,,,,,,,,,,
 E14 · ES-Module Refactor,Renderer strictly ESM,"import/export; jest config",done (2025-07-04),,,,,,,,,,,,,,,,,
 E15 · NSIS-Installer,signierter Installer,"builder config; cert placeholder; GH Release",planned,,,,,,,,,,,,,,,,,
 E16 · Virtual Scrolling,10 k Rows < 60 fps,,planned,,,,,,,,,,,,,,,,,
