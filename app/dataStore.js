@@ -1,4 +1,5 @@
-const bus = require('./eventBus.js');
+const mitt = require('mitt');
+const bus = mitt();
 let partnerData = [];
 module.exports.getData = () => partnerData;
 module.exports.setData = function(arr){
