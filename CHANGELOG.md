@@ -1,4 +1,10 @@
 # Changelog
+## v0.1.12 - 2025-07-06
+* Silenced preload logs, stabilised smoke test
+
+## v0.1.11 - 2025-07-06
+* Fixed Smoke-Test & CI-duplication, unified BACKLOG, updated rules
+
 
 ## v0.1.10 – 2025-07-05
 * Fixed: preload mitt resolution; CSV column alignment
