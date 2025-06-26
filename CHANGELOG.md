@@ -1,4 +1,6 @@
 # Changelog
+## v0.2.1 - 2025-07-14
+* added bundle placeholder script and CI step
 ## v0.1.22 - 2025-07-13
 * dynamic mitt import in preload
 ## v0.1.21 - 2025-07-12
