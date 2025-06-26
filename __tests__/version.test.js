@@ -1,5 +1,14 @@
-const test = require('node:test');
+const { test } = require('@jest/globals');
 const assert = require('node:assert/strict');
+
+jest.mock('electron', () => {
+  const handlers = new Map();
+  return {
+    app: { getVersion: () => '0.0.0' },
+    ipcMain: { handle: (name, fn) => handlers.set(name, fn), _invokeHandlers: handlers }
+  };
+});
+
 const { app, ipcMain } = require('electron');
 require('../main');
 
