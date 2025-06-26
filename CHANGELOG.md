@@ -1,4 +1,10 @@
 # Changelog
+## v0.3.0 - 2025-07-15
+* preload injects version via IPC and UI reads from `window.api.version`
+## v0.2.2 - 2025-07-14
+* bundle script now writes dist/version.json on postversion
+## v0.2.1 - 2025-07-14
+* added bundle placeholder script and CI step
 ## v0.1.22 - 2025-07-13
 * dynamic mitt import in preload
 ## v0.1.21 - 2025-07-12

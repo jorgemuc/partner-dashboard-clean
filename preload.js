@@ -1,16 +1,16 @@
-const { contextBridge, ipcRenderer } = require('electron');
-// mitt ist ESM-only – per dynamic import nachladen
-let bus;
-import('mitt').then(m => {
-  bus = m.default();
-  // expose: bus + helper to get version
-  contextBridge.exposeInMainWorld('api', {
-    bus,
-    getVersion: () => ipcRenderer.invoke('get-version')
-  });
-});
+const { contextBridge } = require('electron');
 
-// also put it on window early for simple inline scripts
-ipcRenderer.invoke('get-version').then(v => {
-  if (typeof window !== 'undefined') window.APP_VERSION = v;
-});
+const api = { version: 'dev', bus: {} };
+contextBridge.exposeInMainWorld('api', api);
+
+import('mitt')
+  .then(m => { api.bus = m.default(); })
+  .catch(e => console.error('[pl-err] mitt missing', e));
+
+// --- runtime version injection ---------------------------------------
+try {
+  const { ipcRenderer } = require('electron');
+  ipcRenderer.invoke('get-version')
+    .then(v => { api.version = v; })
+    .catch(() => {/* keep 'dev' */});
+} catch { /* unit-tests/jsdom: electron not available */ }

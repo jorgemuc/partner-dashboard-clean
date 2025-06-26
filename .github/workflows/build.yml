@@ -36,6 +36,9 @@ jobs:
 #        run: npm run smoke
 #      ☞ Smoke-Tests vorübergehend deaktiviert – s. CHANGELOG v0.1.19
 
+      - name: Bundle sources
+        run: npm run bundle
+
       - name: Build portable win32
         run: npm run build:win32       # electron-builder --win portable
 
