@@ -275,6 +275,9 @@ function showMsg(txt, type="success") {
   renderKPIs(version);
 })();
 
+// signal successful bootstrap for tests
+document.body.setAttribute('data-testid', 'app-ready');
+
 // CSV-Menü aus Preload registrieren –  jsdom hat keine Bridge
 window?.electronAPI?.onOpenCsvDialog?.(() => document.getElementById('csvFile').click());
 

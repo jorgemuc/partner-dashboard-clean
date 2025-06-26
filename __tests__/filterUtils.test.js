@@ -1,4 +1,4 @@
-const { getFilterFields, defaultFilterFields } = require('../filterUtils.js');
+const { getFilterFields, defaultFilterFields } = require('../filterUtils.cjs');
 
 describe('getFilterFields',()=>{
   test('returns defaults for Alle',()=>{
