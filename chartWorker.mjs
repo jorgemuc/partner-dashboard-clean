@@ -17,16 +17,18 @@ export function buildChart(field, rows = []){
 }
 
 
-self.onmessage = ({data}) => {
-  if(!data || !data.rows){
-    postMessage({ type:'chart-empty' });
-    return;
-  }
-  const {id, field, rows} = data;
-  if(!Array.isArray(rows) || rows.length === 0){
-    postMessage({id, empty:true});
-    return;
-  }
-  const { labels, values } = buildChart(field, rows);
-  postMessage({id, labels, values});
-};
+if (typeof self !== 'undefined') {
+  self.onmessage = ({data}) => {
+    if(!data || !data.rows){
+      postMessage({ type:'chart-empty' });
+      return;
+    }
+    const {id, field, rows} = data;
+    if(!Array.isArray(rows) || rows.length === 0){
+      postMessage({id, empty:true});
+      return;
+    }
+    const { labels, values } = buildChart(field, rows);
+    postMessage({id, labels, values});
+  };
+}

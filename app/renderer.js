@@ -43,7 +43,7 @@ let buildChart;
 function createChartWorker(){
   if(window.location.protocol === 'file:') return null;
   try{
-    const w = new Worker(new URL('chartWorker.js', window.location.href));
+    const w = new Worker(new URL('chartWorker.mjs', window.location.href));
     w.onmessage = e => {
       const {id, labels, values} = e.data;
       drawChart(id, labels, values);
@@ -56,7 +56,7 @@ function createChartWorker(){
 }
 
 async function prepareWorkers(){
-  if(!buildChart){ const m = await import('./chartWorker.js'); buildChart = m.buildChart; }
+  if(!buildChart){ const m = await import('./chartWorker.mjs'); buildChart = m.buildChart; }
   chartWorker = createChartWorker();
 }
 function resetCharts(){

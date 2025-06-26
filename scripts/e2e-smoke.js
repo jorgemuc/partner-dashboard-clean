@@ -25,14 +25,15 @@ async function run(){
   global.localStorage = dom.window.localStorage;
   global.sessionStorage = dom.window.sessionStorage;
   global.window.api = {version:()=>Promise.resolve('0.0.0'),onOpenCsvDialog:()=>{}};
-  const utils = await import('../filterUtils.js');
-  global.getFilterFields = utils.getFilterFields;
   dom.window.HTMLCanvasElement.prototype.getContext = () => ({})
   global.Chart = function(){ return {destroy(){}} };
   global.Chart.register = () => {};
   global.Papa = {parse:()=>({data:[]}), unparse:()=>''};
   global.XLSX = {utils:{json_to_sheet:()=>({}),book_new:()=>({}),book_append_sheet(){}} ,write:()=>''};
   global.window.api = { bus: require('mitt')() };
+
+  // —— IPC-Ready-Signal zum Smoke-Test ————————————————
+  global.window.api.bus.emit('e2e-ready');
   await import('../src/renderer/dataStore.js');
   await import('../src/renderer/renderer.js');
   dom.window.document.getElementById('demoDataBtn').click();
