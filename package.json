@@ -47,6 +47,7 @@
   "electronWebpack": {
     "whiteListedModules": [
       "mitt"
-    ]
+    ],
+    "preload": "src/preload.js"
   }
 }

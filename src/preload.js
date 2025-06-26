@@ -1,29 +1,16 @@
 const { contextBridge, ipcRenderer } = require('electron');
-let bus;
 
+let mittLib;
 try {
-  const mitt = require('mitt');
-  bus = mitt();
-  bus.once = (t, h) => {
-    const wrap = (...args) => {
-      bus.off(t, wrap);
-      h(...args);
-    };
-    bus.on(t, wrap);
-  };
-} catch (err) {
-  console.error('[preload] mitt failed:', err);
-  bus = {
-    on: () => {},
-    off: () => {},
-    emit: () => {},
-    once: () => {}
-  };
+  mittLib = require('mitt');
+} catch {
+  console.error('[preload] mitt failed');
 }
+const bus = mittLib ? mittLib() : { on: () => {}, off: () => {}, emit: () => {} };
 
 contextBridge.exposeInMainWorld('bus', bus);
 contextBridge.exposeInMainWorld('api', {
-  bus,
   getVersion: () => ipcRenderer.invoke('get-version'),
   onOpenCsvDialog: fn => ipcRenderer.on('open-csv-dialog', fn)
 });
+
