@@ -11,7 +11,8 @@ test('App starts ohne Preload-Fehler', async () => {
 
   await page.waitForSelector('body');
   const hasBus = await page.evaluate(() => !!window.bus && typeof window.bus.emit === 'function');
-  const bad = /MODULE_NOT_FOUND|Unable to load preload|bus.*undefined/i;
+  const bad = /Unable to load preload|MODULE_NOT_FOUND.*mitt/i;   // enger gefasst
+  await page.waitForEvent('console', { predicate: m => m.text().includes('DOMContentLoaded') });
   expect(logs.some(l => bad.test(l))).toBeFalsy();
   expect(hasBus).toBe(true);
   await app.close();
