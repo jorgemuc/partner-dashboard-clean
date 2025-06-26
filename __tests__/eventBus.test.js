@@ -1,11 +1,12 @@
-jest.mock('electron', () => ({
+jest.mock('electron', () => ({__esModule: true,
   contextBridge: { exposeInMainWorld: jest.fn() },
-  ipcRenderer: { invoke: jest.fn(() => Promise.resolve('0.0.0')), on: jest.fn() }
+  ipcRenderer: { invoke: jest.fn(() => Promise.resolve('0.0.0')), on: jest.fn() },
+  default: {}
 }));
 const { contextBridge } = require('electron');
 let bus;
 beforeAll(async () => {
-  await import('../preload.js');
+  await import('../src/preload.mjs');
   await new Promise(r => setImmediate(r));
   const call = contextBridge.exposeInMainWorld.mock.calls.find(c => c[0] === 'api');
   bus = call ? call[1].bus : undefined;
@@ -20,7 +21,6 @@ describe('event bus', () => {
     bus.off('ping', handler);
   });
 
-
   test('off removes handler', () => {
     const handler = jest.fn();
     bus.on('beep', handler);
@@ -28,5 +28,4 @@ describe('event bus', () => {
     bus.emit('beep');
     expect(handler).not.toHaveBeenCalled();
   });
-
 });

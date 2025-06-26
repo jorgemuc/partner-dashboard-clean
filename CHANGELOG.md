@@ -1,4 +1,9 @@
 # Changelog
+## v0.4.0 - 2025-07-15
+* preload converted to ESM and loads optional libs dynamically
+* renderer bundle minified, chart.js tree-shaken
+* UI hides CSV features and charts when libs missing
+
 ## v0.3.4 - 2025-07-15
 * runtime libs initialized in preload and exposed before renderer
 * mitt added to production deps

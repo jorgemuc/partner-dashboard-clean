@@ -10,12 +10,12 @@ test('eventBus module exports mitt instance', async () => {
     url: 'file://' + path.resolve('index.html')
   });
   global.window = dom.window;
-  jest.mock('electron', () => ({
+  jest.mock('electron', () => ({__esModule: true,
     contextBridge: { exposeInMainWorld: jest.fn() },
     ipcRenderer: { invoke: jest.fn(() => Promise.resolve('0.0.0')), on: jest.fn() }
   }));
   const { contextBridge } = require('electron');
-  await import('../preload.js');
+  await import('../src/preload.mjs');
   await new Promise(r => setImmediate(r));
   const call = contextBridge.exposeInMainWorld.mock.calls.find(c => c[0] === 'api');
   const bus = call ? call[1].bus : undefined;

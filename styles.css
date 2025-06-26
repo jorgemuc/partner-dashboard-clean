@@ -7,3 +7,4 @@ th,td{white-space:nowrap;padding:0.6rem 0.8rem;border:1px solid #e0e0e0;max-widt
 .kpi-boxes{display:flex;flex-wrap:nowrap;gap:1.2rem;overflow-x:auto}
 .kpi{flex:1 1 120px;min-width:120px}
 @media (max-width:1000px){.kpi{padding:.8rem 1.2rem;font-size:.9rem}}
+body.no-chart [data-tab="charts"] { pointer-events:none; opacity:.4; }

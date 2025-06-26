@@ -6,8 +6,14 @@ function waitForLibs(){
     },10);
   });
 }
+import { Chart, BarController, BarElement, CategoryScale,
+         LineController, LineElement, PointElement, LinearScale } from 'chart.js';
+Chart.register(BarController, BarElement, CategoryScale,
+               LineController, LineElement, PointElement, LinearScale);
 (await waitForLibs());
-const { Papa = {}, XLSX = {}, chartjs: Chart } = window.api.libs || {};
+const { Papa, XLSX, Chart: ChartFromPreload } = window.api.libs;
+if(!Papa)  document.body.classList.add('no-csv');
+if(!ChartFromPreload) document.body.classList.add('no-chart');
 const { utils: XLSXUtils, writeFile } = XLSX;
 import { applyFilters, getFilterFields } from '../shared/filterUtils.mjs';
 import { getData, setData } from './dataStore.js';

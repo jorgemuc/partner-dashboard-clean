@@ -30,11 +30,19 @@ async function run(){
   global.Chart.register = () => {};
   global.Papa = {parse:()=>({data:[]}), unparse:()=>''};
   global.XLSX = {utils:{json_to_sheet:()=>({}),book_new:()=>({}),book_append_sheet(){}} ,write:()=>''};
-  global.window.api = { bus: require('mitt')() };
+  global.window.api = {
+    bus: require('mitt')(),
+    libs: { Papa: global.Papa, XLSX: global.XLSX, Chart: global.Chart }
+  };
 
   // —— IPC-Ready-Signal zum Smoke-Test ————————————————
   global.window.api.bus.emit('e2e-ready');
   await import('../dist/renderer.bundle.js');
+  if(dom.window.document.body.classList.contains('no-csv') ||
+     dom.window.document.body.classList.contains('no-chart')){
+    console.error('feature flags active', dom.window.document.body.className);
+    process.exit(1);
+  }
   dom.window.document.getElementById('demoDataBtn').click();
   await new Promise(r=>setTimeout(r,100));
   const boxes = dom.window.document.querySelectorAll('#kpiBoxes .kpi');
