@@ -1,53 +1,39 @@
-<<<<<<< w31yfg-codex/konfiguriere-electron-webpack-und-pinne-mitt-version
-EPIC,User Story (Akzeptanzkriterien),Kern-Tasks,Status,2025-06-18,2025-06-18b,2025-06-23,2025-06-23b,2025-06-24,2025-06-25,2025-06-26,2025-06-27,2025-06-28,2025-06-29,2025-06-30,2025-07-01,2025-07-02,2025-07-03,2025-07-04,2025-07-05,2025-07-06
-S1 · Backlog Items,"Drag-&-Drop Upload, XLSX Export, Umsatz/Pipeline KPI, CSV Validator",Implementation,done (2025-06-23 data load fix; icon b64),,,,,,,charts+export fix,event bus refactor,electron import fix,contextIsolation+mitt bus,esm modules refactor,,,,,backlog cleanup,electron webpack configured
-3. Persistente Sichtbarkeits-Prefs (localStorage),,,done (2025-06-18),,,,,,,,,,,,,,,,,
-3. Gespeicherte Filter-Presets,,,done,,,,,,,,,,,,,,,,,
-3. Export ‘partner_export.csv’ mit gleicher Spaltenreihenfolge,,,done,,,,,,,,,,,,,,,,,
-3. Optionale Paginierung / Virtual Scrolling in Tabelle,,,done,,,,,,,,,,,,,,,,,
-3. GitHub Actions CI-Workflow,,,done (2025-07-02 cross-env fix),,,,,,,,,,,,,,,,,
-3. Download-Knopf ‘Demo-CSV auswählen’ im Header,,,done (2025-06-17),,,,,,,,,,,,,,,,,
-3. Troubleshooting-Abschnitt (häufige CSV-Fehler),,,done (2025-06-17),,,,,,,,,,,,,,,,,
-3. Dependabot für npm-Updates,,,done (2025-07-02 cross-env fix),,,,,,,,,,,,,,,,,
-E6 · Packaging & Distribution,Als Entwickler will ich mit einem Befehl eine signierte Windows-Installer-EXE erzeugen.,"1. Electron-Builder Konfig (NSIS, Icon, Auto-Update off); 2. npm run build:win-Script; 3. GitHub Actions CI-Workflow",done,,,,,,,,,,,,,,,,,
-E7 · Demo- & Test-Daten,"Als QA will ich mehrere Beispiel-CSV-Dateien mit Voll-Schema haben, um UI-Regressionen zu testen.","1. partner_full.csv (36 Spalten × ≥ 50 Zeilen, realistische Daten); 2. partner_edge.csv (Extremwerte, lange URLs, Umlaut-Mix, leere Felder); 3. Download-Knopf ‘Demo-CSV auswählen’ im Header",done (2025-06-17),,,,,,,,,,,,,,,,,
-E8 · Dokumentation & Onboarding,"Als neuer Mitarbeiter möchte ich in 5 Minuten verstehen, wie ich die App starte, baue und verteile.",1. README-Abschnitt ‘CSV-Schema v1.0 (Tabelle)’; 2. GIF oder Screenshot-Tour; 3. Troubleshooting-Abschnitt (häufige CSV-Fehler),done (2025-06-17),,,,,,,,,,,,,,,,,
-E9 · Qualität & Automatisierung,"Als Maintainer möchte ich sicherstellen, dass Grundfunktionen nach jedem Commit laufen.",1. Headless Electron-Smoke-Test (Playwright) lädt partner_full.csv; 2. ESLint + Prettier Hook; 3. Dependabot für npm-Updates,done (2025-07-02 cross-env fix),,,,,,,,,,,,,,,,,
-E10 · Portable Win-Build,"Als Entwickler möchte ich eine portable Win32-EXE erzeugen, die ohne Installer läuft.",1. electron-builder portable config; 2. build:win32 script; 3. Workflow upload,done (2025-06-17),,,,,,,,,,,,,,,,,
-E11 · Tabellen-Preset-Dropdown,"Als Nutzer*in möchte ich per Dropdown zwischen vordefinierten Spalten-Ansichten umschalten können (Alle | Vertrag | Tech | Onboarding | Marketing), damit die Tabelle lesbar bleibt, ohne vertikalen Text.",1. Dropdown für Spaltenansicht; 2. columnViews Objekt; 3. Change-Event blendet Spalten aus,done,,,,,,,,,,,,,,,,,
-E12 · Preset-Fix + Simple Filters,,1. Bugfix Alle; 2. Filter-UI,done (2025-06-17),,,,,,,,,,,,,,,,,
-=======
-Epic,Story,Task,Status,Priority,Estimate,Owner,2025-06-26,2025-07-06
-E6 · Packaging & Distribution,signierter Windows-Installer,"builder config NSIS; build:win script; workflow",done,,,,,
-E7 · Demo- & Test-Daten,Beispiel-CSV für UI-Tests,"partner_full.csv; partner_edge.csv; Download-Knopf",done,,,,,
-E8 · Dokumentation & Onboarding,Schnelles Projektverständnis,"README CSV-Schema; GIF-Tour; Troubleshooting",done,,,,,
-E9 · Qualität & Automatisierung,Dauerhafte Code-Qualität,"Smoke-Test; ESLint+Prettier Hook; Dependabot",done,,,,,
-E10 · Portable Win-Build,Portable EXE ohne Installer,"electron-builder portable; build:win32 script; upload",done,,,,,
-E11 · Tabellen-Preset-Dropdown,Spalten-Ansichten umschalten,"Dropdown UI; columnViews Objekt; Spalten hide",done,,,,,
-E12 · Preset-Fix + Simple Filters,,"Bugfix Alle; Filter-UI",done,,,,,
-E13 · Context-Isolation + mitt Bus,preload setup; migrate emit/on,done,1,Security,S,,,
-E14 · ES-Module Refactor,all renderer imports/export,done,2,Maintainability,S,,,
-E15 · NSIS Installer,sign & pack,done,3,Distribution,M,,,
-E16 · Virtual Scrolling,render window 10k rows,done,4,Perf,M,codex,,
-E17 · Release Upload,CI erstellt GH-Release + Assets,on hold,5,Automation,M,,,
-,Drag-&-Drop CSV Upload,,planned,1,Komfort,S,,
-,XLSX-Export,,planned,2,Exec Reporting,S,,
-,Global Search (⌘ + K),,planned,3,Navigation,S,,
-,Umsatz/Pipeline Charts,,planned,4,Business KPI,M,,
-,Task/Reminder Modul,,planned,5,Follow-Ups,M,,
-,Kontakt-Timeline,,planned,6,Rel-Health,M,,
-,File-Upload für Verträge,,planned,7,Compliance,M,,
-,Ticket-Feed Jira/Zendesk,,planned,8,Support Insights,L,,
-,CSV-Validator vor Import,,planned,9,Data Quality,S,,
-,Role-Based Views,,planned,10,Focus,M,,
-,Mobile Card-View,,planned,11,On-the-go,M,,
-,OS-Theme Sync (Dark/Light),,planned,12,UX,XS,,
-,Preset-Manager (shared),,planned,13,Collab,M,,
-,PPT/PDF-Export 1-Click,,planned,14,Reporting,M,,
-,Live-CRM Sync,,planned,15,Fresh Data,L+,,
-,Partner Health Score,,planned,16,Early Warn,M,,
-,Bulk Edit + Re-Export,,planned,17,Efficiency,M,,
-,In-App Notifications,,planned,18,Awareness,M,,
-,SLA/Incident Heatmap,,planned,19,Quality,L,,
-,Plug-in Framework,,planned,20,Extensibility,L+,,
->>>>>>> main
+Epic,Story,Task,Status,Priority,Estimate,Owner
+E6 · Packaging & Distribution,signierter Windows-Installer,"builder config NSIS; build:win script; workflow",done,,,
+E7 · Demo- & Test-Daten,Beispiel-CSV für UI-Tests,"partner_full.csv; partner_edge.csv; Download-Knopf",done,,,
+E8 · Dokumentation & Onboarding,Schnelles Projektverständnis,"README CSV-Schema; GIF-Tour; Troubleshooting",done,,,
+E9 · Qualität & Automatisierung,Dauerhafte Code-Qualität,"Smoke-Test; ESLint+Prettier Hook; Dependabot",done,,,
+E10 · Portable Win-Build,Portable EXE ohne Installer,"electron-builder portable; build:win32 script; upload",done,,,
+E11 · Tabellen-Preset-Dropdown,Spalten-Ansichten umschalten,"Dropdown UI; columnViews Objekt; Spalten hide",done,,,
+E12 · Preset-Fix + Simple Filters,,"Bugfix Alle; Filter-UI",done,,,
+E13 · Context-Isolation + mitt Bus,preload setup; migrate emit/on,done,1,Security,S,
+E14 · ES-Module Refactor,all renderer imports/export,done,2,Maintainability,S,
+E15 · NSIS Installer,sign & pack,done,3,Distribution,M,
+E16 · Virtual Scrolling,render window 10k rows,done,4,Perf,M,codex
+E17 · Release Upload,CI erstellt GH-Release + Assets,on hold,5,Automation,M,
+,Drag-&-Drop CSV Upload,,planned,1,Komfort,S
+,XLSX-Export,,planned,2,Exec Reporting,S
+,Global Search (⌘ + K),,planned,3,Navigation,S
+,Umsatz/Pipeline Charts,,planned,4,Business KPI,M
+,Task/Reminder Modul,,planned,5,Follow-Ups,M
+,Kontakt-Timeline,,planned,6,Rel-Health,M
+,File-Upload für Verträge,,planned,7,Compliance,M
+,Ticket-Feed Jira/Zendesk,,planned,8,Support Insights,L
+,CSV-Validator vor Import,,planned,9,Data Quality,S
+,Role-Based Views,,planned,10,Focus,M
+,Mobile Card-View,,planned,11,On-the-go,M
+,OS-Theme Sync (Dark/Light),,planned,12,UX,XS
+,Preset-Manager (shared),,planned,13,Collab,M
+,PPT/PDF-Export 1-Click,,planned,14,Reporting,M
+,Live-CRM Sync,,planned,15,Fresh Data,L+
+,Partner Health Score,,planned,16,Early Warn,M
+,Bulk Edit + Re-Export,,planned,17,Efficiency,M
+,In-App Notifications,,planned,18,Awareness,M
+,SLA/Incident Heatmap,,planned,19,Quality,L
+,Plug-in Framework,,planned,20,Extensibility,L+
+,Preload log discipline,Smoke test stable,done,0,Quality,codex
+,App ready marker,Smoke test uses DOM marker,done,0,Quality,codex
+E9 · Qualität & Automatisierung,NPM libs via NPM,assets cleanup,done,,0,codex
+E9 · Qualität & Automatisierung,e2e-ready handshake,,done,,0,codex
+E9 · Qualität & Automatisierung,libs via preload,no bare imports,done,,0,codex
+E9 · Qualität & Automatisierung,CI smoketest headless,tests fixed,done,0,Quality,codex

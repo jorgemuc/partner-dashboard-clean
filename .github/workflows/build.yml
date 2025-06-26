@@ -1,6 +1,14 @@
 name: build
 
-on: [push, pull_request]
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
 
 jobs:
   build-win:
@@ -23,7 +31,9 @@ jobs:
         run: |
           npm test
           node scripts/e2e-smoke.js    # <- exakt 2 Leerstellen vor jeder Zeile
-          npm run smoke
+
+      - name: Run smoke tests (headless Electron)
+        run: npm run smoke
 
       - name: Build portable win32
         run: npm run build:win32       # electron-builder --win portable

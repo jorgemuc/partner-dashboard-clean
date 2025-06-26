@@ -79,6 +79,9 @@ function createWindow() {
     }
   });
   win.loadFile(path.join(__dirname, 'index.html'));
+  win.webContents.once('did-finish-load', () => {
+    win.webContents.send('is-ready');
+  });
   createMenu(win);
 }
 
