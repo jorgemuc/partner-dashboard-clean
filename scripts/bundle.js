@@ -1,13 +1,21 @@
 #!/usr/bin/env node
-// noop bundle – Iteration 1
+// renderer bundle + version file
+const esbuild = require('esbuild');
 const { version } = require('../package.json');
-console.log(`[bundle] skip (v${version}) – real bundling comes in Iteration 2`);
+const { mkdirSync, writeFileSync } = require('node:fs');
+
+esbuild.build({
+  entryPoints: ['src/renderer/renderer.js'],
+  bundle: true,
+  outfile: 'dist/renderer.bundle.js',
+  format: 'esm',
+  target: ['es2020'],
+  external: ['electron'],
+  sourcemap: process.env.NODE_ENV !== 'production',
+  logLevel: 'info'
+}).catch(() => process.exit(1));
 
 // --- single-source version record -----------------------------------
-const { mkdirSync, writeFileSync } = require('node:fs');
 mkdirSync('dist', { recursive: true });
-writeFileSync('dist/version.json',
-  JSON.stringify({ version }, null, 2) + '\n');
+writeFileSync('dist/version.json', JSON.stringify({ version }, null, 2) + '\n');
 console.log('[bundle] wrote dist/version.json');
-
-process.exit(0);

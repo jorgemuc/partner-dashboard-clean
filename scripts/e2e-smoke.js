@@ -34,8 +34,7 @@ async function run(){
 
   // —— IPC-Ready-Signal zum Smoke-Test ————————————————
   global.window.api.bus.emit('e2e-ready');
-  await import('../src/renderer/dataStore.js');
-  await import('../src/renderer/renderer.js');
+  await import('../dist/renderer.bundle.js');
   dom.window.document.getElementById('demoDataBtn').click();
   await new Promise(r=>setTimeout(r,100));
   const boxes = dom.window.document.querySelectorAll('#kpiBoxes .kpi');

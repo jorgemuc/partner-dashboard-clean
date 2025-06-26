@@ -1,1 +1,2 @@
-// setup file intentionally empty; libraries are provided via NPM
+// load bundled renderer for integration-style tests
+import('../dist/renderer.bundle.js').catch(() => {});

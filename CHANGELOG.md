@@ -1,4 +1,8 @@
 # Changelog
+## v0.3.3 - 2025-07-15
+* renderer bundled via esbuild → `dist/renderer.bundle.js`
+* index.html and tests load the bundle
+* CI builds bundle before tests
 ## v0.3.2 - 2025-07-15
 * preload exposes runtime libs via `window.api.libs`
 
