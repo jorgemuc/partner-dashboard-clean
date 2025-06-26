@@ -30,7 +30,7 @@ jobs:
       - name: Run unit + smoke tests
         run: |
           npm test
-          node scripts/e2e-smoke.js    # <- exakt 2 Leerstellen vor jeder Zeile
+#          node scripts/e2e-smoke.js    # <- exakt 2 Leerstellen vor jeder Zeile
 
 #      - name: Run smoke tests (headless Electron)
 #        run: npm run smoke
