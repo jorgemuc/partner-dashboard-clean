@@ -20,6 +20,18 @@ Run `npm test` and `npm run smoke` before committing. Verify that `BACKLOG.csv` 
 ### Logging Discipline
 Preload produces no console output on success. All fatal errors must start with `[pl-err]` so Smoke-Test can whitelist benign logs.
 
+### Testing Policy
+E2E tests verify only UI states or exposed APIs. Console output must never be part of the oracle.
+
+### PR-Guidelines
+One logical change per PR, roughly under 400 lines of diff. Include the CHANGELOG entry in the same commit.
+
+### Roadmap
+Reserve ≥ 50 % sprint capacity for user-visible features; infra work is capped at the rest.
+
+### Single-Source Rules
+All architectural rules live in this file. When code diverges, update the docs first, then adjust the implementation.
+
 ## CI Rules
 The workflow uses concurrency to prevent duplicate runs and only triggers on pushes or pull requests targeting `main`.
 

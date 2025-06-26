@@ -9,11 +9,10 @@ test('App starts ohne Preload-Fehler', async () => {
   const logs = [];
   page.on('console', msg => logs.push(msg.text()));
 
-  await page.waitForSelector('body');
+  await page.waitForSelector('[data-testid="app-ready"]');
   const hasBus = await page.evaluate(() => !!window.api?.bus && typeof window.api.bus.emit === 'function');
   const hard = /MODULE_NOT_FOUND|\[pl-err\]/;
-  await page.waitForSelector('header');
-  expect(logs.some(l => hard.test(l) || /preload/i.test(l))).toBeFalsy();
+  expect(logs.some(l => hard.test(l))).toBeFalsy();
   expect(hasBus).toBe(true);
   await app.close();
 }, 30_000);

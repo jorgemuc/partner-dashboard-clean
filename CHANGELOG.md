@@ -1,4 +1,7 @@
 # Changelog
+## v0.1.13 - 2025-07-07
+* Silenced preload logs, smoke test now waits for DOM ready marker
+
 ## v0.1.12 - 2025-07-06
 * Silenced preload logs, stabilised smoke test
 
