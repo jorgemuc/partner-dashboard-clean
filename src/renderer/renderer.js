@@ -327,13 +327,6 @@ function getCurrentFilters(){
   obj.search=document.getElementById('searchInput').value;
   return obj;
 }
-function applyFilters(f){
-  document.getElementById('searchInput').value=f.search||'';
-  getVisibleColumns().forEach(h=>{
-    if(f[h]) document.getElementById(`filter_${h}`).value=f[h];
-  });
-  renderTable();
-}
 function savePreset(){
   const name=prompt('Preset Name?');
   if(!name) return;
