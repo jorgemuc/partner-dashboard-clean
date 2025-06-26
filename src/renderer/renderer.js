@@ -1,5 +1,13 @@
-// 3rd-party Libs come from preload; bundlers stay away
-const { Papa, XLSX, Chart } = window.api.libs;
+// 3rd-party libs arrive via preload; wait until available
+function waitForLibs(){
+  return new Promise(res=>{
+    const iv=setInterval(()=>{
+      if(window.api?.libs){ clearInterval(iv); res(window.api.libs); }
+    },10);
+  });
+}
+(await waitForLibs());
+const { Papa = {}, XLSX = {}, chartjs: Chart } = window.api.libs || {};
 const { utils: XLSXUtils, writeFile } = XLSX;
 import { applyFilters, getFilterFields } from '../shared/filterUtils.mjs';
 import { getData, setData } from './dataStore.js';

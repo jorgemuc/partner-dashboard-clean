@@ -1,16 +1,27 @@
-const { contextBridge, ipcRenderer } = require('electron');
-// mitt ist ESM-only – per dynamic import nachladen
-let bus;
-import('mitt').then(m => {
-  bus = m.default();
-  // expose: bus + helper to get version
-  contextBridge.exposeInMainWorld('api', {
-    bus,
-    getVersion: () => ipcRenderer.invoke('get-version')
-  });
-});
+const { contextBridge } = require('electron');
 
-// also put it on window early for simple inline scripts
-ipcRenderer.invoke('get-version').then(v => {
-  if (typeof window !== 'undefined') window.APP_VERSION = v;
-});
+// --- runtime libs ----------------------------------------------------
+let mittPkg;
+try {
+  mittPkg = require('mitt');
+} catch (e) {
+  console.warn('[pl-warn] mitt missing', e.message);
+  mittPkg = () => ({ on() {}, emit() {} });
+}
+const libs = {};
+try { libs.Papa = require('papaparse'); } catch { console.warn('[pl-warn] optional lib missing', 'papaparse'); }
+try { libs.XLSX = require('xlsx'); } catch { console.warn('[pl-warn] optional lib missing', 'xlsx'); }
+try { libs.chartjs = require('chart.js'); } catch { console.warn('[pl-warn] optional lib missing', 'chart.js'); }
+
+const bus = mittPkg();
+const api = { version: 'dev', bus, libs };
+contextBridge.exposeInMainWorld('api', api);
+
+// --- runtime version injection ---------------------------------------
+try {
+  const { ipcRenderer } = require('electron');
+  ipcRenderer.invoke('get-version')
+    .then(v => { api.version = v; })
+    .catch(() => {/* keep 'dev' */});
+} catch { /* unit-tests/jsdom: electron not available */ }
+
