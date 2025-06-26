@@ -1,4 +1,9 @@
 # Changelog
+## v0.3.4 - 2025-07-15
+* runtime libs initialized in preload and exposed before renderer
+* mitt added to production deps
+* dist/ included in release build
+
 ## v0.3.3 - 2025-07-15
 * renderer bundled via esbuild → `dist/renderer.bundle.js`
 * index.html and tests load the bundle

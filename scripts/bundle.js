@@ -9,7 +9,7 @@ esbuild.build({
   bundle: true,
   outfile: 'dist/renderer.bundle.js',
   format: 'esm',
-  target: ['es2020'],
+  target: ['es2022'],
   external: ['electron'],
   sourcemap: process.env.NODE_ENV !== 'production',
   logLevel: 'info'

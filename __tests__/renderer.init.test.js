@@ -19,5 +19,5 @@ test('renderer bootstraps without errors', async () => {
   expect(global.window.api.version).toBe('1.2.3');
   expect(global.window.api.libs.Papa).toBeDefined();
   expect(global.window.api.libs.XLSX).toBeDefined();
-  expect(global.window.api.libs.Chart).toBeDefined();
+  expect(global.window.api.libs.chartjs).toBeDefined();
 });
