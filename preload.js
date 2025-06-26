@@ -1,11 +1,18 @@
 const { contextBridge } = require('electron');
 
-const api = { version: 'dev', bus: {} };
-contextBridge.exposeInMainWorld('api', api);
+// --- EventBus --------------------------------------------------------
+let bus;
+try {
+  // preload runs in Node context → require allowed
+  const mitt = require('mitt');
+  bus = mitt();
+} catch (e) {
+  console.error('[pl-err] mitt missing', e);
+  bus = { on() {}, off() {}, emit() {} }; // stub so renderer won't crash
+}
 
-import('mitt')
-  .then(m => { api.bus = m.default(); })
-  .catch(e => console.error('[pl-err] mitt missing', e));
+const api = { version: 'dev', bus };
+contextBridge.exposeInMainWorld('api', api);
 
 // --- runtime version injection ---------------------------------------
 try {
@@ -14,3 +21,5 @@ try {
     .then(v => { api.version = v; })
     .catch(() => {/* keep 'dev' */});
 } catch { /* unit-tests/jsdom: electron not available */ }
+
+
