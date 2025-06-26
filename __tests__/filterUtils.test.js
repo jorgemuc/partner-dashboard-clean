@@ -1,7 +1,4 @@
-let getFilterFields, defaultFilterFields;
-beforeAll(async () => {
-  ({ getFilterFields, defaultFilterFields } = await import('../filterUtils.js'));
-});
+const { getFilterFields, defaultFilterFields } = require('../filterUtils.js');
 
 describe('getFilterFields',()=>{
   test('returns defaults for Alle',()=>{

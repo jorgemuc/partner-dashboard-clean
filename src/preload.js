@@ -1,14 +1,25 @@
 const { contextBridge, ipcRenderer } = require('electron');
-const mitt = require('mitt');
+let bus;
 
-const bus = mitt();
-bus.once = (t, h) => {
-  const wrap = (...args) => {
-    bus.off(t, wrap);
-    h(...args);
+try {
+  const mitt = require('mitt');
+  bus = mitt();
+  bus.once = (t, h) => {
+    const wrap = (...args) => {
+      bus.off(t, wrap);
+      h(...args);
+    };
+    bus.on(t, wrap);
   };
-  bus.on(t, wrap);
-};
+} catch (err) {
+  console.error('[preload] mitt failed:', err);
+  bus = {
+    on: () => {},
+    off: () => {},
+    emit: () => {},
+    once: () => {}
+  };
+}
 
 contextBridge.exposeInMainWorld('api', {
   bus,
