@@ -15,7 +15,7 @@ test('eventBus module exports mitt instance', async () => {
     ipcRenderer: { invoke: jest.fn(), on: jest.fn() }
   }));
   const { contextBridge } = require('electron');
-  await import('../src/preload.js');
+  await import('../preload.js');
   const call = contextBridge.exposeInMainWorld.mock.calls.find(c => c[0] === 'api');
   const bus = call ? call[1].bus : undefined;
   expect(typeof bus.emit).toBe('function');
