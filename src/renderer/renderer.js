@@ -1,5 +1,5 @@
 import { getData, setData } from './dataStore.js';
-const eventBus = window.bus;
+const eventBus = window.api.bus;
 import { getStatusBuckets } from './utils.js';
 import { renderKPIs, setChartsRef } from './kpi.js';
 const { getFilterFields } = window.filterUtils;
