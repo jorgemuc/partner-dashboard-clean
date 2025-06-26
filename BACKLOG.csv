@@ -1,38 +1,35 @@
 Epic,Story,Task,Status,Priority,Estimate,Owner
-E6 · Packaging & Distribution,signierter Windows-Installer,"builder config NSIS; build:win script; workflow",done,,,
-E7 · Demo- & Test-Daten,Beispiel-CSV für UI-Tests,"partner_full.csv; partner_edge.csv; Download-Knopf",done,,,
-E8 · Dokumentation & Onboarding,Schnelles Projektverständnis,"README CSV-Schema; GIF-Tour; Troubleshooting",done,,,
-E9 · Qualität & Automatisierung,Dauerhafte Code-Qualität,"Smoke-Test; ESLint+Prettier Hook; Dependabot",done,,,
-E10 · Portable Win-Build,Portable EXE ohne Installer,"electron-builder portable; build:win32 script; upload",done,,,
-E11 · Tabellen-Preset-Dropdown,Spalten-Ansichten umschalten,"Dropdown UI; columnViews Objekt; Spalten hide",done,,,
-E12 · Preset-Fix + Simple Filters,,"Bugfix Alle; Filter-UI",done,,,
-E13 · Context-Isolation + mitt Bus,preload setup; migrate emit/on,done,1,Security,S,
-E14 · ES-Module Refactor,all renderer imports/export,done,2,Maintainability,S,
+E6 - Packaging & Distribution,Signierter Windows-Installer,builder config NSIS; build:win script; workflow,done,Distribution,S,
+E7 - Demo- & Test-Daten,Beispiel-CSV für UI-Tests,partner_full.csv; partner_edge.csv; Download-Knopf,done,Demo,S,
+E8 - Dokumentation & Onboarding,Schnelles Projektverständnis,README CSV-Schema; GIF-Tour; Troubleshooting,done,Docs,S,
+E9 - Qualität & Automatisierung,Dauerhafte Code-Qualität,Smoke-Tests; ESLint+Prettier Hook; Dependabot,done,Quality,S,
+E10 - Portable Win-Build,Portable EXE ohne Installer,electron-builder portable; build:win32 script; upload,done,Distribution,S,
+E11 - Tabellen-Preset-Dropdown,Spalten-Ansicht umschalten,Dropdown UI; columnViews Objekt; Spalten hide,done,Focus,S,
+E12 - Preset-Fix + Simple Filters,Filter-UI stabilisieren,Bugfix Alle; Filter-UI,done,Focus,S,
+E13 - Context-Isolation + mitt Bus,Einheitliche Event-Bridge,ContextIsolation aktivieren; mitt Bus integrieren,done,Security,S,
+E14 - ES-Module Refactor,Renderer-Module modernisieren,Alle Renderer-Imports → ES Modules; Bundler-Config updaten,done,Maintainability,S,
 E15 · NSIS Installer,sign & pack,done,3,Distribution,M,
-E16 · Virtual Scrolling,render window 10k rows,done,4,Perf,M,codex
+E16 - Virtual Scrolling,Tabelle performant machen,Windowing für 10 k Zeilen; Performance Benchmark,planned,Perf,M,
 E17 · Release Upload,CI erstellt GH-Release + Assets,on hold,5,Automation,M,
-,Drag-&-Drop CSV Upload,,planned,1,Komfort,S
-,XLSX-Export,,planned,2,Exec Reporting,S
-,Global Search (⌘ + K),,planned,3,Navigation,S
-,Umsatz/Pipeline Charts,,planned,4,Business KPI,M
-,Task/Reminder Modul,,planned,5,Follow-Ups,M
-,Kontakt-Timeline,,planned,6,Rel-Health,M
-,File-Upload für Verträge,,planned,7,Compliance,M
-,Ticket-Feed Jira/Zendesk,,planned,8,Support Insights,L
-,CSV-Validator vor Import,,planned,9,Data Quality,S
-,Role-Based Views,,planned,10,Focus,M
-,Mobile Card-View,,planned,11,On-the-go,M
-,OS-Theme Sync (Dark/Light),,planned,12,UX,XS
-,Preset-Manager (shared),,planned,13,Collab,M
-,PPT/PDF-Export 1-Click,,planned,14,Reporting,M
-,Live-CRM Sync,,planned,15,Fresh Data,L+
-,Partner Health Score,,planned,16,Early Warn,M
-,Bulk Edit + Re-Export,,planned,17,Efficiency,M
-,In-App Notifications,,planned,18,Awareness,M
-,SLA/Incident Heatmap,,planned,19,Quality,L
-,Plug-in Framework,,planned,20,Extensibility,L+
-,Preload log discipline,Smoke test stable,done,0,Quality,codex
-,App ready marker,Smoke test uses DOM marker,done,0,Quality,codex
+E18 - Drag-&-Drop CSV Upload,Komfortabler CSV-Import,Drag&Drop UI; CSV Parser; Fortschrittsanzeige; Fehlerhandling,planned,UX,S,
+E19 - XLSX-Export,Excel-Export für Partnerdaten,Exportfunktion; Styles; Tests mit großen Daten,planned,Exec Reporting,S,
+E20 - Global Search (⌘ + K),Universelle Suche & Command Palette,Index erstellen; Shortcut; Overlay UI; Fuzzy Filter,planned,Navigation,S,
+E21 - Umsatz/Pipeline Charts,Geschäfts-KPIs visualisieren,Chart-Lib; API Aggregation; Unit Tests,planned,Business KPI,M,
+E22 - Task/Reminder Modul,Follow-Up Erinnerungen,UI-Dialog; Persistenz; Cron,planned,Follow-Ups,M,
+E23 - Kontakt-Timeline,Historie der Kundenkontakte,API-Endpoint; Timeline-Komponente; Filter; Tests,planned,Rel-Health,M,
+E24 - File-Upload für Verträge,Compliance-konformer Datei-Upload,Drag&Drop Zone; MIME-Validierung; S3 Upload; Berechtigungen prüfen,planned,Compliance,L,
+E25 - Ticket-Feed Jira/Zendesk,Support-Insights integrieren,REST Client; Polling; Listenansicht; Links zu externen Tickets,planned,Support Insights,L,
+E26 - CSV-Validator vor Import,CSV-Qualitätsprüfung,Schema-Checking; Fehler-Highlight; Vorschau; Regel-Engine,planned,Data Quality,S,
+E27 - Role-Based Views,Rollenbasierte Ansichten,Rollen definieren; Route Guards; Conditional Rendering; Tests,planned,Focus,M,
+E28 - Mobile Card-View,Mobile Kartenansicht,Media Queries; Card-Komponente; Swipe-Gesten; Akzeptanztests,planned,On-the-go,M,
+E29 - OS-Theme Sync (Dark/Light),UI-Theme automatisch anpassen,System-Theme lesen; Variablen anwenden; Pref speichern,planned,UX,XS,
+E30 - Preset-Manager (shared),Geteilte Tabellen-Voreinstellungen,CRUD für Presets; Share-Link; Import/Export,planned,Collab,M,
+E31 - PPT/PDF-Export 1-Click,Berichte als PPT/PDF,PDF Generator; PPTX Export; Layout Templates; Caching,planned,Reporting,M,
+E32 - Live-CRM Sync,Echtzeit-Synchronisation mit CRM,Webhooks empfangen; Deltas syncen; Konfliktlösung,planned,Fresh Data,L+,
+E33 - Partner Health Score,Partner-Status berechnen,Algorithmus definieren; Health Badges; Drilldown,planned,Early Warn,M,
+E34 - Bulk Edit + Re-Export,Massenbearbeitung & erneuter Export,Batch Update API; Export aktualisierter Daten,planned,Efficiency,M,
+E35 - In-App Notifications,Benachrichtigungen im UI,Notification Bell; Toast-Komponente; Push-Kanal; Einstellungen,planned,Awareness,M,
+E36 - SLA/Incident Heatmap,SLA-Verstöße visualisieren,Incident Graph; Datenaggregation; Farbskala; Bildexport,planned,Quality,L
 E9 · Qualität & Automatisierung,NPM libs via NPM,assets cleanup,done,,0,codex
 E9 · Qualität & Automatisierung,e2e-ready handshake,,done,,0,codex
 E9 · Qualität & Automatisierung,libs via preload,no bare imports,done,,0,codex
