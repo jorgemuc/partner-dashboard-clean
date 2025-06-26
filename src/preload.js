@@ -1,27 +1,21 @@
-const { contextBridge, ipcRenderer } = require('electron');
+/**
+ * Preload – single source of truth for all Node APIs.
+ * Runs in isolated context, so we expose a safe API via contextBridge.
+ */
+const { contextBridge } = require('electron');
+const mitt = require('mitt');
+
+// --- 3rd-party libs ---------------------------------------------------
+// Require path works even inside packed app.asar.
 const Papa = require('papaparse');
 const XLSX = require('xlsx');
 const { Chart } = require('chart.js/auto');
 
-let bus;
-try {
-  const mitt = require('mitt');
-  bus = mitt();
-} catch (err) {
-  // silent on success, explicit prefix on error
-  console.error('[pl-err]', err);
-  bus = { on: () => {}, off: () => {}, emit: () => {} };
-}
+// --- Event-Bus --------------------------------------------------------
+const bus = mitt();
 
+// --- Expose -----------------------------------------------------------
 contextBridge.exposeInMainWorld('api', {
   bus,
   libs: { Papa, XLSX, Chart },
-  onOpenFile: cb => ipcRenderer.on('menu-open-file', cb)
-  // … weitere Bridged-APIs
 });
-
-// ----------  E2E-Handshake  -----------------------------------------
-try {                 // meldet dem Smoke-Test, dass Preload wirklich lief
-  ipcRenderer.send('e2e-ready');
-} catch (_) { /* noop in unit / jsdom */ }
-

@@ -1,3 +1,4 @@
+// 3rd-party Libs come from preload; bundlers stay away
 const { Papa, XLSX, Chart } = window.api.libs;
 const { utils: XLSXUtils, writeFile } = XLSX;
 import { applyFilters, getFilterFields } from '../shared/filterUtils.mjs';

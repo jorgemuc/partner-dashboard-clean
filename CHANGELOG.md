@@ -1,4 +1,7 @@
 # Changelog
+## v0.1.18 - 2025-07-10
+* fixed preload libs path and event bus
+
 ## v0.1.17 - 2025-06-26
 * disabled smoke test in CI pipeline
 
