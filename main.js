@@ -79,6 +79,10 @@ function createWindow() {
     }
   });
   win.loadFile(path.join(__dirname, 'index.html'));
+  // ----------  E2E Smoke-Test Handshake ----------
+  win.webContents.once('did-finish-load', () => {
+    win.webContents.send('app-loaded'); // guarantees the renderer is ready
+  });
   createMenu(win);
 }
 

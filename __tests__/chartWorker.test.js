@@ -1,11 +1,11 @@
-const test = require('node:test');
+const { test } = require('@jest/globals');
 const assert = require('node:assert/strict');
 
 // dynamic import to support ES module buildChart export
 let buildChart;
 
 test('buildChart counts field values', async () => {
-  ({ buildChart } = await import('../chartWorker.js'));
+  ({ buildChart } = await import('../chartWorker.mjs'));
   const data = [ {A:'x'}, {A:'y'}, {A:'x'} ];
   const { labels, values } = buildChart('A', data);
   assert.deepEqual(labels.sort(), ['x','y']);
@@ -13,7 +13,7 @@ test('buildChart counts field values', async () => {
 });
 
 test('buildChart handles empty rows', async () => {
-  ({ buildChart } = await import('../chartWorker.js'));
+  ({ buildChart } = await import('../chartWorker.mjs'));
   const { labels, values } = buildChart('A', []);
   assert.deepEqual(labels, []);
   assert.deepEqual(values, []);
