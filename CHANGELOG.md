@@ -1,4 +1,6 @@
 # Changelog
+## v0.1.21 - 2025-07-12
+* packaging path cleanup for preload bundling
 ## v0.1.20 - 2025-07-11
 * preload exposes get-version helper and injects version into docs at runtime
 ## v0.1.19 - 2025-07-10
