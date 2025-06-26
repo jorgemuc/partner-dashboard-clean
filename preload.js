@@ -11,7 +11,19 @@ try {
   bus = { on() {}, off() {}, emit() {} }; // stub so renderer won't crash
 }
 
-const api = { version: 'dev', bus };
+// --- Runtime Libraries (PapaParse, XLSX, Chart.js) -------------------
+function safeRequire(mod){
+  try { return require(mod); }
+  catch { console.warn('[pl-warn] optional lib missing', mod); return {}; }
+}
+
+const libs = {
+  Papa: safeRequire('papaparse'),
+  XLSX: safeRequire('xlsx'),
+  Chart: safeRequire('chart.js')
+};
+
+const api = { version: 'dev', bus, libs };
 contextBridge.exposeInMainWorld('api', api);
 
 // --- runtime version injection ---------------------------------------
@@ -21,5 +33,4 @@ try {
     .then(v => { api.version = v; })
     .catch(() => {/* keep 'dev' */});
 } catch { /* unit-tests/jsdom: electron not available */ }
-
 
