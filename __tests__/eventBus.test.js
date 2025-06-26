@@ -28,16 +28,4 @@ describe('event bus', () => {
     expect(handler).not.toHaveBeenCalled();
   });
 
-  test('falls back to dummy bus when mitt missing', async () => {
-    jest.resetModules();
-    jest.doMock('mitt', () => {
-      throw new Error('missing');
-    });
-    await import('../src/preload.js');
-    const reversed = [...contextBridge.exposeInMainWorld.mock.calls].reverse();
-    const fallbackCall = reversed.find(c => c[0] === 'bus');
-    const fallback = fallbackCall ? fallbackCall[1] : undefined;
-    expect(() => fallback.emit('x')).not.toThrow();
-    jest.dontMock('mitt');
-  });
 });

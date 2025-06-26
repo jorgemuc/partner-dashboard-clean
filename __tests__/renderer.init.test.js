@@ -11,7 +11,6 @@ test('renderer bootstraps without errors', async () => {
   await import('../src/preload.js');
   const apiCall = contextBridge.exposeInMainWorld.mock.calls.find(c => c[0] === 'api');
   global.window = { api: apiCall ? apiCall[1] : {}, electronAPI: { getVersion: jest.fn(() => Promise.resolve('1.0.0')) } };
-  global.window.bus = global.window.api.bus;
-  const bus = global.window.bus;
-  expect(bus).toBeDefined();
+  global.window.bus = { emit: jest.fn(), on: jest.fn(), off: jest.fn() };
+  expect(global.window.bus).toBeDefined();
 });

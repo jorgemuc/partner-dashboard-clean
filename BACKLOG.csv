@@ -1,33 +1,33 @@
-Epic,Story,Task,Status,Priority,Estimate,Owner
-E6 · Packaging & Distribution,signierter Windows-Installer,"builder config NSIS; build:win script; workflow",done,,,
-E7 · Demo- & Test-Daten,Beispiel-CSV für UI-Tests,"partner_full.csv; partner_edge.csv; Download-Knopf",done,,,
-E8 · Dokumentation & Onboarding,Schnelles Projektverständnis,"README CSV-Schema; GIF-Tour; Troubleshooting",done,,,
-E9 · Qualität & Automatisierung,Dauerhafte Code-Qualität,"Smoke-Test; ESLint+Prettier Hook; Dependabot",done,,,
-E10 · Portable Win-Build,Portable EXE ohne Installer,"electron-builder portable; build:win32 script; upload",done,,,
-E11 · Tabellen-Preset-Dropdown,Spalten-Ansichten umschalten,"Dropdown UI; columnViews Objekt; Spalten hide",done,,,
-E12 · Preset-Fix + Simple Filters,,"Bugfix Alle; Filter-UI",done,,,
-E13 · Context-Isolation + mitt Bus,preload setup; migrate emit/on,done,1,Security,S,
-E14 · ES-Module Refactor,all renderer imports/export,done,2,Maintainability,S,
-E15 · NSIS Installer,sign & pack,done,3,Distribution,M,
-E16 · Virtual Scrolling,render window 10k rows,done,4,Perf,M,codex
-E17 · Release Upload,CI erstellt GH-Release + Assets,on hold,5,Automation,M,
-,Drag-&-Drop CSV Upload,,planned,1,Komfort,S
-,XLSX-Export,,planned,2,Exec Reporting,S
-,Global Search (⌘ + K),,planned,3,Navigation,S
-,Umsatz/Pipeline Charts,,planned,4,Business KPI,M
-,Task/Reminder Modul,,planned,5,Follow-Ups,M
-,Kontakt-Timeline,,planned,6,Rel-Health,M
-,File-Upload für Verträge,,planned,7,Compliance,M
-,Ticket-Feed Jira/Zendesk,,planned,8,Support Insights,L
-,CSV-Validator vor Import,,planned,9,Data Quality,S
-,Role-Based Views,,planned,10,Focus,M
-,Mobile Card-View,,planned,11,On-the-go,M
-,OS-Theme Sync (Dark/Light),,planned,12,UX,XS
-,Preset-Manager (shared),,planned,13,Collab,M
-,PPT/PDF-Export 1-Click,,planned,14,Reporting,M
-,Live-CRM Sync,,planned,15,Fresh Data,L+
-,Partner Health Score,,planned,16,Early Warn,M
-,Bulk Edit + Re-Export,,planned,17,Efficiency,M
-,In-App Notifications,,planned,18,Awareness,M
-,SLA/Incident Heatmap,,planned,19,Quality,L
-,Plug-in Framework,,planned,20,Extensibility,L+
+Epic,Story,Task,Status,Priority,Estimate,Owner,2025-06-26
+E6 · Packaging & Distribution,signierter Windows-Installer,"builder config NSIS; build:win script; workflow",done,,,,
+E7 · Demo- & Test-Daten,Beispiel-CSV für UI-Tests,"partner_full.csv; partner_edge.csv; Download-Knopf",done,,,,
+E8 · Dokumentation & Onboarding,Schnelles Projektverständnis,"README CSV-Schema; GIF-Tour; Troubleshooting",done,,,,
+E9 · Qualität & Automatisierung,Dauerhafte Code-Qualität,"Smoke-Test; ESLint+Prettier Hook; Dependabot",done,,,,
+E10 · Portable Win-Build,Portable EXE ohne Installer,"electron-builder portable; build:win32 script; upload",done,,,,
+E11 · Tabellen-Preset-Dropdown,Spalten-Ansichten umschalten,"Dropdown UI; columnViews Objekt; Spalten hide",done,,,,
+E12 · Preset-Fix + Simple Filters,,"Bugfix Alle; Filter-UI",done,,,,
+E13 · Context-Isolation + mitt Bus,preload setup; migrate emit/on,done,1,Security,S,,
+E14 · ES-Module Refactor,all renderer imports/export,done,2,Maintainability,S,,
+E15 · NSIS Installer,sign & pack,done,3,Distribution,M,,
+E16 · Virtual Scrolling,render window 10k rows,done,4,Perf,M,codex,
+E17 · Release Upload,CI erstellt GH-Release + Assets,on hold,5,Automation,M,,
+,Drag-&-Drop CSV Upload,,planned,1,Komfort,S,
+,XLSX-Export,,planned,2,Exec Reporting,S,
+,Global Search (⌘ + K),,planned,3,Navigation,S,
+,Umsatz/Pipeline Charts,,planned,4,Business KPI,M,
+,Task/Reminder Modul,,planned,5,Follow-Ups,M,
+,Kontakt-Timeline,,planned,6,Rel-Health,M,
+,File-Upload für Verträge,,planned,7,Compliance,M,
+,Ticket-Feed Jira/Zendesk,,planned,8,Support Insights,L,
+,CSV-Validator vor Import,,planned,9,Data Quality,S,
+,Role-Based Views,,planned,10,Focus,M,
+,Mobile Card-View,,planned,11,On-the-go,M,
+,OS-Theme Sync (Dark/Light),,planned,12,UX,XS,
+,Preset-Manager (shared),,planned,13,Collab,M,
+,PPT/PDF-Export 1-Click,,planned,14,Reporting,M,
+,Live-CRM Sync,,planned,15,Fresh Data,L+,
+,Partner Health Score,,planned,16,Early Warn,M,
+,Bulk Edit + Re-Export,,planned,17,Efficiency,M,
+,In-App Notifications,,planned,18,Awareness,M,
+,SLA/Incident Heatmap,,planned,19,Quality,L,
+,Plug-in Framework,,planned,20,Extensibility,L+,
