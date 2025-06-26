@@ -1,4 +1,6 @@
 # Changelog
+## v0.1.22 - 2025-07-13
+* dynamic mitt import in preload
 ## v0.1.21 - 2025-07-12
 * packaging path cleanup for preload bundling
 ## v0.1.20 - 2025-07-11

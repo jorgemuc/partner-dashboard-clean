@@ -9,6 +9,7 @@ jest.mock('../chartWorker.mjs', () => ({
 
 test('renderer bootstraps without errors', async () => {
   await import('../preload.js');
+  await new Promise(r => setImmediate(r));
   const apiCall = contextBridge.exposeInMainWorld.mock.calls.find(c => c[0] === 'api');
   global.window = { api: apiCall ? apiCall[1] : {}, electronAPI: { getVersion: jest.fn(() => Promise.resolve('1.0.0')) } };
   expect(global.window.api.bus).toBeDefined();

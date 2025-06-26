@@ -7,7 +7,7 @@ komplexe Build-Kette oder Cloud-Abhängigkeiten.
 
 ---
 
-## Features (v0.1.21)
+## Features (v0.1.22)
 
 | ✔ | Funktion |
 |---|-----------|
