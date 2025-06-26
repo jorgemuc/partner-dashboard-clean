@@ -27,6 +27,9 @@ jobs:
       - name: Check for bare imports
         run: node scripts/lint-no-bare-imports.js
 
+      - name: Bundle renderer (esbuild)
+        run: npm run bundle
+
       - name: Run unit + smoke tests
         run: |
           npm test
@@ -35,6 +38,9 @@ jobs:
 #      - name: Run smoke tests (headless Electron)
 #        run: npm run smoke
 #      ☞ Smoke-Tests vorübergehend deaktiviert – s. CHANGELOG v0.1.19
+
+      - name: Bundle sources
+        run: npm run bundle
 
       - name: Build portable win32
         run: npm run build:win32       # electron-builder --win portable

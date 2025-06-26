@@ -6,8 +6,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <script>
     document.addEventListener('DOMContentLoaded', () => {
-      const ver = window.APP_VERSION || 'dev';
-      document.getElementById('appTitle').textContent = `Partner-Dashboard v${ver}`;
+      const ver = (window.api && window.api.version) || 'dev';
+      document.getElementById('appTitle').textContent =
+        `Partner-Dashboard v${ver}`;
     });
   </script>
   <link rel="stylesheet" href="styles.css">
@@ -211,6 +212,6 @@ body.dark .log-table th { background: #3a3a3a; }
     </div>
   </main>
   
-  <script type="module" src="src/renderer/renderer.js"></script>
+  <script type="module" src="dist/renderer.bundle.js"></script>
 </body>
 </html>

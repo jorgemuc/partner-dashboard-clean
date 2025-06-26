@@ -15,7 +15,14 @@ Run `npm test` and `npm run smoke` before committing. Verify that `BACKLOG.csv` 
 - Provide unit tests for all new functionality.
 - Renderer code uses ESM; the preload script is CommonJS and may access Node APIs.
 - Imports must be relative (`./` or `../`).
-- Worker scripts may call `importScripts` only from `/renderer/*.js`.
+  - Worker scripts may call `importScripts` only from `/renderer/*.js`.
+
+#### 📦 Bundling & Single-Source Version
+* **esbuild** erstellt _ein_ Renderer-Bundle (ESM) und _ein_ Preload-Bundle (CJS) unter `dist/`.
+* Das Bundling-Script schreibt **`dist/version.json`** mit `{"version": "<package.json.version>"}`.
+* Preload exponiert `window.api.version` aus dieser Quelle; UI zeigt die Versionsnummer nur noch darüber an.
+* **Keine** harten Versions-Strings mehr in HTML, README, CHANGELOG etc.
+* Externe Libraries (**mitt**, **papaparse**, **xlsx**, **chart.js**) werden ausschließlich via NPM-Imports gebündelt – keine CDN-Scripts oder lokalen Kopien.
 
 ### Dependency Management
 All third-party libraries must be installed via NPM. Local copies under `assets/` are forbidden.
