@@ -6,7 +6,8 @@ const { contextBridge } = require('electron');
 let bus;
 beforeAll(async () => {
   await import('../src/preload.js');
-  bus = contextBridge.exposeInMainWorld.mock.calls[0][1].bus;
+  const call = contextBridge.exposeInMainWorld.mock.calls.find(c => c[0] === 'bus');
+  bus = call ? call[1] : undefined;
 });
 
 describe('event bus', () => {
@@ -33,7 +34,9 @@ describe('event bus', () => {
       throw new Error('missing');
     });
     await import('../src/preload.js');
-    const fallback = contextBridge.exposeInMainWorld.mock.calls.at(-1)[1].bus;
+    const reversed = [...contextBridge.exposeInMainWorld.mock.calls].reverse();
+    const fallbackCall = reversed.find(c => c[0] === 'bus');
+    const fallback = fallbackCall ? fallbackCall[1] : undefined;
     expect(() => fallback.emit('x')).not.toThrow();
     jest.dontMock('mitt');
   });

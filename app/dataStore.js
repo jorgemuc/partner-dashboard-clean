@@ -1,5 +1,4 @@
-const mitt = require('mitt');
-const bus = mitt();
+const bus = window.bus;
 let partnerData = [];
 module.exports.getData = () => partnerData;
 module.exports.setData = function(arr){
