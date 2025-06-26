@@ -1,6 +1,5 @@
-import Papa from 'papaparse';
-import { utils as XLSXUtils, writeFile } from 'xlsx';
-import { Chart } from 'chart.js/auto';
+const { Papa, XLSX, Chart } = window.api.libs;
+const { utils: XLSXUtils, writeFile } = XLSX;
 import { applyFilters, getFilterFields } from '../shared/filterUtils.mjs';
 import { getData, setData } from './dataStore.js';
 const eventBus = window.api.bus;
@@ -52,7 +51,7 @@ let buildChart;
 function createChartWorker(){
   if(window.location.protocol === 'file:') return null;
   try{
-    const w = new Worker(new URL('chartWorker.js', window.location.href));
+    const w = new Worker(new URL('chartWorker.mjs', window.location.href));
     w.onmessage = e => {
       const {id, labels, values, empty} = e.data;
       if(empty){
@@ -70,7 +69,7 @@ function createChartWorker(){
 
 async function prepareWorkers(){
   if(!buildChart){
-    const url = new URL('../../chartWorker.js', import.meta.url);
+    const url = new URL('../../chartWorker.mjs', import.meta.url);
     const m = await import(url);
     buildChart = m.buildChart;
   }
@@ -280,7 +279,8 @@ function showMsg(txt, type="success") {
 
 // signal successful bootstrap for tests
 document.body.setAttribute('data-testid', 'app-ready');
-window.api.bus.emit('e2e-ready');
+// Signal an Playwright-Smoke, dass die App fertig ist
+window.api?.bus?.emit?.('e2e-ready');
 
 // CSV-Menü aus Preload registrieren –  jsdom hat keine Bridge
 window?.electronAPI?.onOpenCsvDialog?.(() => document.getElementById('csvFile').click());

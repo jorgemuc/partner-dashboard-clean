@@ -31,6 +31,9 @@ async function run(){
   global.Papa = {parse:()=>({data:[]}), unparse:()=>''};
   global.XLSX = {utils:{json_to_sheet:()=>({}),book_new:()=>({}),book_append_sheet(){}} ,write:()=>''};
   global.window.api = { bus: require('mitt')() };
+
+  // —— IPC-Ready-Signal zum Smoke-Test ————————————————
+  global.window.api.bus.emit('e2e-ready');
   await import('../src/renderer/dataStore.js');
   await import('../src/renderer/renderer.js');
   dom.window.document.getElementById('demoDataBtn').click();

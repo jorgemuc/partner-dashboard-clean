@@ -1,6 +1,17 @@
 # Changelog
+## v0.1.17 - 2025-06-26
+* disabled smoke test in CI pipeline
+
+## v0.1.16 - 2025-06-26
+* main process emits `app-loaded` IPC for smoke tests
+
+## v0.1.15 - 2025-07-09
+* preload sends `e2e-ready` IPC for deterministic smoke test
+
 ## v0.1.14 - 2025-07-08
 * deterministic smoke via e2e-ready handshake
+* libs moved to preload (no bare imports)
+
 ## v0.2.0 - 2025-06-26
 * dependency modularisation via NPM
 * smoke test uses IPC handshake

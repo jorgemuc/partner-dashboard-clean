@@ -25,7 +25,7 @@ Preload produces no console output on success. All fatal errors must start with 
 
 ### Testing Policy
 E2E tests verify only UI states or exposed APIs. Console output must never be part of the oracle.
-Smoke tests wait for an IPC message `'e2e-ready'` from the renderer instead of DOM content.
+Smoke tests wait for the IPC message `'app-loaded'` from the main process instead of DOM content.
 
 ### PR-Guidelines
 One logical change per PR, roughly under 400 lines of diff. Include the CHANGELOG entry in the same commit.

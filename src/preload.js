@@ -1,4 +1,7 @@
 const { contextBridge, ipcRenderer } = require('electron');
+const Papa = require('papaparse');
+const XLSX = require('xlsx');
+const { Chart } = require('chart.js/auto');
 
 let bus;
 try {
@@ -12,11 +15,13 @@ try {
 
 contextBridge.exposeInMainWorld('api', {
   bus,
+  libs: { Papa, XLSX, Chart },
   onOpenFile: cb => ipcRenderer.on('menu-open-file', cb)
   // … weitere Bridged-APIs
 });
 
-ipcRenderer.on('is-ready', () => {
-  ipcRenderer.send('ready');
-});
+// ----------  E2E-Handshake  -----------------------------------------
+try {                 // meldet dem Smoke-Test, dass Preload wirklich lief
+  ipcRenderer.send('e2e-ready');
+} catch (_) { /* noop in unit / jsdom */ }
 

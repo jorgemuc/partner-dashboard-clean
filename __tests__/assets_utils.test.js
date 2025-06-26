@@ -1,8 +1,8 @@
-const test = require('node:test');
+const { test } = require('@jest/globals');
 const assert = require('node:assert/strict');
 
 test('getStatusBuckets counts statuses', () => {
-  const { getStatusBuckets } = require('../assets/utils.js');
+  const { getStatusBuckets } = require('../utils.js');
   const data = [
     {Schnittstellenstatus:'aktiv'},
     {Schnittstellenstatus:'teilaktiv'},
