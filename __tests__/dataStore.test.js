@@ -1,8 +1,8 @@
 let store, bus;
 beforeAll(async () => {
-  global.window = { api: { bus: require('mitt')() } };
+  global.window = { bus: require('mitt')() };
   store = await import('../src/renderer/dataStore.js');
-  bus = global.window.api.bus;
+  bus = global.window.bus;
 
 });
 

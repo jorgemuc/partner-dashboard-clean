@@ -3,7 +3,7 @@ const { _electron: electron } = require('playwright');
 const path = require('path');
 
 test('App starts ohne Preload-Fehler', async () => {
-  const app = await electron.launch({ args: ['.'] });
+  const app = await electron.launch({ args: ['.', '--no-sandbox'], env:{ ELECTRON_DISABLE_SANDBOX:'1' } });
   const page = await app.firstWindow();
 
   const logs = [];
@@ -12,7 +12,9 @@ test('App starts ohne Preload-Fehler', async () => {
   await page.waitForSelector('body');
   await app.close();
 
-  const bad = /MODULE_NOT_FOUND|Unable to load preload|bus.+undefined/i;
+  const bad = /MODULE_NOT_FOUND|Unable to load preload|bus.*undefined/i;
   expect(logs.some(l => bad.test(l))).toBeFalsy();
+  const hasBus = await page.evaluate(() => !!window.bus);
+  expect(hasBus).toBe(true);
 }, 30_000);
 

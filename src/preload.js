@@ -21,6 +21,7 @@ try {
   };
 }
 
+contextBridge.exposeInMainWorld('bus', bus);
 contextBridge.exposeInMainWorld('api', {
   bus,
   getVersion: () => ipcRenderer.invoke('get-version'),
