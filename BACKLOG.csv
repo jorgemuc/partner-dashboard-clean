@@ -31,3 +31,4 @@ E17 · Release Upload,CI erstellt GH-Release + Assets,on hold,5,Automation,M,
 ,In-App Notifications,,planned,18,Awareness,M
 ,SLA/Incident Heatmap,,planned,19,Quality,L
 ,Plug-in Framework,,planned,20,Extensibility,L+
+,Preload log discipline,Smoke test stable,done,0,Quality,codex

@@ -17,6 +17,9 @@ Run `npm test` and `npm run smoke` before committing. Verify that `BACKLOG.csv` 
 - Imports must be relative (`./` or `../`).
 - Worker scripts may call `importScripts` only from `/renderer/*.js`.
 
+### Logging Discipline
+Preload produces no console output on success. All fatal errors must start with `[pl-err]` so Smoke-Test can whitelist benign logs.
+
 ## CI Rules
 The workflow uses concurrency to prevent duplicate runs and only triggers on pushes or pull requests targeting `main`.
 
