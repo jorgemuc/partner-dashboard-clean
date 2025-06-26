@@ -1,4 +1,6 @@
 # Changelog
+## v0.1.19 - 2025-07-10
+* moved preload to project root and adjusted build config
 ## v0.1.18 - 2025-07-10
 * fixed preload libs path and event bus
 
