@@ -1,10 +1,7 @@
 # Changelog
 
 ## v0.1.10 – 2025-07-05
-* Fix: preload guards mitt dependency and exposes fallback bus
-* Chore: remove obsolete eventBus script and file
-* Chore: normalise BACKLOG schema
-* Docs: version bump references
+* Fixed: preload mitt resolution; CSV column alignment
 
 ## v0.1.9 – 2025-07-04
 * Fix: eventBus relative import (mitt)
