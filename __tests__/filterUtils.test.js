@@ -1,10 +1,17 @@
-const { getFilterFields, defaultFilterFields } = require('../filterUtils.js');
+const { test, expect, describe } = require('@jest/globals');
 
-describe('getFilterFields',()=>{
-  test('returns defaults for Alle',()=>{
-    expect(getFilterFields('Alle',['A'])).toEqual(defaultFilterFields);
+describe('applyFilters', () => {
+  test('filters by column', async () => {
+    const { applyFilters } = await import('../src/shared/filterUtils.mjs');
+    const rows = [{ Name: 'A' }, { Name: 'B' }];
+    const res = applyFilters(rows, { filters: { Name: 'B' } });
+    expect(res).toEqual([{ Name: 'B' }]);
   });
-  test('returns visible for others',()=>{
-    expect(getFilterFields('Tech',['X','Y'])).toEqual(['X','Y']);
+
+  test('applies search', async () => {
+    const { applyFilters } = await import('../src/shared/filterUtils.mjs');
+    const rows = [{ Name: 'Alpha' }, { Name: 'Beta' }];
+    const res = applyFilters(rows, { search: 'bet' });
+    expect(res).toEqual([{ Name: 'Beta' }]);
   });
 });
