@@ -16,7 +16,7 @@ test('eventBus module exports mitt instance', async () => {
   }));
   const { contextBridge } = require('electron');
   await import('../src/preload.js');
-  const call = contextBridge.exposeInMainWorld.mock.calls.find(c => c[0] === 'bus');
-  const bus = call ? call[1] : undefined;
+  const call = contextBridge.exposeInMainWorld.mock.calls.find(c => c[0] === 'api');
+  const bus = call ? call[1].bus : undefined;
   expect(typeof bus.emit).toBe('function');
 });

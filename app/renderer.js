@@ -1,7 +1,7 @@
 const { ipcRenderer, shell, dialog } = require('electron');
 const fs = require('fs');
 const { getData, setData } = require('./dataStore.js');
-const bus = window.bus;
+const bus = window.api.bus;
 const { getStatusBuckets } = require('../assets/utils.js');
 const I18N={
   de:{demoBtn:"Demo-Daten laden"}
