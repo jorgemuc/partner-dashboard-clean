@@ -16,3 +16,7 @@ contextBridge.exposeInMainWorld('api', {
   // … weitere Bridged-APIs
 });
 
+ipcRenderer.on('is-ready', () => {
+  ipcRenderer.send('ready');
+});
+

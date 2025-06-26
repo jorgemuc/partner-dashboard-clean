@@ -1,4 +1,10 @@
 # Changelog
+## v0.1.14 - 2025-07-08
+* deterministic smoke via e2e-ready handshake
+## v0.2.0 - 2025-06-26
+* dependency modularisation via NPM
+* smoke test uses IPC handshake
+* removed bundled libs
 ## v0.1.13 - 2025-07-07
 * Silenced preload logs, smoke test now waits for DOM ready marker
 

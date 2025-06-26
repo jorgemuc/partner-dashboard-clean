@@ -1,8 +1,11 @@
+import Papa from 'papaparse';
+import { utils as XLSXUtils, writeFile } from 'xlsx';
+import { Chart } from 'chart.js/auto';
+import { applyFilters, getFilterFields } from '../shared/filterUtils.mjs';
 import { getData, setData } from './dataStore.js';
 const eventBus = window.api.bus;
 import { getStatusBuckets } from './utils.js';
 import { renderKPIs, setChartsRef } from './kpi.js';
-const { getFilterFields } = window.filterUtils;
 const I18N={
   de:{demoBtn:"Demo-Daten laden"}
 }; // TODO(Epic-9)
@@ -277,6 +280,7 @@ function showMsg(txt, type="success") {
 
 // signal successful bootstrap for tests
 document.body.setAttribute('data-testid', 'app-ready');
+window.api.bus.emit('e2e-ready');
 
 // CSV-Menü aus Preload registrieren –  jsdom hat keine Bridge
 window?.electronAPI?.onOpenCsvDialog?.(() => document.getElementById('csvFile').click());
@@ -339,16 +343,13 @@ function savePreset(){
   renderFilters();
 }
 function getFilteredData(){
-  const search=(document.getElementById('searchInput')?.value||'').toLowerCase();
-  const headers=getVisibleColumns();
-  return getData().filter(r=>{
-    if(search && !Object.values(r).some(v=>String(v||'').toLowerCase().includes(search))) return false;
-    for(const h of headers){
-      const val=document.getElementById(`filter_${h}`)?.value.toLowerCase();
-      if(val && !String(r[h]||'').toLowerCase().includes(val)) return false;
-    }
-    return true;
+  const search = document.getElementById('searchInput')?.value || '';
+  const filters = {};
+  getVisibleColumns().forEach(h => {
+    const val = document.getElementById(`filter_${h}`)?.value;
+    if (val) filters[h] = val;
   });
+  return applyFilters(getData(), { search, filters });
 }
 
 function renderColumnMenu(){
@@ -518,15 +519,10 @@ window.exportTableXLSX = function(){
     headers.forEach(h=>{obj[h]=r[h]||"";});
     return obj;
   });
-  const ws = XLSX.utils.json_to_sheet(data,{header:headers});
-  const wb = XLSX.utils.book_new();
-  XLSX.utils.book_append_sheet(wb, ws, 'Partner');
-  const out = XLSX.write(wb,{bookType:'xlsx',type:'array'});
-  const blob = new Blob([out],{type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'});
-  Object.assign(document.createElement('a'),{
-    href: URL.createObjectURL(blob),
-    download: 'partner_export.xlsx'
-  }).click();
+  const ws = XLSXUtils.json_to_sheet(data,{header:headers});
+  const wb = XLSXUtils.book_new();
+  XLSXUtils.book_append_sheet(wb, ws, 'Partner');
+  writeFile(wb, 'partner_export.xlsx');
 };
 
 // === CHARTS ===

@@ -33,3 +33,5 @@ E17 · Release Upload,CI erstellt GH-Release + Assets,on hold,5,Automation,M,
 ,Plug-in Framework,,planned,20,Extensibility,L+
 ,Preload log discipline,Smoke test stable,done,0,Quality,codex
 ,App ready marker,Smoke test uses DOM marker,done,0,Quality,codex
+E9 · Qualität & Automatisierung,NPM libs via NPM,assets cleanup,done,,0,codex
+E9 · Qualität & Automatisierung,e2e-ready handshake,,done,,0,codex

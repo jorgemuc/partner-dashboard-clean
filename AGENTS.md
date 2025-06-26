@@ -17,11 +17,15 @@ Run `npm test` and `npm run smoke` before committing. Verify that `BACKLOG.csv` 
 - Imports must be relative (`./` or `../`).
 - Worker scripts may call `importScripts` only from `/renderer/*.js`.
 
+### Dependency Management
+All third-party libraries must be installed via NPM. Local copies under `assets/` are forbidden.
+
 ### Logging Discipline
 Preload produces no console output on success. All fatal errors must start with `[pl-err]` so Smoke-Test can whitelist benign logs.
 
 ### Testing Policy
 E2E tests verify only UI states or exposed APIs. Console output must never be part of the oracle.
+Smoke tests wait for an IPC message `'e2e-ready'` from the renderer instead of DOM content.
 
 ### PR-Guidelines
 One logical change per PR, roughly under 400 lines of diff. Include the CHANGELOG entry in the same commit.
