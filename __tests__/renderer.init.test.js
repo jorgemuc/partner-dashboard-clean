@@ -3,7 +3,7 @@ jest.mock('electron', () => ({
   ipcRenderer: { invoke: jest.fn(), on: jest.fn() }
 }));
 const { contextBridge } = require('electron');
-jest.mock('../chartWorker.js', () => ({
+jest.mock('../chartWorker.mjs', () => ({
   default: jest.fn()
 }));
 

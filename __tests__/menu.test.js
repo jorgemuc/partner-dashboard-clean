@@ -1,5 +1,14 @@
-const test = require('node:test');
+const { test } = require('@jest/globals');
 const assert = require('node:assert/strict');
+
+jest.mock('electron', () => ({
+  app: { getVersion: () => '0.0.0' },
+  BrowserWindow: function() {},
+  Menu: { buildFromTemplate: t => t },
+  shell: {}, dialog: {},
+  ipcMain: { handle: jest.fn() }
+}));
+
 const { getMenuTemplate } = require('../main');
 
 test('menu contains Toggle Developer Tools', () => {
