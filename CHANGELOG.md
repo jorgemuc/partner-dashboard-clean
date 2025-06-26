@@ -1,7 +1,6 @@
 # Changelog
 ## v0.3.1 - 2025-07-15
 * preload requires mitt synchronously and renderer uses provided bus
-
 ## v0.3.0 - 2025-07-15
 * preload injects version via IPC and UI reads from `window.api.version`
 ## v0.2.2 - 2025-07-14

@@ -22,3 +22,4 @@ try {
     .catch(() => {/* keep 'dev' */});
 } catch { /* unit-tests/jsdom: electron not available */ }
 
+
