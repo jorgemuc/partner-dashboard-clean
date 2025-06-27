@@ -3,6 +3,9 @@ import { getData, setData } from './dataStore.js';
 import { getStatusBuckets } from './utils.js';
 import { renderKPIs, setChartsRef } from './kpi.js';
 import initDropHandler from './dropHandler.js';
+import Papa from 'papaparse';
+import * as XLSX from 'xlsx';
+import Chart from 'chart.js/auto';
 
 async function waitApi(){
   if(window.api?.libs && window.api?.version) return;
@@ -15,9 +18,9 @@ async function waitApi(){
 
 await waitApi();
 
-const { mitt: Mitt, Papa, XLSX, Chart } = window.api.libs;
+const { mitt: Mitt } = window.api.libs || {};
 const eventBus = window.api.bus;
-const { utils: XLSXUtils = {}, writeFile = () => {} } = XLSX || {};
+const { utils: XLSXUtils = {}, writeFile = () => {} } = XLSX;
 if(!Papa){ document.body.classList.add('no-csv'); console.error('CSV disabled'); }
 if(!Chart){ document.body.classList.add('no-chart'); console.error('Charts disabled'); }
 const demoBtn = document.getElementById('demoDataBtn');

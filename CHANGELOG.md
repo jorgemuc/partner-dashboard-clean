@@ -1,4 +1,7 @@
 # Changelog
+## v0.5.10 - preload externals fix
+* preload bundle marks node built-ins and mitt as external
+* renderer imports libs directly
 ## v0.5.9 - preload bundle fix
 * preload bundled with external libs
 * renderer emits csv:loaded on drop
