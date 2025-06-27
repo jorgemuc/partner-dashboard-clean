@@ -12,7 +12,7 @@ async function bundle() {
     bundle: true,
     minify: true,
     platform: 'node',
-    external: ['electron', 'fs', 'path', 'os', 'crypto', 'util', 'mitt'],
+    external: ['electron', 'fs', 'path', 'os', 'crypto', 'util'],
     target: ['node16'],
     outfile: 'dist/preload.js',
     logLevel: 'info'

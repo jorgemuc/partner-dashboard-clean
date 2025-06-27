@@ -1,4 +1,7 @@
 # Changelog
+## v0.5.11 - preload mitt bundled
+* mitt included in preload bundle
+
 ## v0.5.10 - preload externals fix
 * preload bundle marks node built-ins and mitt as external
 * renderer imports libs directly
