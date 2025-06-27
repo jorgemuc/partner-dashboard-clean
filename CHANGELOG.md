@@ -1,4 +1,7 @@
 # Changelog
+## v0.5.14 - drag & drop renders table
+* drop handler parses CSV and renders UI
+* Windows build config includes signing fields
 ## v0.5.13 - chart worker bundled
 * Chart.js bundled into renderer and exposed globally
 * worker code loaded via Blob URL
