@@ -2,6 +2,7 @@ import { applyFilters, getFilterFields } from '../shared/filterUtils.mjs';
 import { getData, setData } from './dataStore.js';
 import { getStatusBuckets } from './utils.js';
 import { renderKPIs, setChartsRef } from './kpi.js';
+import { attachCsvDrop } from '../shared/csvDrop.mjs';
 
 async function waitApi(){
   if(window.api?.libs && window.api?.version) return;
@@ -153,6 +154,55 @@ function validateCsvRaw(raw){
   return {valid:true, errors:[]};
 }
 
+function processCsvRaw(raw, statusEl){
+  const progress = document.getElementById('csvProgress');
+  if(progress){progress.style.display='block';progress.value=10;}
+  if(statusEl) statusEl.textContent = 'Parsing...';
+  const validation = validateCsvRaw(raw);
+  if(!validation.valid){ showMsg('CSV Fehler: '+validation.errors.join('; '),'error'); if(progress) progress.style.display='none'; if(statusEl) statusEl.textContent=''; return; }
+  const first = raw.split(/\r?\n/)[0] || '';
+  const comma = (first.match(/,/g)||[]).length;
+  const semi = (first.match(/;/g)||[]).length;
+  const delimiter = semi > comma ? ';' : ',';
+  Papa.parse(raw, {
+    header: true,
+    skipEmptyLines: true,
+    delimiter,
+    transformHeader: h => {
+      const norm = h.trim();
+      const key = norm.toLowerCase().replace(/[^a-z0-9]/g,'');
+      return headerAliases[key] ||
+        referenceSchema.find(r => r.toLowerCase().replace(/[^a-z0-9]/g,'')===key) ||
+        norm;
+    },
+    complete: results => {
+      const rows = results.data.map(r => {
+        Object.keys(r).forEach(k => { if(r[k]==null) r[k]=''; });
+        referenceSchema.forEach(f=>{ if(!(f in r)) r[f]=''; });
+        return r;
+      });
+      const canon = s => s.toLowerCase().replace(/[^a-z0-9]/g,'');
+      const parsed = results.meta.fields;
+      const refCanon = referenceSchema.map(canon);
+      const unexpected = parsed.filter(h => !refCanon.includes(canon(h)));
+      csvHeaders = [...referenceSchema, ...unexpected];
+      const missing = referenceSchema.filter(r => !parsed.map(canon).includes(canon(r)));
+      const unexpectedMsg = unexpected.length ? ` Unerwartete Spalten: ${unexpected.join(', ')}.` : '';
+      eventBus.emit('data:loaded', rows);
+      let msg = `Import erfolgreich: ${rows.length} Partner geladen.`;
+      if (missing.length) msg += ` Fehlende Spalten: ${missing.join(', ')}.`;
+      msg += unexpectedMsg;
+      showMsg(msg, 'success');
+      changelog = [];
+      currentPage = 1;
+      // render handled by data:updated subscriber
+    },
+    error: err => showMsg("Fehler beim Parsen der CSV: "+err, "error")
+  });
+  if(progress) progress.style.display='none';
+  if(statusEl) statusEl.textContent='';
+}
+
 async function handleFile(file){
   if(!file) return;
   // 🔄 reset global state on every import
@@ -162,66 +212,18 @@ async function handleFile(file){
   csvHeaders=[];
   hiddenColumns = JSON.parse(localStorage.getItem('hiddenColumns')||'[]');
   document.getElementById('partnerTable').querySelector('tbody').innerHTML='';
-  const progress = document.getElementById('csvProgress');
-  if(progress){progress.style.display='block';progress.value=10;}
-  const finish = raw => {
-    const validation = validateCsvRaw(raw);
-    if(!validation.valid){ showMsg('CSV Fehler: '+validation.errors.join('; '),'error'); if(progress) progress.style.display='none'; return; }
-    const first = raw.split(/\r?\n/)[0] || '';
-    const comma = (first.match(/,/g)||[]).length;
-    const semi = (first.match(/;/g)||[]).length;
-    const delimiter = semi > comma ? ';' : ',';
-    Papa.parse(raw, {
-      header: true,
-      skipEmptyLines: true,
-      delimiter,
-      transformHeader: h => {
-        const norm = h.trim();
-        const key = norm.toLowerCase().replace(/[^a-z0-9]/g,'');
-        return headerAliases[key] ||
-          referenceSchema.find(r => r.toLowerCase().replace(/[^a-z0-9]/g,'')===key) ||
-          norm;
-      },
-      complete: results => {
-        const rows = results.data.map(r => {
-          Object.keys(r).forEach(k => { if(r[k]==null) r[k]=''; });
-          referenceSchema.forEach(f=>{ if(!(f in r)) r[f]=''; });
-          return r;
-        });
-        const canon = s => s.toLowerCase().replace(/[^a-z0-9]/g,'');
-        const parsed = results.meta.fields;
-        const refCanon = referenceSchema.map(canon);
-        const unexpected = parsed.filter(h => !refCanon.includes(canon(h)));
-        csvHeaders = [...referenceSchema, ...unexpected];
-        const missing = referenceSchema.filter(r => !parsed.map(canon).includes(canon(r)));
-        const unexpectedMsg = unexpected.length ? ` Unerwartete Spalten: ${unexpected.join(', ')}.` : '';
-        eventBus.emit('data:loaded', rows);
-        let msg = `Import erfolgreich: ${rows.length} Partner geladen.`;
-        if (missing.length) msg += ` Fehlende Spalten: ${missing.join(', ')}.`;
-        msg += unexpectedMsg;
-        showMsg(msg, 'success');
-        changelog = [];
-        currentPage = 1;
-        // render handled by data:updated subscriber
-      },
-      error: err => showMsg("Fehler beim Parsen der CSV: "+err, "error")
-    });
-  };
   try {
     const raw = await window.api.loadCsv(file);
-    finish((raw||'').replace(/^\uFEFF/, ''));
+    processCsvRaw((raw||'').replace(/^\uFEFF/, ''));
   } catch(err){
     showMsg('Fehler beim Laden: '+err.message,'error');
-  } finally {
-    if(progress) progress.style.display='none';
   }
 }
 
 document.getElementById('csvFile').addEventListener('change', e => handleFile(e.target.files[0]));
 const dropZone = document.getElementById('dropZone');
-dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('dragover'); });
-dropZone.addEventListener('dragleave', () => dropZone.classList.remove('dragover'));
-dropZone.addEventListener('drop', e => { e.preventDefault(); dropZone.classList.remove('dragover'); handleFile(e.dataTransfer.files[0]); });
+const dropStatus = document.getElementById('dropStatus');
+attachCsvDrop(dropZone, dropStatus, txt => processCsvRaw(txt, dropStatus));
 
 // === DEMO-DATEN ===
 async function loadDemoData(){
