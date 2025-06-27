@@ -2,6 +2,7 @@ import { applyFilters, getFilterFields } from '../shared/filterUtils.mjs';
 import { getData, setData } from './dataStore.js';
 import { getStatusBuckets } from './utils.js';
 import { renderKPIs, setChartsRef } from './kpi.js';
+import initDropHandler from './dropHandler.js';
 
 async function waitApi(){
   if(window.api?.libs && window.api?.version) return;
@@ -222,24 +223,6 @@ function handleFile(file){
 
 document.getElementById('csvFile').addEventListener('change', e => handleFile(e.target.files[0]));
 
-window.addEventListener('DOMContentLoaded', () => {
-  const dropZone = document.getElementById('dropZone');
-  ['dragover','dragenter'].forEach(e=>dropZone.addEventListener(e,ev=>{
-    ev.preventDefault(); dropZone.classList.add('dragover');
-  }));
-  ['dragleave','dragend','drop'].forEach(e=>dropZone.addEventListener(e,ev=>{
-    ev.preventDefault(); dropZone.classList.remove('dragover');
-  }));
-  dropZone.addEventListener('drop', ev=>{
-    const file = ev.dataTransfer.files?.[0];
-    if(file && file.name.endsWith('.csv')) {
-      const reader = new FileReader();
-      reader.onload = e=> loadCsvFromString(e.target.result);
-      reader.readAsText(file,'utf-8');
-    }
-  });
-});
-
 // === DEMO-DATEN ===
 async function loadDemoData(){
   demoMode=true;
@@ -326,6 +309,7 @@ window.api?.bus?.emit?.('e2e-ready');
 
 // CSV-Menü aus Preload registrieren –  jsdom hat keine Bridge
 window?.electronAPI?.onOpenCsvDialog?.(() => document.getElementById('csvFile').click());
+initDropHandler();
 
 // === KPIs ===
 
