@@ -1,4 +1,7 @@
 # Changelog
+## v0.5.9 - preload bundle fix
+* preload bundled with external libs
+* renderer emits csv:loaded on drop
 ## v0.5.8 - drag&drop bugfix
 * preload uses no fs module
 * drag&drop handler unified
