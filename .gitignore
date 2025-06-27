@@ -1,4 +1,4 @@
 node_modules/
 assets/icons/*.png
-dist/*
+dist/**
 !dist/version.json
