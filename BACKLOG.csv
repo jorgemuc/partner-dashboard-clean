@@ -55,3 +55,5 @@ E15 - Renderer Bugfixes,packaging cleanups,dup esbuild + version,done,,codex,
 E17 - Preload Refactor,Preload boundary cleanup,libs->renderer|map file,done,Maintainability,S,codex
 E17 - Preload Refactor,Renderer bridge hotfix,v0.5.1 release,done,Maintainability,S,codex
 E17 - Preload Refactor,preload bundling & CI,ensure dist/preload.js,done,,codex,
+E18 - Build Automation,CI cross-platform,run bundle->test->build,done,,codex,
+E19 - Build Automation,Windows packaging only,drop ubuntu job,done,,codex,
