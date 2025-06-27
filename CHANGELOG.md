@@ -4,6 +4,11 @@
 * renderer waits for api
 * CSV drag & drop with progress
 
+## v0.5.3 - preload build cleanup
+* preload bundled via esbuild
+* CI verifies dist/preload.js
+* dist ignored except version.json
+
 ## v0.5.1 – Preload stabilisiert; Renderer-Bridge repariert; UI reagiert wieder
 
 ## v0.5.0 - 2025-06-28

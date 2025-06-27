@@ -54,3 +54,4 @@ E15 - Renderer Bugfixes,Demo + CSV load fails,preload+tabs+version fix,done,,cod
 E15 - Renderer Bugfixes,packaging cleanups,dup esbuild + version,done,,codex,
 E17 - Preload Refactor,Preload boundary cleanup,libs->renderer|map file,done,Maintainability,S,codex
 E17 - Preload Refactor,Renderer bridge hotfix,v0.5.1 release,done,Maintainability,S,codex
+E17 - Preload Refactor,preload bundling & CI,ensure dist/preload.js,done,,codex,
