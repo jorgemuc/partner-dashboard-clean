@@ -202,44 +202,41 @@ function processCsvRaw(raw, statusEl){
   if(statusEl) statusEl.textContent='';
 }
 
-async function handleFile(file){
+function loadCsvFromString(str){
+  processCsvRaw((str||'').replace(/^\uFEFF/, ''));
+}
+
+function handleFile(file){
   if(!file) return;
-  // 🔄 reset global state on every import
   demoMode=false;
   resetCharts();
   setData([]);
   csvHeaders=[];
   hiddenColumns = JSON.parse(localStorage.getItem('hiddenColumns')||'[]');
   document.getElementById('partnerTable').querySelector('tbody').innerHTML='';
-  try {
-    const raw = await window.api.loadCsv(file);
-    processCsvRaw((raw||'').replace(/^\uFEFF/, ''));
-  } catch(err){
-    showMsg('Fehler beim Laden: '+err.message,'error');
-  }
+  const reader = new FileReader();
+  reader.onload = e => loadCsvFromString(e.target.result);
+  reader.onerror = e => showMsg('Fehler beim Laden: '+e.target.error,'error');
+  reader.readAsText(file,'utf-8');
 }
 
 document.getElementById('csvFile').addEventListener('change', e => handleFile(e.target.files[0]));
 
 window.addEventListener('DOMContentLoaded', () => {
-  const zone = document.getElementById('dropZone');
-  const status = document.getElementById('dropStatus');
-  ['dragenter','dragover'].forEach(type =>
-    zone.addEventListener(type, ev => { ev.preventDefault(); zone.classList.add('dragover'); }));
-  ['dragleave','drop'].forEach(type =>
-    zone.addEventListener(type, ev => { ev.preventDefault(); zone.classList.remove('dragover'); }));
-  zone.addEventListener('drop', ev => {
+  const dropZone = document.getElementById('dropZone');
+  ['dragover','dragenter'].forEach(e=>dropZone.addEventListener(e,ev=>{
+    ev.preventDefault(); dropZone.classList.add('dragover');
+  }));
+  ['dragleave','dragend','drop'].forEach(e=>dropZone.addEventListener(e,ev=>{
+    ev.preventDefault(); dropZone.classList.remove('dragover');
+  }));
+  dropZone.addEventListener('drop', ev=>{
     const file = ev.dataTransfer.files?.[0];
-    if (!file || !file.name.endsWith('.csv')) return;
-    status.textContent = 'Parsing...';
-    const reader = new FileReader();
-    reader.onload = e => {
-      status.textContent = '';
-      const data = window.api.libs.Papa.parse(e.target.result.trim(), { header: true }).data;
-      window.api.bus.emit('data:loaded', data);
-    };
-    reader.onerror = () => { status.textContent = ''; };
-    reader.readAsText(file, 'utf-8');
+    if(file && file.name.endsWith('.csv')) {
+      const reader = new FileReader();
+      reader.onload = e=> loadCsvFromString(e.target.result);
+      reader.readAsText(file,'utf-8');
+    }
   });
 });
 

@@ -1,4 +1,8 @@
 # Changelog
+## v0.5.8 - drag&drop bugfix
+* preload uses no fs module
+* drag&drop handler unified
+
 ## v0.5.7 - preload fix
 * bundling disabled; file copied
 * backlog updated

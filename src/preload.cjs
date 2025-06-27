@@ -1,6 +1,4 @@
 const { contextBridge, ipcRenderer } = require('electron');
-const fs = require('fs');
-const path = require('path');
 const mitt = require('mitt');
 
 function safeRequire(name) {
@@ -26,15 +24,6 @@ try {
 
 const bus = mitt();
 
-async function loadCsv(file) {
-  try {
-    return fs.readFileSync(path.resolve(file.path), 'utf8');
-  } catch (err) {
-    console.error('[pl-err] loadCsv', err);
-    throw err;
-  }
-}
-
-const api = { bus, libs, version, loadCsv, onAppLoaded: cb => ipcRenderer.on('app-loaded', cb) };
+const api = { bus, libs, version, onAppLoaded: cb => ipcRenderer.on('app-loaded', cb) };
 contextBridge.exposeInMainWorld('api', api);
 module.exports = api;
