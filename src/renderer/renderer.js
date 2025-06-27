@@ -1,20 +1,7 @@
-// 3rd-party libs arrive via preload; wait until available
-function waitForLibs(){
-  return new Promise(res=>{
-    const iv=setInterval(()=>{
-      if(window.api?.libs){ clearInterval(iv); res(window.api.libs); }
-    },10);
-  });
-}
-import { Chart, BarController, BarElement, CategoryScale,
-         LineController, LineElement, PointElement, LinearScale } from 'chart.js';
-Chart.register(BarController, BarElement, CategoryScale,
-               LineController, LineElement, PointElement, LinearScale);
-(await waitForLibs());
-const { Papa, XLSX, Chart: ChartFromPreload } = window.api.libs;
-if(!Papa)  document.body.classList.add('no-csv');
-if(!ChartFromPreload) document.body.classList.add('no-chart');
-const { utils: XLSXUtils, writeFile } = XLSX;
+const { Papa, XLSX, Chart } = window.api.libs;
+if(!Papa){ document.body.classList.add('no-csv'); }
+if(!Chart){ document.body.classList.add('no-chart'); }
+const { utils: XLSXUtils = {}, writeFile = () => {} } = XLSX || {};
 import { applyFilters, getFilterFields } from '../shared/filterUtils.mjs';
 import { getData, setData } from './dataStore.js';
 const eventBus = window.api.bus;
@@ -131,8 +118,11 @@ document.querySelectorAll('.tab-btn').forEach(btn => {
     btn.classList.add('active');
     document.querySelectorAll('main section').forEach(sec => sec.classList.remove('active'));
     document.getElementById(btn.dataset.tab).classList.add('active');
-    if (btn.dataset.tab === "charts") renderCharts();
-    if (btn.dataset.tab === "changelog") renderChangelog();
+    if (btn.dataset.tab === 'overview') renderOverview();
+    if (btn.dataset.tab === 'table') renderTable();
+    if (btn.dataset.tab === 'cards') renderCards();
+    if (btn.dataset.tab === 'charts') renderCharts();
+    if (btn.dataset.tab === 'changelog') renderChangelog();
   }
 });
 
@@ -189,7 +179,7 @@ function handleFile(file){
         csvHeaders = [...referenceSchema, ...unexpected];
         const missing = referenceSchema.filter(r => !parsed.map(canon).includes(canon(r)));
         const unexpectedMsg = unexpected.length ? ` Unerwartete Spalten: ${unexpected.join(', ')}.` : '';
-        setData(rows);
+        eventBus.emit('data:loaded', rows);
         let msg = `Import erfolgreich: ${rows.length} Partner geladen.`;
         if (missing.length) msg += ` Fehlende Spalten: ${missing.join(', ')}.`;
         msg += unexpectedMsg;
@@ -211,31 +201,28 @@ document.body.addEventListener('dragover', e => { e.preventDefault(); });
 document.body.addEventListener('drop', e => { e.preventDefault(); handleFile(e.dataTransfer.files[0]); });
 
 // === DEMO-DATEN ===
-function loadDemoData(){
+async function loadDemoData(){
   demoMode=true;
   resetCharts();
-  let rows = [
-    {"Partnername":"Aareon AG","Systemname":"Blue Eagle","Partnertyp":"ERP","Branche":"Wohnungswirtschaft","Land":"DE",
-      "Webseite":"https://aareon.de","Vertragsstatus":"Laufend","Vertragstyp":"AVV","Score":"91","Developer_Portal_Zugang":"Ja","Trainingsstatus":"Abgeschlossen"},
-    {"Partnername":"Aareon AG","Systemname":"Wodis Yuneo","Partnertyp":"ERP","Branche":"Wohnungswirtschaft","Land":"DE",
-      "Webseite":"https://aareon.de","Vertragsstatus":"Laufend","Vertragstyp":"SLA","Score":"89","Developer_Portal_Zugang":"Ja","Trainingsstatus":"Offen"},
-    {"Partnername":"Hausbank München","Systemname":"VS3","Partnertyp":"ERP","Branche":"Banken","Land":"DE",
-      "Webseite":"https://hausbank.de","Vertragsstatus":"Laufend","Vertragstyp":"Lizenz","Score":"74","Developer_Portal_Zugang":"Nein","Trainingsstatus":"Offen"},
-    {"Partnername":"DOMUS GmbH","Systemname":"DOMUS 1000","Partnertyp":"ERP","Branche":"Wohnungswirtschaft","Land":"DE",
-      "Webseite":"https://domus.de","Vertragsstatus":"Laufend","Vertragstyp":"AVV","Score":"63","Developer_Portal_Zugang":"Nein","Trainingsstatus":"Abgeschlossen"}
-  ];
-  rows = rows.map(r=>{referenceSchema.forEach(f=>{if(!(f in r)) r[f]='';}); return r;});
-  csvHeaders = [...referenceSchema];
-  showMsg("Demo-Daten geladen.", "success");
-  changelog = [];
-  currentPage = 1;
-  setData(rows);
+  const raw = await fetch('./demo/PARTNER.csv').then(r=>r.text());
+  Papa.parse(raw,{header:true,skipEmptyLines:true,complete:res=>{
+    const rows=res.data.map(r=>{referenceSchema.forEach(f=>{if(!(f in r)) r[f]='';});return r;});
+    csvHeaders=[...referenceSchema];
+    showMsg('Demo-Daten geladen.','success');
+    changelog=[];
+    currentPage=1;
+    eventBus.emit('data:loaded', rows);
+  }});
 }
 document.getElementById('demoDataBtn').onclick = loadDemoData;
 
+eventBus.on('data:loaded', rows => {
+  setData(rows);
+});
+
 // === INIT RENDER ALL ===
 function renderAll() {
-  if(appVersion) renderKPIs(appVersion);
+  renderOverview();
   renderColumnMenu();
   renderTable();
   renderFilters();
@@ -243,11 +230,12 @@ function renderAll() {
   renderCharts();
 }
 eventBus.on('data:updated', () => {
+  renderOverview();
   renderTable();
   renderFilters();
   renderCards();
-  if(appVersion) renderKPIs(appVersion);
   renderCharts();
+  renderChangelog();
 });
 window.onload = async () => {
   if (localStorage.getItem('prefers-dark') === 'true') {
@@ -259,7 +247,6 @@ window.onload = async () => {
   };
   applyView('Alle');
   await prepareWorkers();
-  loadDemoData();
   document.getElementById('columnBtn').onclick = () => {
     const menu = document.getElementById('columnMenu');
     menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
@@ -280,16 +267,16 @@ function showMsg(txt, type="success") {
   setTimeout(() => { msgDiv.innerHTML = ""; }, 4000);
 }
 
-// tolerate missing preload bridge in jsdom/Jest
-(async () => {
-  const version =
-    window?.electronAPI?.getVersion
-      ? await window.electronAPI.getVersion()
-      : 'dev-test'; // fallback for unit & smoke tests
+function renderOverview(){
+  if(appVersion) renderKPIs(appVersion);
+}
 
+// tolerate missing preload bridge in jsdom/Jest
+(function(){
+  const version = window.api?.version ? window.api.version() : 'dev-test';
   appVersion = version;
   window.showVersion = () => alert(`Version ${version}`);
-  renderKPIs(version);
+  renderAll();
 })();
 
 // signal successful bootstrap for tests
@@ -537,6 +524,7 @@ window.exportTableXLSX = function(){
 function renderCharts() {
   const data = getData();
   if (!data.length) return;
+  if(!Chart){ showMsg('Charts disabled','error'); return; }
   const mapping = {
     pieVertragstyp: 'Vertragstyp',
     pieDevPortal: 'Developer_Portal_Zugang',
@@ -561,6 +549,7 @@ function renderCharts() {
  * @param {number[]} values
  */
 function drawChart(canvasId, labels, values){
+  if(!Chart) return;
   const ctx = document.getElementById(canvasId).getContext('2d');
   const type = canvasId.startsWith('pie') ? 'pie' : 'bar';
   if(charts[canvasId]) charts[canvasId].destroy();
