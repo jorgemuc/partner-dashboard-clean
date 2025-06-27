@@ -3,12 +3,18 @@ import { getData, setData } from './dataStore.js';
 import { getStatusBuckets } from './utils.js';
 import { renderKPIs, setChartsRef } from './kpi.js';
 
-const { libs } = window.api || {};
-if (!libs) {
-  console.error('API-Bridge fehlt – Abbruch');
-  throw new Error('preload missing');
+async function waitApi(){
+  if(window.api?.libs && window.api?.version) return;
+  await new Promise(r=>{
+    const t=setInterval(()=>{
+      if(window.api?.libs && window.api?.version){clearInterval(t);r();}
+    },10);
+  });
 }
-const { mitt: Mitt, Papa, XLSX, Chart } = libs;
+
+await waitApi();
+
+const { mitt: Mitt, Papa, XLSX, Chart } = window.api.libs;
 const eventBus = window.api.bus;
 const { utils: XLSXUtils = {}, writeFile = () => {} } = XLSX || {};
 if(!Papa){ document.body.classList.add('no-csv'); console.error('CSV disabled'); }
@@ -147,7 +153,7 @@ function validateCsvRaw(raw){
   return {valid:true, errors:[]};
 }
 
-function handleFile(file){
+async function handleFile(file){
   if(!file) return;
   // 🔄 reset global state on every import
   demoMode=false;
@@ -156,9 +162,11 @@ function handleFile(file){
   csvHeaders=[];
   hiddenColumns = JSON.parse(localStorage.getItem('hiddenColumns')||'[]');
   document.getElementById('partnerTable').querySelector('tbody').innerHTML='';
+  const progress = document.getElementById('csvProgress');
+  if(progress){progress.style.display='block';progress.value=10;}
   const finish = raw => {
     const validation = validateCsvRaw(raw);
-    if(!validation.valid){ showMsg('CSV Fehler: '+validation.errors.join('; '),'error'); return; }
+    if(!validation.valid){ showMsg('CSV Fehler: '+validation.errors.join('; '),'error'); if(progress) progress.style.display='none'; return; }
     const first = raw.split(/\r?\n/)[0] || '';
     const comma = (first.match(/,/g)||[]).length;
     const semi = (first.match(/;/g)||[]).length;
@@ -199,14 +207,21 @@ function handleFile(file){
       error: err => showMsg("Fehler beim Parsen der CSV: "+err, "error")
     });
   };
-  const reader = new FileReader();
-  reader.onload = e => finish((e.target.result||'').replace(/^\uFEFF/, ''));
-  reader.readAsText(file,'UTF-8');
+  try {
+    const raw = await window.api.loadCsv(file);
+    finish((raw||'').replace(/^\uFEFF/, ''));
+  } catch(err){
+    showMsg('Fehler beim Laden: '+err.message,'error');
+  } finally {
+    if(progress) progress.style.display='none';
+  }
 }
 
 document.getElementById('csvFile').addEventListener('change', e => handleFile(e.target.files[0]));
-document.body.addEventListener('dragover', e => { e.preventDefault(); });
-document.body.addEventListener('drop', e => { e.preventDefault(); handleFile(e.dataTransfer.files[0]); });
+const dropZone = document.getElementById('dropZone');
+dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('dragover'); });
+dropZone.addEventListener('dragleave', () => dropZone.classList.remove('dragover'));
+dropZone.addEventListener('drop', e => { e.preventDefault(); dropZone.classList.remove('dragover'); handleFile(e.dataTransfer.files[0]); });
 
 // === DEMO-DATEN ===
 async function loadDemoData(){

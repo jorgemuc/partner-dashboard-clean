@@ -1,9 +1,11 @@
 #!/usr/bin/env node
-// renderer bundle + version file
 const esbuild = require('esbuild');
 const importGlob = require('esbuild-plugin-import-glob').default;
 const { version } = require('../package.json');
-const { mkdirSync, writeFileSync } = require('node:fs');
+const { mkdirSync, writeFileSync, copyFileSync } = require('node:fs');
+
+mkdirSync('dist', { recursive: true });
+copyFileSync('src/preload.cjs', 'dist/preload.js');
 
 esbuild.build({
   entryPoints: ['src/renderer/renderer.js'],
@@ -20,7 +22,5 @@ esbuild.build({
   logLevel: 'info'
 }).catch(() => process.exit(1));
 
-// --- single-source version record -----------------------------------
-mkdirSync('dist', { recursive: true });
 writeFileSync('dist/version.json', JSON.stringify({ version }, null, 2) + '\n');
-console.log('[bundle] wrote dist/version.json');
+console.log('[bundle] wrote dist files');
