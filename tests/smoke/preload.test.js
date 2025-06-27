@@ -2,7 +2,7 @@ const { test, expect } = require('@playwright/test');
 const { _electron: electron } = require('playwright');
 const { version } = require('../../package.json');
 
-test('App exposes version and demo button', async () => {
+test('App exposes version and renders charts', async () => {
   const app = await electron.launch({ args: ['.', '--no-sandbox'], env:{ ELECTRON_DISABLE_SANDBOX:'1' } });
 
   // wait for the main process "app-loaded" signal
@@ -15,6 +15,10 @@ test('App exposes version and demo button', async () => {
   }));
   expect(res.version).toBe(version);
   expect(res.demoEnabled).toBe(true);
+  await page.click('#demoDataBtn');
+  await page.waitForSelector('canvas.chartjs-render-monitor');
+  const count = await page.evaluate(() => document.querySelectorAll('canvas.chartjs-render-monitor').length);
+  expect(count).toBeGreaterThan(0);
   await app.close();
 }, 30_000);
 
