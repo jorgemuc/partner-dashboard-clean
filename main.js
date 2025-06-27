@@ -2,8 +2,22 @@ const { app, BrowserWindow, Menu, shell, dialog, ipcMain } = require('electron')
 const fs = require('fs');
 const { parseCsv } = require('./parser');
 const path = require('path');
+const nodemailer = require('nodemailer');
 
 ipcMain.handle('get-version', () => app.getVersion());
+ipcMain.handle('send-mail', async (_e, opts) => {
+  if (process.env.DEV_FLAG === 'true') return { sent:false };
+  const host = process.env.SMTP_HOST;
+  if(!host) return { sent:false };
+  try{
+    const transport = nodemailer.createTransport({ host });
+    await transport.sendMail(opts);
+    return { sent:true };
+  }catch(e){
+    console.error('[pl-err] mail failed', e);
+    return { sent:false };
+  }
+});
 
 const columnViews = {
   Alle: [],
