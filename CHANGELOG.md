@@ -1,4 +1,6 @@
 # Changelog
+## v0.5.12 - CSV import bugfix
+* file input and drag-drop parse CSV in renderer
 ## v0.5.11 - preload mitt bundled
 * mitt included in preload bundle
 
