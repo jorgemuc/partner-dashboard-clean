@@ -1,6 +1,6 @@
 {
   "name": "partner-dashboard-clean",
-  "version": "0.5.14",
+  "version": "0.5.16",
   "main": "main.js",
   "scripts": {
     "start": "electron .",
@@ -48,7 +48,7 @@
       "icon": "assets/icon.ico",
       "artifactName": "Portable ${productName} ${version}.exe",
       "certificateSubjectName": "YOUR_ORG_NAME",
-      "certificateSha1": "YOUR_CERT_SHA1"
+      "sign": false
     },
     "icon": "assets/icons/partner_dashboard_icon_1024.png"
   }
