@@ -2,7 +2,6 @@ import { applyFilters, getFilterFields } from '../shared/filterUtils.mjs';
 import { getData, setData } from './dataStore.js';
 import { getStatusBuckets } from './utils.js';
 import { renderKPIs, setChartsRef } from './kpi.js';
-import initDropHandler from './dropHandler.js';
 import Papa from 'papaparse';
 import * as XLSX from 'xlsx';
 import Chart from 'chart.js/auto';
@@ -224,7 +223,43 @@ function handleFile(file){
   reader.readAsText(file,'utf-8');
 }
 
-document.getElementById('csvFile').addEventListener('change', e => handleFile(e.target.files[0]));
+function loadCsvFile(file){
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    try{
+      const lib = window.api?.libs?.Papa || Papa;
+      const res = lib.parse(e.target.result,{header:true,skipEmptyLines:true});
+      setData(res.data);
+      renderOverview();
+      renderTable();
+      renderCards();
+      renderCharts();
+    }catch(err){
+      console.error('CSV-Parse-Error', err);
+    }
+  };
+  reader.onerror = err => console.error('CSV-Parse-Error', err);
+  reader.readAsText(file,'utf-8');
+}
+window.loadCsvFile = loadCsvFile;
+
+document.getElementById('csvFile').addEventListener('change', e => loadCsvFile(e.target.files[0]));
+
+const dropZone = document.getElementById('dropZone');
+if(dropZone){
+  dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('dragover'); });
+  dropZone.addEventListener('dragleave', () => dropZone.classList.remove('dragover'));
+  dropZone.addEventListener('drop', e => {
+    e.preventDefault();
+    dropZone.classList.remove('dragover');
+    const f = e.dataTransfer.files[0];
+    if(!f) return;
+    if(f.type==='text/csv' || f.name.toLowerCase().endsWith('.csv')){
+      loadCsvFile(f);
+    }
+  });
+}
 
 // === DEMO-DATEN ===
 async function loadDemoData(){
@@ -312,7 +347,6 @@ window.api?.bus?.emit?.('e2e-ready');
 
 // CSV-Menü aus Preload registrieren –  jsdom hat keine Bridge
 window?.electronAPI?.onOpenCsvDialog?.(() => document.getElementById('csvFile').click());
-initDropHandler();
 
 // === KPIs ===
 
@@ -586,3 +620,5 @@ function drawChart(canvasId, labels, values){
     options: { responsive:true, plugins:{legend:{position:type==='pie'?'bottom':'none'}} }
   });
 }
+
+export { loadCsvFile };
