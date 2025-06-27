@@ -1,4 +1,7 @@
 # Changelog
+## v0.5.17 - build config cleanup
+* remove deprecated signing fields
+
 ## v0.5.16 - test stability fix
 * dataStore tests use await import
 ## v0.5.15 - disable Windows signing
