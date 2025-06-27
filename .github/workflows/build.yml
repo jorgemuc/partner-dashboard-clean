@@ -32,7 +32,11 @@ jobs:
 
       - name: Ensure preload bundle exists
         run: |
-          if [ ! -f dist/preload.js ]; then echo "dist/preload.js missing" && exit 1; fi
+          if (-not (Test-Path 'dist/preload.js')) {
+            Write-Error 'dist/preload.js missing'
+            exit 1
+          }
+        shell: pwsh
 
       - name: Run unit tests
         run: npm test
