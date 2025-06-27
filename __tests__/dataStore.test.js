@@ -1,12 +1,12 @@
-let store, bus;
-beforeAll(async () => {
-  global.window = { api: { bus: require('mitt')() } };
-  store = await import('../src/renderer/dataStore.js');
+const mitt = require('mitt');
+let bus;
+beforeEach(() => {
+  global.window = { api: { bus: mitt() } };
   bus = global.window.api.bus;
-
 });
 
-test('setData stores array and emits update', () => {
+test('setData stores array and emits update', async () => {
+  const store = await import('../src/renderer/dataStore.js');
   return new Promise(resolve => {
     const handler = rows => {
       expect(store.getData()).toEqual([1,2]);
@@ -19,7 +19,8 @@ test('setData stores array and emits update', () => {
   });
 });
 
-test('undo and redo reflect in store data', () => {
+test('undo and redo reflect in store data', async () => {
+  const store = await import('../src/renderer/dataStore.js');
   const { applyChange, undo, redo } = require('../undoRedo');
   const log = [];
   let idx = 0;

@@ -1,4 +1,6 @@
 # Changelog
+## v0.5.16 - test stability fix
+* dataStore tests use await import
 ## v0.5.15 - disable Windows signing
 * electron-builder skips code signing
 ## v0.5.14 - drag & drop renders table
