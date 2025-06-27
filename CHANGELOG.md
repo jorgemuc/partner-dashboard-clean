@@ -1,4 +1,6 @@
 # Changelog
+## v0.5.15 - disable Windows signing
+* electron-builder skips code signing
 ## v0.5.14 - drag & drop renders table
 * drop handler parses CSV and renders UI
 * Windows build config includes signing fields
