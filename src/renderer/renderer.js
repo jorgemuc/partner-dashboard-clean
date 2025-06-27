@@ -2,7 +2,6 @@ import { applyFilters, getFilterFields } from '../shared/filterUtils.mjs';
 import { getData, setData } from './dataStore.js';
 import { getStatusBuckets } from './utils.js';
 import { renderKPIs, setChartsRef } from './kpi.js';
-import { attachCsvDrop } from '../shared/csvDrop.mjs';
 
 async function waitApi(){
   if(window.api?.libs && window.api?.version) return;
@@ -221,9 +220,28 @@ async function handleFile(file){
 }
 
 document.getElementById('csvFile').addEventListener('change', e => handleFile(e.target.files[0]));
-const dropZone = document.getElementById('dropZone');
-const dropStatus = document.getElementById('dropStatus');
-attachCsvDrop(dropZone, dropStatus, txt => processCsvRaw(txt, dropStatus));
+
+window.addEventListener('DOMContentLoaded', () => {
+  const zone = document.getElementById('dropZone');
+  const status = document.getElementById('dropStatus');
+  ['dragenter','dragover'].forEach(type =>
+    zone.addEventListener(type, ev => { ev.preventDefault(); zone.classList.add('dragover'); }));
+  ['dragleave','drop'].forEach(type =>
+    zone.addEventListener(type, ev => { ev.preventDefault(); zone.classList.remove('dragover'); }));
+  zone.addEventListener('drop', ev => {
+    const file = ev.dataTransfer.files?.[0];
+    if (!file || !file.name.endsWith('.csv')) return;
+    status.textContent = 'Parsing...';
+    const reader = new FileReader();
+    reader.onload = e => {
+      status.textContent = '';
+      const data = window.api.libs.Papa.parse(e.target.result.trim(), { header: true }).data;
+      window.api.bus.emit('data:loaded', data);
+    };
+    reader.onerror = () => { status.textContent = ''; };
+    reader.readAsText(file, 'utf-8');
+  });
+});
 
 // === DEMO-DATEN ===
 async function loadDemoData(){
