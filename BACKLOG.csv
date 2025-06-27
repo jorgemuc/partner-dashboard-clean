@@ -58,3 +58,4 @@ E17 - Preload Refactor,preload bundling & CI,ensure dist/preload.js,done,,codex,
 E18 - Build Automation,CI cross-platform,run bundle->test->build,done,,codex,
 E19 - Build Automation,Windows packaging only,drop ubuntu job,done,,codex,
 E20 - CSV DragDrop,drag-drop import,FileReader parse,done,,codex,
+E21 - Preload Fix,remove bundling,copy file only,done,Maintainability,S,codex

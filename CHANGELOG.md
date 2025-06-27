@@ -1,4 +1,8 @@
 # Changelog
+## v0.5.7 - preload fix
+* bundling disabled; file copied
+* backlog updated
+
 ## v0.5.6 - drag & drop stable
 * Preload copied instead of bundled
 * Drag & drop handler registered in renderer
