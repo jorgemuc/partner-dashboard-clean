@@ -235,6 +235,11 @@ function handleFile(file){
   reader.readAsText(file,'utf-8');
 }
 
+function handleCsvLoaded(rows){
+  setData(rows);
+  renderAll();
+}
+
 function loadCsvFile(file){
   if(!file) return;
   const reader = new FileReader();
@@ -242,11 +247,7 @@ function loadCsvFile(file){
     try{
       const lib = window.api?.libs?.Papa || Papa;
       const res = lib.parse(e.target.result,{header:true,skipEmptyLines:true});
-      setData(res.data);
-      renderOverview();
-      renderTable();
-      renderCards();
-      renderCharts();
+      handleCsvLoaded(res.data);
     }catch(err){
       console.error('CSV-Parse-Error', err);
     }
@@ -268,7 +269,18 @@ if(dropZone){
     const f = e.dataTransfer.files[0];
     if(!f) return;
     if(f.type==='text/csv' || f.name.toLowerCase().endsWith('.csv')){
-      loadCsvFile(f);
+      const reader = new FileReader();
+      reader.onload = ev => {
+        try{
+          const lib = window.api?.libs?.Papa || Papa;
+          const res = lib.parse(ev.target.result,{header:true,skipEmptyLines:true});
+          handleCsvLoaded(res.data);
+        }catch(err){
+          console.error('CSV-Parse-Error', err);
+        }
+      };
+      reader.onerror = err => console.error('CSV-Parse-Error', err);
+      reader.readAsText(f,'utf-8');
     }
   });
 }
@@ -289,9 +301,7 @@ async function loadDemoData(){
 }
 document.getElementById('demoDataBtn').onclick = loadDemoData;
 
-eventBus.on('data:loaded', rows => {
-  setData(rows);
-});
+eventBus.on('data:loaded', handleCsvLoaded);
 
 // === INIT RENDER ALL ===
 function renderAll() {
@@ -633,4 +643,4 @@ function drawChart(canvasId, labels, values){
   });
 }
 
-export { loadCsvFile };
+export { loadCsvFile, handleCsvLoaded };
