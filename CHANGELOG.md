@@ -1,4 +1,9 @@
 # Changelog
+## v0.5.2 - preload copy + drag drop
+* libs exposed reliably
+* renderer waits for api
+* CSV drag & drop with progress
+
 ## v0.5.1 – Preload stabilisiert; Renderer-Bridge repariert; UI reagiert wieder
 
 ## v0.5.0 - 2025-06-28

@@ -14,7 +14,7 @@ test('eventBus module exports mitt instance', async () => {
     contextBridge: { exposeInMainWorld: jest.fn() }
   }));
   const { contextBridge } = require('electron');
-  await import('../src/preload.js');
+  await import('../src/preload.cjs');
   await new Promise(r => setImmediate(r));
   const call = contextBridge.exposeInMainWorld.mock.calls.find(c => c[0] === 'api');
   const bus = call ? call[1].bus : undefined;
