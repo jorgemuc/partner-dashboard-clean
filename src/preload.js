@@ -1,21 +1,31 @@
-const { contextBridge } = require('electron');
-const { readFileSync } = require('fs');
-const { join } = require('path');
+const { contextBridge, ipcRenderer } = require('electron');
 const mitt = require('mitt');
+const { version } = require('../package.json');
 
-let version = 'dev';
-try {
-  const data = readFileSync(join(__dirname, '../dist/version.json'), 'utf8');
-  version = JSON.parse(data).version;
-} catch (e) {
-  console.error('[pl-err] failed to load version', e);
+function safeRequire(name) {
+  try {
+    return require(name);
+  } catch (e) {
+    return null;
+  }
 }
 
-const bus = mitt();
-const libs = {};
+const libs = {
+  mitt,
+  Papa: safeRequire('papaparse'),
+  XLSX: safeRequire('xlsx'),
+  Chart: safeRequire('chart.js/auto')
+};
 
-contextBridge.exposeInMainWorld('api', {
+const bus = mitt();
+
+const api = {
   bus,
   libs,
-  version: () => version
-});
+  version,
+  onAppLoaded: (cb) => ipcRenderer.on('app-loaded', () => cb())
+};
+
+contextBridge.exposeInMainWorld('api', api);
+
+module.exports = api;

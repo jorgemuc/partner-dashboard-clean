@@ -1,18 +1,20 @@
 const { test, expect } = require('@playwright/test');
 const { _electron: electron } = require('playwright');
-const path = require('path');
+const { version } = require('../../package.json');
 
-test('App starts und sendet ready-IPC', async () => {
+test('App exposes version and demo button', async () => {
   const app = await electron.launch({ args: ['.', '--no-sandbox'], env:{ ELECTRON_DISABLE_SANDBOX:'1' } });
 
   // wait for the main process "app-loaded" signal
   await app.waitForEvent('ipc', (_e, msg) => msg === 'app-loaded');
 
   const page = await app.firstWindow();
-
-  const hasBus = await page.evaluate(() =>
-    !!window.api?.bus && typeof window.api.bus.emit === 'function');
-  expect(hasBus).toBe(true);
+  const res = await page.evaluate(() => ({
+    version: window.api?.version,
+    demoEnabled: !document.getElementById('demoDataBtn').disabled
+  }));
+  expect(res.version).toBe(version);
+  expect(res.demoEnabled).toBe(true);
   await app.close();
 }, 30_000);
 

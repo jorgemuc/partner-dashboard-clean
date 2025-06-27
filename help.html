@@ -13,7 +13,7 @@
 fetch('README.md').then(r=>r.text()).then(t=>{
   document.getElementById('readme').innerHTML = marked.parse(t);
 });
-document.getElementById('ver').textContent = 'v'+(window.api?.version()?window.api.version():'dev');
+document.getElementById('ver').textContent = 'v'+(window.api?.version || 'dev');
 </script>
 </body>
 </html>

@@ -253,9 +253,8 @@ function showMsg(txt, type="success") {
   setTimeout(() => { msgDiv.innerHTML = ""; }, 4000);
 }
 
-window.api.version().then(v=>{
-  window.showVersion=()=>dialog.showMessageBox({title:'Partner-Dashboard',message:`Version ${v}`});
-});
+const v = window.api.version || 'dev';
+window.showVersion=()=>dialog.showMessageBox({title:'Partner-Dashboard',message:`Version ${v}`});
 
 ipcRenderer.on('open-csv-dialog', () => document.getElementById('csvFile').click());
 

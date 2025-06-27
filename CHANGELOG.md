@@ -1,4 +1,6 @@
 # Changelog
+## v0.5.1 – Preload stabilisiert; Renderer-Bridge repariert; UI reagiert wieder
+
 ## v0.5.0 - 2025-06-28
 * refactor preload boundary; libs move to renderer
 * esbuild outputs renderer.bundle.js.map
