@@ -1,6 +1,6 @@
 const { Papa, XLSX, Chart } = window.api.libs;
-if(!Papa){ document.body.classList.add('no-csv'); }
-if(!Chart){ document.body.classList.add('no-chart'); }
+if(!Papa){ document.body.classList.add('no-csv'); showMsg('CSV disabled', 'error'); }
+if(!Chart){ document.body.classList.add('no-chart'); showMsg('Charts disabled', 'error'); }
 const { utils: XLSXUtils = {}, writeFile = () => {} } = XLSX || {};
 import { applyFilters, getFilterFields } from '../shared/filterUtils.mjs';
 import { getData, setData } from './dataStore.js';

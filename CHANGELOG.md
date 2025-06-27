@@ -1,4 +1,9 @@
 # Changelog
+## v0.4.1 - 2025-06-27
+* fix duplicate esbuild entry in package.json
+* bump version to 0.4.1
+* preload script switched back to CommonJS
+
 ## v0.4.0 - 2025-07-15
 * preload converted to ESM and loads optional libs dynamically
 * renderer bundle minified, chart.js tree-shaken
