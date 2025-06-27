@@ -2,22 +2,14 @@
 const esbuild = require('esbuild');
 const importGlob = require('esbuild-plugin-import-glob').default;
 const { version } = require('../package.json');
-const { mkdirSync, writeFileSync } = require('node:fs');
+const { mkdirSync, writeFileSync, copyFileSync } = require('node:fs');
 
 async function bundle() {
   mkdirSync('dist', { recursive: true });
 
+  copyFileSync('src/preload.cjs', 'dist/preload.js');
+
   await Promise.all([
-    esbuild.build({
-      entryPoints: ['src/preload.cjs'],
-      bundle: true,
-      minify: true,
-      platform: 'node',
-      format: 'cjs',
-      target: ['node16'],
-      outfile: 'dist/preload.js',
-      logLevel: 'info'
-    }),
     esbuild.build({
       entryPoints: ['src/renderer/renderer.js'],
       bundle: true,

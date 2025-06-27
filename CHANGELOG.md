@@ -1,4 +1,9 @@
 # Changelog
+## v0.5.6 - drag & drop stable
+* Preload copied instead of bundled
+* Drag & drop handler registered in renderer
+* Workflow job renamed to build-win
+
 ## v0.5.5 - CSV drag&drop handler
 * Drag & drop reads file via FileReader
 * Progress text shown while parsing
