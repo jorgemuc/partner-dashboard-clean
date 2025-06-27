@@ -1,4 +1,6 @@
 # Changelog
+## v0.6.0 - KPI alerts
+* threshold config for KPIs with optional mail sending
 ## v0.5.17 - build config cleanup
 * remove deprecated signing fields
 

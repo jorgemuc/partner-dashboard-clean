@@ -69,3 +69,4 @@ E28 - DnD render fix,Drop updates table,handleCsvLoaded function|sign config,don
 E9 · Qualität & Automatisierung,Windows sign disabled,remove win signing fields|sign=false,done,Quality,S,codex
 E9 · Qualität & Automatisierung,dataStore test fix,convert dynamic imports to async tests,done,Quality,S,codex
 E9 - Qualität & Automatisierung,Build schema fix,remove certSubject|sign fields,done,Quality,S,codex
+E29 - KPI Alerts,Threshold Mailer,Ampel-KPIs & Mails,done,Business KPI,S,codex

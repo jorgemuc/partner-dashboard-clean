@@ -3,11 +3,48 @@ import { getStatusBuckets } from './utils.js';
 let charts = {};
 export function setChartsRef(obj){ charts = obj; }
 
-export function renderKPIs(version){
+export function getThresholds(){
+  return JSON.parse(localStorage.getItem('kpiThresholds')||'{}');
+}
+
+export function checkThresholds(kpis){
+  const cfg = getThresholds();
+  const last = JSON.parse(localStorage.getItem('kpiLastMail')||'{}');
+  const now = Date.now();
+  kpis.forEach(k => {
+    const th = cfg[k.label];
+    const el = document.querySelector(`.kpi[data-kpi="${k.label}"]`);
+    el?.classList.remove('alert');
+    if(!th) return;
+    const val = parseFloat(k.value);
+    let hit=false;
+    if(th.op==='<' && val < th.value) hit=true;
+    if(th.op==='>' && val > th.value) hit=true;
+    if(th.op==='=' && val === th.value) hit=true;
+    if(hit){
+      el?.classList.add('alert');
+      if(!el?.dataset.notified){
+        window.showMsg?.(`KPI ${k.label} ${th.op}${th.value}`, 'error');
+        if(th.email && window.api?.sendMail && process.env.DEV_FLAG!=='true'){
+          if(!last[k.label] || now-last[k.label]>600000){
+            window.api.sendMail({subject:`KPI ${k.label}`, text:`${k.label}: ${k.value}`}).catch(()=>{});
+            last[k.label]=now;
+            localStorage.setItem('kpiLastMail', JSON.stringify(last));
+          }
+        }
+        if(el) el.dataset.notified='1';
+      }
+    }else if(el){
+      delete el.dataset.notified;
+    }
+  });
+}
+
+function computeKpis(){
   const data = getData();
   const totalUmsatz = data.reduce((sum,r)=>sum+(parseFloat(r.Umsatz)||0),0);
   const totalPipeline = data.reduce((sum,r)=>sum+(parseFloat(r.Pipeline)||0),0);
-  const kpis=[
+  return [
     {label:'Umsatz', value: totalUmsatz.toFixed(0)},
     {label:'Pipeline', value: totalPipeline.toFixed(0)},
     {label:'Partner', value: new Set(data.map(r=>r.Partnername)).size},
@@ -16,7 +53,16 @@ export function renderKPIs(version){
     {label:'Abgeschl. Trainings', value: data.filter(r=>String(r.Trainingsstatus||'').toLowerCase().includes('abgeschlossen')).length},
     {label:'DevPortal aktiv', value: data.filter(r=>String(r.Developer_Portal_Zugang||'').toLowerCase()==='ja').length}
   ];
-  document.getElementById('kpiBoxes').innerHTML = kpis.map(k=>`<div class="kpi"><div style="font-size:2rem;font-weight:bold">${k.value}</div><div>${k.label}</div></div>`).join('');
+}
+
+export function renderKPIs(_version){
+  const kpis = computeKpis();
+  const box = document.getElementById('kpiBoxes');
+  box.innerHTML = kpis.map(k=>`<div class="kpi" data-kpi="${k.label}"><div style="font-size:2rem;font-weight:bold">${k.value}</div><div>${k.label}</div></div>`).join('');
+  box.querySelectorAll('.kpi').forEach(div=>{
+    div.ondblclick = () => configureThreshold(div.dataset.kpi);
+  });
+  checkThresholds(kpis);
   renderStatusChart();
 }
 
@@ -44,3 +90,25 @@ function renderStatusChart(){
     }
   });
 }
+
+function configureThreshold(label){
+  const current = getThresholds()[label] || { op:'<', value:0, email:false };
+  const input = prompt(`${label} Threshold (<n | >n | =n)`, `${current.op}${current.value}`);
+  if(!input){
+    const t = getThresholds();
+    delete t[label];
+    localStorage.setItem('kpiThresholds', JSON.stringify(t));
+    checkThresholds(computeKpis());
+    return;
+  }
+  const m = input.match(/([<>]=?|=)\s*(\d+(?:\.\d+)?)/);
+  if(!m) return;
+  const email = confirm('E-Mail schicken?');
+  const t = getThresholds();
+  t[label] = { op:m[1], value:parseFloat(m[2]), email };
+  localStorage.setItem('kpiThresholds', JSON.stringify(t));
+  checkThresholds(computeKpis());
+}
+
+export { configureThreshold };
+

@@ -23,6 +23,12 @@ try {
 
 const bus = mitt();
 
-const api = { bus, libs, version, onAppLoaded: cb => ipcRenderer.on('app-loaded', cb) };
+const api = {
+  bus,
+  libs,
+  version,
+  onAppLoaded: cb => ipcRenderer.on('app-loaded', cb),
+  sendMail: opts => ipcRenderer.invoke('send-mail', opts)
+};
 contextBridge.exposeInMainWorld('api', api);
 module.exports = api;

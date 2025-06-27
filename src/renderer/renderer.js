@@ -349,6 +349,7 @@ function showMsg(txt, type="success") {
   msgDiv.innerHTML = `<span class="${type}-msg">${txt}</span>`;
   setTimeout(() => { msgDiv.innerHTML = ""; }, 4000);
 }
+window.showMsg = showMsg;
 
 function renderOverview(){
   if(appVersion) renderKPIs(appVersion);
