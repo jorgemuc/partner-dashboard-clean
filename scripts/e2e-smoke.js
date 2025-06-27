@@ -26,13 +26,9 @@ async function run(){
   global.sessionStorage = dom.window.sessionStorage;
   global.window.api = {version:()=>Promise.resolve('0.0.0'),onOpenCsvDialog:()=>{}};
   dom.window.HTMLCanvasElement.prototype.getContext = () => ({})
-  global.Chart = function(){ return {destroy(){}} };
-  global.Chart.register = () => {};
-  global.Papa = {parse:()=>({data:[]}), unparse:()=>''};
-  global.XLSX = {utils:{json_to_sheet:()=>({}),book_new:()=>({}),book_append_sheet(){}} ,write:()=>''};
   global.window.api = {
     bus: require('mitt')(),
-    libs: { Papa: global.Papa, XLSX: global.XLSX, Chart: global.Chart }
+    libs: {}
   };
 
   // —— IPC-Ready-Signal zum Smoke-Test ————————————————

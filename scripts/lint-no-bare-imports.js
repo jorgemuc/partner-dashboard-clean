@@ -14,7 +14,9 @@ function scan(p) {
       const m = line.match(/^\s*import\s.*?from\s+["']([^"']+)["']/);
       if (m) {
         const spec = m[1];
-        if (!spec.startsWith('./') && !spec.startsWith('../') && !spec.startsWith('https://') && !['mitt','chart.js'].includes(spec)) {
+        const allowed = ['mitt','papaparse','xlsx'];
+        const isChart = spec.startsWith('chart.js');
+        if (!spec.startsWith('./') && !spec.startsWith('../') && !spec.startsWith('https://') && !allowed.includes(spec) && !isChart) {
           console.error(`Bare import '${spec}' in ${path.relative(process.cwd(), p)}:${i+1}`);
           hasError = true;
         }
