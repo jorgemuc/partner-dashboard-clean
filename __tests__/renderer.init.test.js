@@ -2,7 +2,7 @@ jest.mock('electron', () => ({__esModule: true, contextBridge: { exposeInMainWor
 const { contextBridge } = require('electron');
 jest.mock('papaparse', () => ({}));
 jest.mock('xlsx', () => ({ utils: {} }));
-jest.mock('chart.js', () => function(){});
+jest.mock('chart.js/auto', () => function(){});
 jest.mock('../chartWorker.mjs', () => ({
   default: jest.fn()
 }));

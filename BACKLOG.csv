@@ -61,3 +61,4 @@ E20 - CSV DragDrop,drag-drop import,FileReader parse,done,,codex,
 E21 - Preload Fix,remove bundling,copy file only,done,Maintainability,S,codex
 E22 - DragDrop Fix,unify drop handler,FileReader + parse func,done,UX,S,codex
 E23 - Stability,preload externals,bundled via esbuild,done,,codex,
+E24 - Node externals bugfix,mark built-ins external,renderer libs import,done,,codex,
