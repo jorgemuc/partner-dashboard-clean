@@ -6,14 +6,13 @@
     "start": "electron .",
     "lint": "eslint main.js src/preload.cjs",
     "bundle": "node scripts/bundle.js",
-    "prebuild:win32": "npm run bundle",
     "build:win32": "electron-builder --win portable",
     "build": "npm run build:win32",
     "pack": "electron-builder --dir",
     "postinstall": "node scripts/decode-icons.js",
     "test": "cross-env NODE_OPTIONS=--experimental-vm-modules jest",
     "smoke": "playwright test tests/smoke/preload.test.js",
-    "ci": "npm run lint && npm run bundle && npm test && npm run bundle && npm run build",
+    "ci": "npm run lint && npm run bundle && npm test && npm run build",
     "postversion": "npm run bundle"
   },
   "devDependencies": {
