@@ -16,7 +16,7 @@ document.getElementById('repoLink').onclick=e=>{
   e.preventDefault();
   window.open('https://github.com/jorgemuc/partner-dashboard-clean');
 };
-document.getElementById('ver').textContent = 'v'+(window.api?.version()?window.api.version():'dev');
+document.getElementById('ver').textContent = 'v'+(window.api?.version || 'dev');
 </script>
 </body>
 </html>

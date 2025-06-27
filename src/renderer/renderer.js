@@ -1,17 +1,20 @@
-import Papa from 'papaparse';
-import * as XLSX from 'xlsx';
-import Chart from 'chart.js/auto';
 import { applyFilters, getFilterFields } from '../shared/filterUtils.mjs';
 import { getData, setData } from './dataStore.js';
 import { getStatusBuckets } from './utils.js';
 import { renderKPIs, setChartsRef } from './kpi.js';
+
+const { libs } = window.api || {};
+if (!libs) {
+  console.error('API-Bridge fehlt – Abbruch');
+  throw new Error('preload missing');
+}
+const { mitt: Mitt, Papa, XLSX, Chart } = libs;
 const eventBus = window.api.bus;
-window.api.libs.Papa = Papa;
-window.api.libs.XLSX = XLSX;
-window.api.libs.Chart = Chart;
-if(!Papa){ document.body.classList.add('no-csv'); showMsg('CSV disabled', 'error'); }
-if(!Chart){ document.body.classList.add('no-chart'); showMsg('Charts disabled', 'error'); }
 const { utils: XLSXUtils = {}, writeFile = () => {} } = XLSX || {};
+if(!Papa){ document.body.classList.add('no-csv'); console.error('CSV disabled'); }
+if(!Chart){ document.body.classList.add('no-chart'); console.error('Charts disabled'); }
+const demoBtn = document.getElementById('demoDataBtn');
+if(demoBtn && !Papa) demoBtn.disabled = true;
 const I18N={
   de:{demoBtn:"Demo-Daten laden"}
 }; // TODO(Epic-9)
@@ -278,7 +281,7 @@ function renderOverview(){
 
 // tolerate missing preload bridge in jsdom/Jest
 (function(){
-  const version = window.api?.version ? window.api.version() : 'dev-test';
+  const version = window.api?.version || 'dev-test';
   appVersion = version;
   window.showVersion = () => alert(`Version ${version}`);
   renderAll();
@@ -311,8 +314,8 @@ function renderFilters() {
   html += `<select id="presetSelect"><option value="">Preset wählen</option>`+
     presets.map((p,i)=>`<option value="${i}">${p.name}</option>`).join('')+`</select>`;
   html += `<button id="savePreset" class="export-btn" style="background:#888;">Preset speichern</button>`;
-  html += `<button class="export-btn" onclick="exportTableCSV()">CSV Export</button>`;
-  html += `<button class="export-btn" onclick="exportTableXLSX()">XLSX Export</button>`;
+  html += `<button class="export-btn" onclick="exportTableCSV()" ${!Papa?'disabled':''}>CSV Export</button>`;
+  html += `<button class="export-btn" onclick="exportTableXLSX()" ${!XLSX?'disabled':''}>XLSX Export</button>`;
   thead.querySelector('.filter-row')?.remove();
   if(csvHeaders.length>20){
     div.innerHTML='';

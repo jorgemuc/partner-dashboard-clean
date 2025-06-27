@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <script>
     document.addEventListener('DOMContentLoaded', () => {
-      const ver = window.api?.version ? window.api.version() : 'dev';
+      const ver = window.api?.version || 'dev';
       document.getElementById('appTitle').textContent =
         `Partner-Dashboard v${ver}`;
     });

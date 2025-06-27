@@ -13,6 +13,6 @@ test('renderer bootstraps without errors', async () => {
   const apiCall = contextBridge.exposeInMainWorld.mock.calls.find(c => c[0] === 'api');
   global.window = { api: apiCall ? apiCall[1] : {} };
   expect(global.window.api.bus).toBeDefined();
-  expect(typeof global.window.api.version).toBe('function');
+  expect(typeof global.window.api.version).toBe('string');
   expect(typeof global.window.api.libs).toBe('object');
 });
