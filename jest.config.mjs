@@ -1,6 +1,7 @@
 export default {
   moduleNameMapper: {
-    '\\.(css|png)$': 'identity-obj-proxy'
+    '\\.(css|png)$': 'identity-obj-proxy',
+    '\\?raw$': '<rootDir>/tests/rawLoader.js'
   },
   setupFilesAfterEnv: ['<rootDir>/tests/jest.setup.js'],
   testEnvironmentOptions: { resources: 'usable' },

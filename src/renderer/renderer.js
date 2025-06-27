@@ -5,6 +5,21 @@ import { renderKPIs, setChartsRef } from './kpi.js';
 import Papa from 'papaparse';
 import * as XLSX from 'xlsx';
 import Chart from 'chart.js/auto';
+import { buildChart } from '../../chartWorker.mjs';
+let chartWorkerSrc = '';
+async function loadWorkerSrc(){
+  if(chartWorkerSrc) return;
+  if(typeof window !== 'undefined'){
+    chartWorkerSrc = (await import('../../chartWorker.mjs?raw')).default;
+  }else{
+    try{
+      const fs = await import('node:fs');
+      const url = new URL('../../chartWorker.mjs', import.meta.url);
+      chartWorkerSrc = fs.readFileSync(url, 'utf8');
+    }catch{}
+  }
+}
+window.Chart = Chart;
 
 async function waitApi(){
   if(window.api?.libs && window.api?.version) return;
@@ -61,7 +76,6 @@ eventBus.on('chart:empty', id => {
 });
 let appVersion;
 let chartWorker;
-let buildChart;
 
 /**
  * Instantiate chart worker when allowed.
@@ -70,7 +84,9 @@ let buildChart;
 function createChartWorker(){
   if(window.location.protocol === 'file:') return null;
   try{
-    const w = new Worker(new URL('chartWorker.mjs', window.location.href));
+    const blob = new Blob([chartWorkerSrc], { type:'text/javascript' });
+    const url = URL.createObjectURL(blob);
+    const w = new Worker(url, { type:'module' });
     w.onmessage = e => {
       const {id, labels, values, empty} = e.data;
       if(empty){
@@ -87,11 +103,7 @@ function createChartWorker(){
 }
 
 async function prepareWorkers(){
-  if(!buildChart){
-    const url = new URL('../../chartWorker.mjs', import.meta.url);
-    const m = await import(url);
-    buildChart = m.buildChart;
-  }
+  await loadWorkerSrc();
   chartWorker = createChartWorker();
 }
 function resetCharts(){

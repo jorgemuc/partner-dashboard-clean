@@ -64,3 +64,4 @@ E23 - Stability,preload externals,bundled via esbuild,done,,codex,
 E24 - Node externals bugfix,mark built-ins external,renderer libs import,done,,codex,
 E25 - Preload bundling,bundle mitt,preload loads again,done,,codex,
 E26 - CSV Input Fix,Renderer reads files directly,loadCsvFile helper|drag&drop handler,done,UX,S,codex
+E27 - Chart bundling fix,Charts not rendered,inline worker|global Chart,done,Fix,S,codex

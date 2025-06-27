@@ -1,4 +1,7 @@
 # Changelog
+## v0.5.13 - chart worker bundled
+* Chart.js bundled into renderer and exposed globally
+* worker code loaded via Blob URL
 ## v0.5.12 - CSV import bugfix
 * file input and drag-drop parse CSV in renderer
 ## v0.5.11 - preload mitt bundled

@@ -12,8 +12,7 @@ function safeRequire(name) {
 const libs = {
   mitt,
   Papa: safeRequire('papaparse'),
-  XLSX: safeRequire('xlsx'),
-  Chart: safeRequire('chart.js/auto')
+  XLSX: safeRequire('xlsx')
 };
 
 let version = 'dev';
