@@ -45,6 +45,7 @@ All architectural rules live in this file. When code diverges, update the docs f
 
 ## CI Rules
 The workflow uses concurrency to prevent duplicate runs and only triggers on pushes or pull requests targeting `main`.
+- ⚠️ **Windows-only builds:** We target only `windows-latest` for packaging; Ubuntu builds run lint/tests only (no packaging).
 
 ## Pull-Request Checklist
 - `npm test` and `npm run smoke` are green.

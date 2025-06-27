@@ -1,13 +1,21 @@
 # Changelog
-## v0.5.2 - preload copy + drag drop
-* libs exposed reliably
-* renderer waits for api
-* CSV drag & drop with progress
+## v0.5.5 - CSV drag&drop handler
+* Drag & drop reads file via FileReader
+* Progress text shown while parsing
+
+## v0.5.4 - Windows packaging only
+* CI job renamed to build-win
+* Packaging runs on windows-latest only
 
 ## v0.5.3 - preload build cleanup
 * preload bundled via esbuild
 * CI verifies dist/preload.js
 * dist ignored except version.json
+
+## v0.5.2 - preload copy + drag drop
+* libs exposed reliably
+* renderer waits for api
+* CSV drag & drop with progress
 
 ## v0.5.1 – Preload stabilisiert; Renderer-Bridge repariert; UI reagiert wieder
 
