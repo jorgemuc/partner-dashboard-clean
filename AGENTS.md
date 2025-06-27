@@ -63,3 +63,14 @@ Bare specifiers (`import foo from 'foo'`) are forbidden. Either expose required 
 
 ### Versioning
 Patch bumps fix bugs only. Increase minor for new features, major for breaking changes.
+
+### Preload Contract
+`window.api` is the single global exposed to the renderer. It has the shape:
+
+```
+{
+  bus: MittEmitter,
+  libs: { Papa?: any, XLSX?: any, Chart?: any },
+  version: () => string
+}
+```

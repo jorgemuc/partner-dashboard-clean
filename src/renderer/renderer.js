@@ -1,12 +1,17 @@
-const { Papa, XLSX, Chart } = window.api.libs;
+import Papa from 'papaparse';
+import * as XLSX from 'xlsx';
+import Chart from 'chart.js/auto';
+import { applyFilters, getFilterFields } from '../shared/filterUtils.mjs';
+import { getData, setData } from './dataStore.js';
+import { getStatusBuckets } from './utils.js';
+import { renderKPIs, setChartsRef } from './kpi.js';
+const eventBus = window.api.bus;
+window.api.libs.Papa = Papa;
+window.api.libs.XLSX = XLSX;
+window.api.libs.Chart = Chart;
 if(!Papa){ document.body.classList.add('no-csv'); showMsg('CSV disabled', 'error'); }
 if(!Chart){ document.body.classList.add('no-chart'); showMsg('Charts disabled', 'error'); }
 const { utils: XLSXUtils = {}, writeFile = () => {} } = XLSX || {};
-import { applyFilters, getFilterFields } from '../shared/filterUtils.mjs';
-import { getData, setData } from './dataStore.js';
-const eventBus = window.api.bus;
-import { getStatusBuckets } from './utils.js';
-import { renderKPIs, setChartsRef } from './kpi.js';
 const I18N={
   de:{demoBtn:"Demo-Daten laden"}
 }; // TODO(Epic-9)

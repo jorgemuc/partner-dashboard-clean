@@ -52,3 +52,4 @@ E9 · Qualität & Automatisierung,preload esm + feature flags,,done,,codex,
 E9 · Qualität & Automatisierung,esbuild minify + chart tree shake,,done,,codex,
 E15 - Renderer Bugfixes,Demo + CSV load fails,preload+tabs+version fix,done,,codex,
 E15 - Renderer Bugfixes,packaging cleanups,dup esbuild + version,done,,codex,
+E17 - Preload Refactor,Preload boundary cleanup,libs->renderer|map file,done,Maintainability,S,codex

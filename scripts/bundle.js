@@ -16,7 +16,7 @@ esbuild.build({
   define: { 'process.env.NODE_ENV': '"production"' },
   external: ['electron'],
   plugins: [importGlob()],
-  sourcemap: process.env.NODE_ENV !== 'production',
+  sourcemap: true,
   logLevel: 'info'
 }).catch(() => process.exit(1));
 

@@ -1,4 +1,9 @@
 # Changelog
+## v0.5.0 - 2025-06-28
+* refactor preload boundary; libs move to renderer
+* esbuild outputs renderer.bundle.js.map
+* tests and docs updated
+* bump version to 0.5.0
 ## v0.4.1 - 2025-06-27
 * fix duplicate esbuild entry in package.json
 * bump version to 0.4.1
