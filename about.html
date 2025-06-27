@@ -12,12 +12,11 @@
 <p><a id="repoLink" href="#">GitHub Repository</a></p>
 </div>
 <script>
-const {shell, ipcRenderer}=require('electron');
 document.getElementById('repoLink').onclick=e=>{
   e.preventDefault();
-  shell.openExternal('https://github.com/jorgemuc/partner-dashboard-clean');
+  window.open('https://github.com/jorgemuc/partner-dashboard-clean');
 };
-ipcRenderer.invoke('get-version').then(v=>{document.getElementById('ver').textContent='v'+v;});
+document.getElementById('ver').textContent = 'v'+(window.api?.version()?window.api.version():'dev');
 </script>
 </body>
 </html>

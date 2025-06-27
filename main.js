@@ -40,7 +40,7 @@ function getMenuTemplate(win){
           webPreferences:{
             nodeIntegration:false,
             contextIsolation:true,
-            preload:path.join(__dirname,'preload.mjs')
+            preload:path.join(__dirname,'src','preload.mjs')
           }
         });
         about.setMenu(null);
@@ -54,7 +54,7 @@ function getMenuTemplate(win){
           webPreferences:{
             nodeIntegration:false,
             contextIsolation:true,
-            preload:path.join(__dirname,'preload.mjs')
+            preload:path.join(__dirname,'src','preload.mjs')
           }
         });
         help.setMenu(null);
@@ -75,7 +75,7 @@ function createWindow() {
     webPreferences:{
       nodeIntegration:false,
       contextIsolation:true,
-      preload:path.join(__dirname,'preload.mjs')
+      preload:path.join(__dirname,'src','preload.mjs')
     }
   });
   win.loadFile(path.join(__dirname, 'index.html'));

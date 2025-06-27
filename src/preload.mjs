@@ -1,25 +1,16 @@
 import { createRequire } from 'module';
 const require = createRequire(import.meta.url);
-const { contextBridge, ipcRenderer } = require('electron');
-import mitt from 'mitt';
-
-const libs = {};
-async function tryLoad(name, key){
-  try {
-    const mod = await import(name);
-    libs[key] = mod.default ?? mod;
-  } catch {
-    console.warn('[pl-warn] lib missing', name);
-  }
-}
-await Promise.all([
-  tryLoad('papaparse', 'Papa'),
-  tryLoad('xlsx', 'XLSX'),
-  tryLoad('chart.js/auto', 'Chart')
-]);
-
+const { contextBridge } = require('electron');
+let mittLib, Papa, XLSX, Chart;
+try { mittLib = require('mitt'); } catch {}
+try { Papa = require('papaparse'); } catch {}
+try { XLSX = require('xlsx'); } catch {}
+try { Chart = require('chart.js/auto'); } catch {}
+let version = 'dev';
+try { version = require('../dist/version.json').version; } catch (e) { console.error('[pl-err] failed to load version', e); }
+const bus = mittLib ? mittLib() : { on(){}, off(){}, emit(){} };
 contextBridge.exposeInMainWorld('api', {
-  version: await ipcRenderer.invoke('get-version'),
-  bus: mitt(),
-  libs
+  bus,
+  libs: { Papa: Papa || null, XLSX: XLSX || null, Chart: Chart || null },
+  version: () => version
 });
