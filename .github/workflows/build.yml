@@ -12,10 +12,7 @@ on:
 
 jobs:
   build:
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [ubuntu-latest, windows-latest]
+    runs-on: windows-latest
 
     steps:
       - uses: actions/checkout@v3
@@ -39,11 +36,11 @@ jobs:
       - name: Run unit tests
         run: npm test
 
-      - name: Build app
-        run: npm run build
+      - name: Build app (Windows portable)
+        run: npm run build:win32
 
-      - name: Upload artifact
+      - name: Upload Windows artifact
         uses: actions/upload-artifact@v4
         with:
-          name: partner-dashboard-${{ matrix.os }}
+          name: partner-dashboard-win
           path: dist/*.exe

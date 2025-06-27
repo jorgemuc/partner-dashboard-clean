@@ -9,6 +9,10 @@
 * CI verifies dist/preload.js
 * dist ignored except version.json
 
+## v0.5.4 - Windows packaging only
+* CI job renamed to build-win
+* Packaging runs on windows-latest only
+
 ## v0.5.1 – Preload stabilisiert; Renderer-Bridge repariert; UI reagiert wieder
 
 ## v0.5.0 - 2025-06-28
