@@ -1,6 +1,6 @@
 {
   "name": "partner-dashboard-clean",
-  "version": "0.5.16",
+  "version": "0.5.17",
   "main": "main.js",
   "scripts": {
     "start": "electron .",
@@ -41,14 +41,12 @@
     "files": [
       "**/*",
       "dist/**/*",
-      "dist/preload.js"
+      "src/preload.cjs"
     ],
     "win": {
       "target": "portable",
       "icon": "assets/icon.ico",
-      "artifactName": "Portable ${productName} ${version}.exe",
-      "certificateSubjectName": "YOUR_ORG_NAME",
-      "sign": false
+      "artifactName": "Portable ${productName} ${version}.exe"
     },
     "icon": "assets/icons/partner_dashboard_icon_1024.png"
   }

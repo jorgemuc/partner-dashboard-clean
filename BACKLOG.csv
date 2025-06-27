@@ -68,3 +68,4 @@ E27 - Chart bundling fix,Charts not rendered,inline worker|global Chart,done,Fix
 E28 - DnD render fix,Drop updates table,handleCsvLoaded function|sign config,done,UX,S,codex
 E9 · Qualität & Automatisierung,Windows sign disabled,remove win signing fields|sign=false,done,Quality,S,codex
 E9 · Qualität & Automatisierung,dataStore test fix,convert dynamic imports to async tests,done,Quality,S,codex
+E9 - Qualität & Automatisierung,Build schema fix,remove certSubject|sign fields,done,Quality,S,codex
