@@ -9,8 +9,7 @@ async function bundle() {
 
   copyFileSync('src/preload.cjs', 'dist/preload.js');
 
-  await Promise.all([
-    esbuild.build({
+  await esbuild.build({
       entryPoints: ['src/renderer/renderer.js'],
       bundle: true,
       minify: true,
@@ -23,8 +22,7 @@ async function bundle() {
       plugins: [importGlob()],
       sourcemap: true,
       logLevel: 'info'
-    })
-  ]);
+  });
 
   writeFileSync('dist/version.json', JSON.stringify({ version }, null, 2) + '\n');
   console.log('[bundle] wrote dist files');
