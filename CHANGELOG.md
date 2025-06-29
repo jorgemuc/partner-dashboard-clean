@@ -1,6 +1,7 @@
 # Changelog
-## v0.6.0 - KPI alerts
+## v0.6.0 - KPI Alert UI makeover
 * threshold config for KPIs with optional mail sending
+* new modal interface and overview
 ## v0.5.17 - build config cleanup
 * remove deprecated signing fields
 
