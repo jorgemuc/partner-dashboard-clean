@@ -1,4 +1,7 @@
 # Changelog
+## v0.7.0 - Inline table editing
+* cells editable via double click with validation
+* undo/redo integrated
 ## v0.6.0 - KPI Alert UI makeover
 * threshold config for KPIs with optional mail sending
 * new modal interface and overview
