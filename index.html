@@ -12,6 +12,7 @@
     });
   </script>
   <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="modal.css">
   <style>
     body { font-family: Arial, sans-serif; margin: 0; background: #f9f9fb;}
     header { background: #222; color: #fff; padding: 1rem; text-align: center;}
@@ -45,8 +46,13 @@
     .kpi{
       background:#fff;border-radius:1rem;box-shadow:0 2px 8px #0001;padding:1.2rem 2rem;
       flex:0 1 clamp(110px,9vw,160px);text-align:center;margin-bottom:1rem;white-space:nowrap;
+      position:relative;
     }
-    .kpi.alert{background:#ffd0d0;}
+    .kpi.alert-warn{background:#fff3cd;}
+    .kpi.alert-crit{background:#f8d7da;}
+    .kpi-cfg{position:absolute;top:4px;right:6px;background:none;border:0;opacity:0.5;}
+    .kpi:hover .kpi-cfg{opacity:1;}
+    .kpi-alert-icon{margin-right:4px;}
     .kpi div:last-child{white-space:nowrap;}
     #charts canvas{min-height:240px;}
     .cards { display: flex; flex-wrap: wrap; gap: 1rem; }
@@ -119,6 +125,7 @@ body.dark .log-table th { background: #3a3a3a; }
       <button class="export-btn" id="redoBtn" style="background:#aaa;">Redo</button>
     </div>
     <div id="msg"></div>
+    <div id="liveRegion" role="status" aria-live="polite" class="hidden"></div>
   </header>
   <nav>
     <button class="tab-btn active" data-tab="overview">Übersicht</button>
@@ -126,6 +133,7 @@ body.dark .log-table th { background: #3a3a3a; }
     <button class="tab-btn" data-tab="cards">Karten</button>
     <button class="tab-btn" data-tab="charts">Diagramme</button>
     <button class="tab-btn" data-tab="changelog">Änderungsprotokoll</button>
+    <button id="alertsSettingsBtn">Alerts</button>
   </nav>
   <main>
     <!-- Übersicht -->

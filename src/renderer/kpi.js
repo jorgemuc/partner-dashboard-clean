@@ -1,10 +1,20 @@
 import { getData } from './dataStore.js';
 import { getStatusBuckets } from './utils.js';
+import { createModal } from './modal.js';
 let charts = {};
 export function setChartsRef(obj){ charts = obj; }
 
 export function getThresholds(){
   return JSON.parse(localStorage.getItem('kpiThresholds')||'{}');
+}
+
+export function thresholdStore(cfg){
+  localStorage.setItem('kpiThresholds', JSON.stringify(cfg));
+  return cfg;
+}
+
+export function validateOperator(op){
+  return ['<','>','='].includes(op);
 }
 
 export function checkThresholds(kpis){
@@ -14,7 +24,9 @@ export function checkThresholds(kpis){
   kpis.forEach(k => {
     const th = cfg[k.label];
     const el = document.querySelector(`.kpi[data-kpi="${k.label}"]`);
-    el?.classList.remove('alert');
+    el?.classList.remove('alert-warn','alert-crit');
+    el?.removeAttribute('title');
+    el?.querySelector('.kpi-alert-icon')?.remove();
     if(!th) return;
     const val = parseFloat(k.value);
     let hit=false;
@@ -22,7 +34,13 @@ export function checkThresholds(kpis){
     if(th.op==='>' && val > th.value) hit=true;
     if(th.op==='=' && val === th.value) hit=true;
     if(hit){
-      el?.classList.add('alert');
+      const icon = document.createElement('span');
+      icon.className='kpi-alert-icon';
+      icon.textContent = th.op==='<'?'🛑':'⚠️';
+      icon.setAttribute('aria-label', th.op==='<'?'kritisch':'Warnung');
+      el?.prepend(icon);
+      el?.classList.add(th.op==='<'?'alert-crit':'alert-warn');
+      el?.setAttribute('title', `${k.label}: ${k.value} ${th.op} ${th.value}`);
       if(!el?.dataset.notified){
         window.showMsg?.(`KPI ${k.label} ${th.op}${th.value}`, 'error');
         if(th.email && window.api?.sendMail && process.env.DEV_FLAG!=='true'){
@@ -58,9 +76,9 @@ function computeKpis(){
 export function renderKPIs(_version){
   const kpis = computeKpis();
   const box = document.getElementById('kpiBoxes');
-  box.innerHTML = kpis.map(k=>`<div class="kpi" data-kpi="${k.label}"><div style="font-size:2rem;font-weight:bold">${k.value}</div><div>${k.label}</div></div>`).join('');
-  box.querySelectorAll('.kpi').forEach(div=>{
-    div.ondblclick = () => configureThreshold(div.dataset.kpi);
+  box.innerHTML = kpis.map(k=>`<div class="kpi" data-kpi="${k.label}"><button class="kpi-cfg" aria-label="Schwellwert anpassen">⚙️</button><div style="font-size:2rem;font-weight:bold">${k.value}</div><div>${k.label}</div></div>`).join('');
+  box.querySelectorAll('.kpi-cfg').forEach(btn=>{
+    btn.onclick = async e => { e.stopPropagation(); const mod = await import('./thresholdModal.js'); mod.openThresholdModal(btn.parentElement.dataset.kpi); };
   });
   checkThresholds(kpis);
   renderStatusChart();
@@ -91,24 +109,29 @@ function renderStatusChart(){
   });
 }
 
-function configureThreshold(label){
-  const current = getThresholds()[label] || { op:'<', value:0, email:false };
-  const input = prompt(`${label} Threshold (<n | >n | =n)`, `${current.op}${current.value}`);
-  if(!input){
-    const t = getThresholds();
-    delete t[label];
-    localStorage.setItem('kpiThresholds', JSON.stringify(t));
-    checkThresholds(computeKpis());
-    return;
-  }
-  const m = input.match(/([<>]=?|=)\s*(\d+(?:\.\d+)?)/);
-  if(!m) return;
-  const email = confirm('E-Mail schicken?');
-  const t = getThresholds();
-  t[label] = { op:m[1], value:parseFloat(m[2]), email };
-  localStorage.setItem('kpiThresholds', JSON.stringify(t));
-  checkThresholds(computeKpis());
+
+export function showAlertsOverview(){
+  const modal = createModal('Aktive Alerts');
+  const cfg = getThresholds();
+  const table = document.createElement('table');
+  table.className = 'log-table';
+  table.innerHTML = '<thead><tr><th>KPI</th><th>Op</th><th>Wert</th><th>Email</th><th></th></tr></thead><tbody></tbody>';
+  Object.keys(cfg).forEach(k=>{
+    const tr = document.createElement('tr');
+    const row = cfg[k];
+    tr.innerHTML = `<td>${k}</td><td>${row.op}</td><td>${row.value}</td><td><input type="checkbox" data-k="${k}" ${row.email?'checked':''} aria-label="E-Mail senden"></td><td><button data-k="${k}" aria-label="Löschen">🗑</button></td>`;
+    table.querySelector('tbody').appendChild(tr);
+  });
+  modal.body.appendChild(table);
+  modal.actions.innerHTML = `<button class="export-btn" id="alertsClose" style="background:#777;">Schließen</button>`;
+  modal.actions.querySelector('#alertsClose').onclick = modal.close;
+  table.querySelectorAll('input[type=checkbox]').forEach(cb=>{
+    cb.onchange = () => { cfg[cb.dataset.k].email = cb.checked; thresholdStore(cfg); };
+  });
+  table.querySelectorAll('button').forEach(btn=>{
+    btn.onclick = () => { delete cfg[btn.dataset.k]; thresholdStore(cfg); btn.closest('tr').remove(); };
+  });
 }
 
-export { configureThreshold };
+export { computeKpis };
 
