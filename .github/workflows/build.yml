@@ -35,6 +35,8 @@ jobs:
 
       - name: Run unit tests
         run: npm test
+#      - name: npm run smoke
+#        run: npm run smoke
 
       - name: Build app
         run: npm run build:win32

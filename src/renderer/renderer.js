@@ -2,6 +2,7 @@ import { applyFilters, getFilterFields } from '../shared/filterUtils.mjs';
 import { getData, setData } from './dataStore.js';
 import { getStatusBuckets } from './utils.js';
 import { renderKPIs, setChartsRef, showAlertsOverview } from './kpi.js';
+import { parseCsv } from '../../parser.js';
 import Papa from 'papaparse';
 import * as XLSX from 'xlsx';
 import Chart from 'chart.js/auto';
@@ -290,20 +291,18 @@ if(dropZone){
 }
 
 // === DEMO-DATEN ===
-async function loadDemoData(){
+async function loadDemo(){
   demoMode=true;
   resetCharts();
-  const raw = await fetch('./demo/PARTNER.csv').then(r=>r.text());
-  Papa.parse(raw,{header:true,skipEmptyLines:true,complete:res=>{
-    const rows=res.data.map(r=>{referenceSchema.forEach(f=>{if(!(f in r)) r[f]='';});return r;});
-    csvHeaders=[...referenceSchema];
-    showAlert('Demo-Daten geladen.','success');
-    changelog=[];
-    currentPage=1;
-    eventBus.emit('data:loaded', rows);
-  }});
+  const raw = await fetch('demo/PARTNER.csv').then(r=>r.text());
+  const { data, unexpected=[] } = parseCsv(raw);
+  csvHeaders=[...referenceSchema, ...unexpected];
+  showAlert('Demo-Daten geladen.','success');
+  changelog=[];
+  currentPage=1;
+  eventBus.emit('data:loaded', data);
 }
-document.getElementById('demoDataBtn').onclick = loadDemoData;
+document.getElementById('demoDataBtn').onclick = loadDemo;
 
 eventBus.on('data:loaded', handleCsvLoaded);
 
@@ -324,6 +323,12 @@ eventBus.on('data:updated', () => {
   renderCharts();
   renderChangelog();
 });
+document.addEventListener('DOMContentLoaded', () => {
+  import('./tableRenderer.js').then(m =>
+    m.initInlineEdit({ changelog, pushChange, bus:eventBus })
+  );
+  import('./kpi.js').then(m => m.initKpiAlerts());
+});
 window.onload = async () => {
   if (localStorage.getItem('prefers-dark') === 'true') {
     document.body.classList.add('dark');
@@ -334,7 +339,6 @@ window.onload = async () => {
   };
   applyView('Alle');
   await prepareWorkers();
-  initInlineEdit({ changelog, pushChange, bus:eventBus });
   document.getElementById('columnBtn').onclick = () => {
     const menu = document.getElementById('columnMenu');
     menu.style.display = menu.style.display === 'block' ? 'none' : 'block';

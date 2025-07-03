@@ -66,5 +66,7 @@ function spawnEditor(td, rowIndex, col, rule) {
     cleanup();
   }
 
-  function cleanup() { input.remove(); }
+  function cleanup() { if(input.parentNode) input.remove(); }
 }
+
+window.initInlineEdit = initInlineEdit;

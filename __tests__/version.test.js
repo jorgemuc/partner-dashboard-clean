@@ -4,7 +4,7 @@ const assert = require('node:assert/strict');
 jest.mock('electron', () => {
   const handlers = new Map();
   return {
-    app: { getVersion: () => '0.0.0' },
+    app: { getVersion: () => '0.0.0', getAppPath: () => '.' },
     ipcMain: { handle: (name, fn) => handlers.set(name, fn), _invokeHandlers: handlers }
   };
 });

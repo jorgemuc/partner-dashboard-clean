@@ -21,7 +21,7 @@ E24 - File-Upload für Verträge,Compliance-konformer Datei-Upload,Drag&Drop Zon
 E25 - Ticket-Feed Jira/Zendesk,Support-Insights integrieren,REST Client| Polling| Listenansicht| Links zu externen Tickets,planned,Support Insights,L,
 E26 - CSV-Validator vor Import,CSV-Qualitätsprüfung,Schema-Checking| Fehler-Highlight| Vorschau| Regel-Engine,planned,Data Quality,S,
 E27 - Role-Based Views,Rollenbasierte Ansichten,Rollen definieren| Route Guards| Conditional Rendering| Tests,planned,Focus,M,
-E28 - Mobile Card-View,Mobile Kartenansicht,Media Queries| Card-Komponente| Swipe-Gesten| Akzeptanztests,planned,On-the-go,M,
+E28 - Mobile Card-View,Mobile Kartenansicht,Media Queries| Card-Komponente| Swipe-Gesten| Akzeptanztests,done,On-the-go,M,
 E29 - OS-Theme Sync (Dark/Light),UI-Theme automatisch anpassen,System-Theme lesen| Variablen anwenden| Pref speichern,planned,UX,XS,
 E30 - Preset-Manager (shared),Geteilte Tabellen-Voreinstellungen,CRUD für Presets| Share-Link| Import/Export,planned,Collab,M,
 E31 - PPT/PDF-Export 1-Click,Berichte als PPT/PDF,PDF Generator| PPTX Export| Layout Templates| Caching,planned,Reporting,M,
@@ -71,3 +71,4 @@ E9 · Qualität & Automatisierung,dataStore test fix,convert dynamic imports to 
 E9 - Qualität & Automatisierung,Build schema fix,remove certSubject|sign fields,done,Quality,S,codex
 E29 - KPI Alerts,Threshold Mailer,Ampel-KPIs & Mails,done,Business KPI,S,codex
 E28 - Inline Edit,Direkte Bearbeitung,tableRenderer|validateCell|alertService,done,UX,M,codex
+E32 - Auto Version Bump,Automatisches Update,prebuild script|version.json schreiben,done,Automation,S,codex

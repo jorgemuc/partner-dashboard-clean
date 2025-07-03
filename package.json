@@ -1,11 +1,12 @@
 {
   "name": "partner-dashboard-clean",
-  "version": "0.7.0",
+  "version": "0.7.1",
   "main": "main.js",
   "scripts": {
     "start": "electron .",
     "lint": "eslint main.js src/preload.cjs",
     "bundle": "node scripts/bundle.js",
+    "prebuild:win32": "node scripts/bumpVersion.js",
     "build:win32": "electron-builder --win portable",
     "build": "npm run build:win32",
     "pack": "electron-builder --dir",
