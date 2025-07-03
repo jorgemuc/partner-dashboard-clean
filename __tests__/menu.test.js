@@ -2,7 +2,7 @@ const { test } = require('@jest/globals');
 const assert = require('node:assert/strict');
 
 jest.mock('electron', () => ({
-  app: { getVersion: () => '0.0.0' },
+  app: { getVersion: () => '0.0.0', getAppPath: () => '.' },
   BrowserWindow: function() {},
   Menu: { buildFromTemplate: t => t },
   shell: {}, dialog: {},

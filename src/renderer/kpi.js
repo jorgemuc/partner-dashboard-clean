@@ -4,6 +4,24 @@ import { createModal } from './modal.js';
 let charts = {};
 export function setChartsRef(obj){ charts = obj; }
 
+export function initKpiAlerts(){
+  document.querySelectorAll('.kpi').forEach(div => {
+    const icon = document.createElement('span');
+    icon.className = 'gear';
+    icon.textContent = '⚙️';
+    icon.setAttribute('aria-label','Schwellwert anpassen');
+    if(!div.querySelector('.gear')){
+      div.appendChild(icon);
+      icon.onclick = async e => {
+        e.stopPropagation();
+        const mod = await import('./thresholdModal.js');
+        mod.openThresholdModal(div.dataset.kpi);
+      };
+    }
+  });
+}
+window.initKpiAlerts = initKpiAlerts;
+
 export function getThresholds(){
   return JSON.parse(localStorage.getItem('kpiThresholds')||'{}');
 }

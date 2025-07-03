@@ -2,6 +2,7 @@ const { app, BrowserWindow, Menu, shell, dialog, ipcMain } = require('electron')
 const fs = require('fs');
 const { parseCsv } = require('./parser');
 const path = require('path');
+const PRELOAD = path.join(app.getAppPath(),'dist','preload.js');
 const nodemailer = require('nodemailer');
 
 ipcMain.handle('get-version', () => app.getVersion());
@@ -54,7 +55,7 @@ function getMenuTemplate(win){
           webPreferences:{
             nodeIntegration:false,
             contextIsolation:true,
-            preload:path.join(__dirname,'dist','preload.js')
+            preload:PRELOAD
           }
         });
         about.setMenu(null);
@@ -68,7 +69,7 @@ function getMenuTemplate(win){
           webPreferences:{
             nodeIntegration:false,
             contextIsolation:true,
-            preload:path.join(__dirname,'dist','preload.js')
+            preload:PRELOAD
           }
         });
         help.setMenu(null);
@@ -89,7 +90,7 @@ function createWindow() {
     webPreferences:{
       nodeIntegration:false,
       contextIsolation:true,
-      preload:path.join(__dirname,'dist','preload.js')
+      preload:PRELOAD
     }
   });
   win.loadFile(path.join(__dirname, 'index.html'));

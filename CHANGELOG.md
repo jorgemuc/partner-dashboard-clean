@@ -1,4 +1,5 @@
 # Changelog
+## v0.7.1 – alerts & inline edit fixed
 ## v0.6.0 - KPI Alert UI makeover
 * threshold config for KPIs with optional mail sending
 * new modal interface and overview
