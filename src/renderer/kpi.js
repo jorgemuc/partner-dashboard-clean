@@ -24,7 +24,7 @@ export function checkThresholds(kpis){
   kpis.forEach(k => {
     const th = cfg[k.label];
     const el = document.querySelector(`.kpi[data-kpi="${k.label}"]`);
-    el?.classList.remove('kpi-warn','kpi-crit');
+    el?.classList.remove('alert-warn','alert-crit');
     el?.removeAttribute('title');
     el?.querySelector('.kpi-alert-icon')?.remove();
     if(!th) return;
@@ -39,7 +39,7 @@ export function checkThresholds(kpis){
       icon.textContent = th.op==='<'?'🛑':'⚠️';
       icon.setAttribute('aria-label', th.op==='<'?'kritisch':'Warnung');
       el?.prepend(icon);
-      el?.classList.add(th.op==='<'?'kpi-crit':'kpi-warn');
+      el?.classList.add(th.op==='<'?'alert-crit':'alert-warn');
       el?.setAttribute('title', `${k.label}: ${k.value} ${th.op} ${th.value}`);
       if(!el?.dataset.notified){
         window.showMsg?.(`KPI ${k.label} ${th.op}${th.value}`, 'error');
@@ -76,9 +76,9 @@ function computeKpis(){
 export function renderKPIs(_version){
   const kpis = computeKpis();
   const box = document.getElementById('kpiBoxes');
-  box.innerHTML = kpis.map(k=>`<div class="kpi" data-kpi="${k.label}"><span class="kpi-config" aria-label="Schwellwert anpassen">⚙️</span><div style="font-size:2rem;font-weight:bold">${k.value}</div><div>${k.label}</div></div>`).join('');
-  box.querySelectorAll('.kpi-config').forEach(btn=>{
-    btn.onclick = e => { e.stopPropagation(); configureThreshold(btn.parentElement.dataset.kpi); };
+  box.innerHTML = kpis.map(k=>`<div class="kpi" data-kpi="${k.label}"><button class="kpi-cfg" aria-label="Schwellwert anpassen">⚙️</button><div style="font-size:2rem;font-weight:bold">${k.value}</div><div>${k.label}</div></div>`).join('');
+  box.querySelectorAll('.kpi-cfg').forEach(btn=>{
+    btn.onclick = async e => { e.stopPropagation(); const mod = await import('./thresholdModal.js'); mod.openThresholdModal(btn.parentElement.dataset.kpi); };
   });
   checkThresholds(kpis);
   renderStatusChart();
@@ -109,46 +109,6 @@ function renderStatusChart(){
   });
 }
 
-function configureThreshold(label){
-  const current = getThresholds()[label] || { op:'<', value:'', email:false };
-  const modal = createModal(`Schwellwert für ${label}`);
-  modal.body.innerHTML = `
-    <label>Operator
-      <select id="thOp">
-        <option value="<">&lt;</option>
-        <option value=">">&gt;</option>
-        <option value="=">=</option>
-      </select>
-    </label>
-    <label>Wert <input id="thVal" type="number"></label>
-    <label><input id="thMail" type="checkbox"> E-Mail senden</label>
-  `;
-  modal.actions.innerHTML = `
-    <button class="export-btn" id="thSave" style="background:#32b14d;">Speichern</button>
-    <button class="export-btn" id="thDelete" style="background:#e88;">Löschen</button>
-    <button class="export-btn" id="thCancel" style="background:#777;">Abbrechen</button>`;
-  document.getElementById('thOp').value = current.op;
-  document.getElementById('thVal').value = current.value;
-  document.getElementById('thMail').checked = current.email;
-  document.getElementById('thSave').onclick = ()=>{
-    const op = document.getElementById('thOp').value;
-    const val = parseFloat(document.getElementById('thVal').value);
-    if(!validateOperator(op) || isNaN(val)) return;
-    const cfg = getThresholds();
-    cfg[label] = { op, value:val, email: document.getElementById('thMail').checked };
-    thresholdStore(cfg);
-    checkThresholds(computeKpis());
-    modal.close();
-  };
-  document.getElementById('thDelete').onclick = ()=>{
-    const cfg = getThresholds();
-    delete cfg[label];
-    thresholdStore(cfg);
-    checkThresholds(computeKpis());
-    modal.close();
-  };
-  document.getElementById('thCancel').onclick = modal.close;
-}
 
 export function showAlertsOverview(){
   const modal = createModal('Aktive Alerts');
@@ -173,5 +133,5 @@ export function showAlertsOverview(){
   });
 }
 
-export { configureThreshold };
+export { computeKpis };
 

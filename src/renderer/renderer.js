@@ -2,9 +2,6 @@ import { applyFilters, getFilterFields } from '../shared/filterUtils.mjs';
 import { getData, setData } from './dataStore.js';
 import { getStatusBuckets } from './utils.js';
 import { renderKPIs, setChartsRef, showAlertsOverview } from './kpi.js';
-import { initInlineEdit } from './tableRenderer.js';
-import { showAlert } from './alertService.js';
-import { applyChange, undo, redo } from '../../undoRedo.js';
 import Papa from 'papaparse';
 import * as XLSX from 'xlsx';
 import Chart from 'chart.js/auto';
@@ -353,7 +350,14 @@ window.onload = async () => {
 };
 
 // === UI MESSAGES ===
-window.showMsg = showAlert;
+function showMsg(txt, type="success") {
+  const msgDiv = document.getElementById("msg");
+  msgDiv.innerHTML = `<span class="${type}-msg">${txt}</span>`;
+  const live = document.getElementById('liveRegion');
+  if(live) live.textContent = txt;
+  setTimeout(() => { msgDiv.innerHTML = ""; }, 4000);
+}
+window.showMsg = showMsg;
 
 function renderOverview(){
   if(appVersion) renderKPIs(appVersion);

@@ -41,6 +41,7 @@
     "asar": true,
     "files": [
       "**/*",
+      "dist/preload.js",
       "dist/**/*",
       "src/preload.cjs"
     ],

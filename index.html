@@ -48,10 +48,10 @@
       flex:0 1 clamp(110px,9vw,160px);text-align:center;margin-bottom:1rem;white-space:nowrap;
       position:relative;
     }
-    .kpi-warn{background:#fff4cf;}
-    .kpi-crit{background:#ffd0d0;}
-    .kpi-config{position:absolute;top:4px;right:6px;cursor:pointer;opacity:0.6;display:none;}
-    .kpi:hover .kpi-config{display:block;}
+    .kpi.alert-warn{background:#fff3cd;}
+    .kpi.alert-crit{background:#f8d7da;}
+    .kpi-cfg{position:absolute;top:4px;right:6px;background:none;border:0;opacity:0.5;}
+    .kpi:hover .kpi-cfg{opacity:1;}
     .kpi-alert-icon{margin-right:4px;}
     .kpi div:last-child{white-space:nowrap;}
     #charts canvas{min-height:240px;}
