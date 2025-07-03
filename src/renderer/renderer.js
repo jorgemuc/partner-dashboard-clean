@@ -68,6 +68,10 @@ const headerAliases = {
 let csvHeaders = [];
 let changelog = [];
 let changeIndex = 0;
+
+function pushChange(change){
+  changeIndex = applyChange(getData(), change, changelog, changeIndex);
+}
 let charts = {};
 setChartsRef(charts);
 eventBus.on('chart:empty', id => {
@@ -173,7 +177,7 @@ function processCsvRaw(raw, statusEl){
   if(progress){progress.style.display='block';progress.value=10;}
   if(statusEl) statusEl.textContent = 'Parsing...';
   const validation = validateCsvRaw(raw);
-  if(!validation.valid){ showMsg('CSV Fehler: '+validation.errors.join('; '),'error'); if(progress) progress.style.display='none'; if(statusEl) statusEl.textContent=''; return; }
+  if(!validation.valid){ showAlert('CSV Fehler: '+validation.errors.join('; '),'error'); if(progress) progress.style.display='none'; if(statusEl) statusEl.textContent=''; return; }
   const first = raw.split(/\r?\n/)[0] || '';
   const comma = (first.match(/,/g)||[]).length;
   const semi = (first.match(/;/g)||[]).length;
@@ -206,12 +210,12 @@ function processCsvRaw(raw, statusEl){
       let msg = `Import erfolgreich: ${rows.length} Partner geladen.`;
       if (missing.length) msg += ` Fehlende Spalten: ${missing.join(', ')}.`;
       msg += unexpectedMsg;
-      showMsg(msg, 'success');
+      showAlert(msg, 'success');
       changelog = [];
       currentPage = 1;
       // render handled by data:updated subscriber
     },
-    error: err => showMsg("Fehler beim Parsen der CSV: "+err, "error")
+    error: err => showAlert("Fehler beim Parsen der CSV: "+err, "error")
   });
   if(progress) progress.style.display='none';
   if(statusEl) statusEl.textContent='';
@@ -231,7 +235,7 @@ function handleFile(file){
   document.getElementById('partnerTable').querySelector('tbody').innerHTML='';
   const reader = new FileReader();
   reader.onload = e => loadCsvFromString(e.target.result);
-  reader.onerror = e => showMsg('Fehler beim Laden: '+e.target.error,'error');
+  reader.onerror = e => showAlert('Fehler beim Laden: '+e.target.error,'error');
   reader.readAsText(file,'utf-8');
 }
 
@@ -293,7 +297,7 @@ async function loadDemoData(){
   Papa.parse(raw,{header:true,skipEmptyLines:true,complete:res=>{
     const rows=res.data.map(r=>{referenceSchema.forEach(f=>{if(!(f in r)) r[f]='';});return r;});
     csvHeaders=[...referenceSchema];
-    showMsg('Demo-Daten geladen.','success');
+    showAlert('Demo-Daten geladen.','success');
     changelog=[];
     currentPage=1;
     eventBus.emit('data:loaded', rows);
@@ -330,6 +334,7 @@ window.onload = async () => {
   };
   applyView('Alle');
   await prepareWorkers();
+  initInlineEdit({ changelog, pushChange, bus:eventBus });
   document.getElementById('columnBtn').onclick = () => {
     const menu = document.getElementById('columnMenu');
     menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
@@ -466,7 +471,8 @@ function renderTable() {
   if(currentPage>totalPages) currentPage = totalPages;
   let rows = "";
   filtered.slice((currentPage-1)*rowsPerPage, currentPage*rowsPerPage).forEach((row,idx) => {
-    let tds = csvHeaders.map(h=>`<td data-col="${h}" class="${hiddenColumns.includes(h)?'hidden':''}">${row[h]||""}</td>`).join("");
+    const ridx = data.indexOf(row);
+    let tds = csvHeaders.map(h=>`<td data-row="${ridx}" data-col="${h}" class="${hiddenColumns.includes(h)?'hidden':''}">${row[h]||""}</td>`).join("");
     tds += `<td><button class="edit-btn" onclick="openEditor(${data.indexOf(row)})">Edit</button></td>`;
     rows += `<tr>${tds}</tr>`;
   });
@@ -522,24 +528,21 @@ window.openEditor = function(idx) {
       const oldVal = data[idx][h]||"";
       const newVal = document.getElementById(`edit_${safeId}`).value;
       if (oldVal !== newVal) {
-        data[idx][h] = newVal;
-        changelog.splice(changeIndex);
-        changelog.push({
-          time: new Date().toLocaleString(),
+        pushChange({
           index: idx,
           field: h,
           old: oldVal,
           new: newVal,
           partner: data[idx].Partnername,
-          system: data[idx].Systemname
+          system: data[idx].Systemname,
+          type:'edit',
+          ts: Date.now()
         });
-        if(changelog.length>5){ changelog.shift(); }
-        changeIndex = changelog.length;
         changed = true;
       }
     });
     document.getElementById("modalBg").style.display = "none";
-    if (changed) { setData(data); showMsg("Änderung gespeichert!","success"); }
+    if (changed) { setData(data); showAlert("Änderung gespeichert!","success"); }
   };
   document.getElementById("modalCloseBtn").onclick = ()=>{ document.getElementById("modalBg").style.display = "none"; }
 };
@@ -560,23 +563,15 @@ function renderChangelog() {
 }
 
 window.undoChange = function(){
-  if(changeIndex===0) return;
-  const c = changelog[changeIndex-1];
-  const data = getData();
-  data[c.index][c.field] = c.old;
-  setData(data);
-  changeIndex--;
-  showMsg('Undo','success');
+  changeIndex = undo(getData(), changelog, changeIndex);
+  eventBus.emit('data:updated', getData());
+  showAlert('Undo','success');
 };
 
 window.redoChange = function(){
-  if(changeIndex===changelog.length) return;
-  const c = changelog[changeIndex];
-  const data = getData();
-  data[c.index][c.field] = c.new;
-  setData(data);
-  changeIndex++;
-  showMsg('Redo','success');
+  changeIndex = redo(getData(), changelog, changeIndex);
+  eventBus.emit('data:updated', getData());
+  showAlert('Redo','success');
 };
 
 // === CSV EXPORT ===
@@ -611,7 +606,7 @@ window.exportTableXLSX = function(){
 function renderCharts() {
   const data = getData();
   if (!data.length) return;
-  if(!Chart){ showMsg('Charts disabled','error'); return; }
+  if(!Chart){ showAlert('Charts disabled','error'); return; }
   const mapping = {
     pieVertragstyp: 'Vertragstyp',
     pieDevPortal: 'Developer_Portal_Zugang',
