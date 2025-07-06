@@ -2,11 +2,12 @@ import { applyFilters, getFilterFields } from '../shared/filterUtils.mjs';
 import { getData, setData } from './dataStore.js';
 import { getStatusBuckets } from './utils.js';
 import { renderKPIs, setChartsRef, showAlertsOverview } from './kpi.js';
-import { parseCsv } from '../../parser.js';
 import Papa from 'papaparse';
 import * as XLSX from 'xlsx';
 import Chart from 'chart.js/auto';
 import { buildChart } from '../../chartWorker.mjs';
+import './inlineEdit.js';
+import './kpi.js';
 let chartWorkerSrc = '';
 async function loadWorkerSrc(){
   if(chartWorkerSrc) return;
@@ -240,8 +241,16 @@ function handleFile(file){
   reader.readAsText(file,'utf-8');
 }
 
+function resetFilters(){
+  document.querySelectorAll('#filters input').forEach(i=>{ i.value=''; });
+  document.querySelectorAll('#partnerTable .filter-row input')
+    .forEach(i=>{ i.value=''; });
+}
+
 function handleCsvLoaded(rows){
   setData(rows);
+  currentPage = 1;
+  resetFilters();
   renderAll();
 }
 
@@ -291,18 +300,10 @@ if(dropZone){
 }
 
 // === DEMO-DATEN ===
-async function loadDemo(){
-  demoMode=true;
-  resetCharts();
-  const raw = await fetch('demo/PARTNER.csv').then(r=>r.text());
-  const { data, unexpected=[] } = parseCsv(raw);
-  csvHeaders=[...referenceSchema, ...unexpected];
-  showAlert('Demo-Daten geladen.','success');
-  changelog=[];
-  currentPage=1;
-  eventBus.emit('data:loaded', data);
-}
-document.getElementById('demoDataBtn').onclick = loadDemo;
+document.getElementById('demoDataBtn').onclick = () =>
+  Papa.parse('./demo/PARTNER.csv', { download:true, header:true,
+    complete: r => { setData(r.data); currentPage=1; resetFilters(); renderAll(); }
+  });
 
 eventBus.on('data:loaded', handleCsvLoaded);
 
@@ -323,12 +324,6 @@ eventBus.on('data:updated', () => {
   renderCharts();
   renderChangelog();
 });
-document.addEventListener('DOMContentLoaded', () => {
-  import('./tableRenderer.js').then(m =>
-    m.initInlineEdit({ changelog, pushChange, bus:eventBus })
-  );
-  import('./kpi.js').then(m => m.initKpiAlerts());
-});
 window.onload = async () => {
   if (localStorage.getItem('prefers-dark') === 'true') {
     document.body.classList.add('dark');
@@ -339,6 +334,7 @@ window.onload = async () => {
   };
   applyView('Alle');
   await prepareWorkers();
+  window.initInlineEdit?.();
   document.getElementById('columnBtn').onclick = () => {
     const menu = document.getElementById('columnMenu');
     menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
@@ -354,14 +350,7 @@ window.onload = async () => {
 };
 
 // === UI MESSAGES ===
-function showMsg(txt, type="success") {
-  const msgDiv = document.getElementById("msg");
-  msgDiv.innerHTML = `<span class="${type}-msg">${txt}</span>`;
-  const live = document.getElementById('liveRegion');
-  if(live) live.textContent = txt;
-  setTimeout(() => { msgDiv.innerHTML = ""; }, 4000);
-}
-window.showMsg = showMsg;
+// moved to ./ui/toast.js
 
 function renderOverview(){
   if(appVersion) renderKPIs(appVersion);

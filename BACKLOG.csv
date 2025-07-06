@@ -72,3 +72,4 @@ E9 - Qualität & Automatisierung,Build schema fix,remove certSubject|sign fields
 E29 - KPI Alerts,Threshold Mailer,Ampel-KPIs & Mails,done,Business KPI,S,codex
 E28 - Inline Edit,Direkte Bearbeitung,tableRenderer|validateCell|alertService,done,UX,M,codex
 E32 - Auto Version Bump,Automatisches Update,prebuild script|version.json schreiben,done,Automation,S,codex
+E34 - Regression Fixes,0.7.2 patch,preload path|demo csv|inline edit,done,Bugfix,S,codex
