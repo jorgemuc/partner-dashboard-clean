@@ -1,6 +1,6 @@
 {
   "name": "partner-dashboard-clean",
-  "version": "0.7.1",
+  "version": "0.7.2",
   "main": "main.js",
   "scripts": {
     "start": "electron .",
@@ -41,10 +41,7 @@
     "appId": "com.jorgemuc.partnerdashboard",
     "asar": true,
     "files": [
-      "**/*",
-      "dist/preload.js",
-      "dist/**/*",
-      "src/preload.cjs"
+      "dist/**/*"
     ],
     "win": {
       "target": "portable",
