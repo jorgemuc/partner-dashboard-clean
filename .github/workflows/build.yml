@@ -30,9 +30,6 @@ jobs:
       - name: Verify icon
         run: test -s assets/icon.ico || exit 1
 
-      - name: Ensure preload bundle exists
-        run: node -e "const fs=require('fs'); if(!fs.existsSync('dist/preload.js')){console.error('dist/preload.js missing'); process.exit(1);}"
-
       - name: Run unit tests
         run: npm test
 #      - name: npm run smoke

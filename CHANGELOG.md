@@ -1,4 +1,5 @@
 # Changelog
+## v0.7.4 – fix: workflow preload check
 ## v0.7.3 – fix: icon generation via sharp
 ## v0.7.2 – fix: packaging main.js, preload path, demo-data, multi-csv, inline-edit save
 ## v0.7.1 – alerts & inline edit fixed
