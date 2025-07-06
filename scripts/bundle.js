@@ -4,23 +4,23 @@ const importGlob = require('esbuild-plugin-import-glob').default;
 const fs = require('node:fs');
 const path = require('node:path');
 const { version } = require('../package.json');
-const { mkdirSync, writeFileSync } = require('node:fs');
+const { mkdirSync, writeFileSync, copyFileSync, existsSync } = require('node:fs');
 
 async function bundle() {
   mkdirSync('dist', { recursive: true });
 
-  await esbuild.build({
-    entryPoints: ['src/preload.cjs'],
-    bundle: true,
-    minify: true,
-    platform: 'node',
-    external: ['electron', 'fs', 'path', 'os', 'crypto', 'util'],
-    target: ['node16'],
-    outfile: 'dist/preload.js',
-    logLevel: 'info'
-  });
-
-  await esbuild.build({
+  await Promise.all([
+    esbuild.build({
+      entryPoints: ['src/preload.cjs'],
+      bundle: true,
+      minify: true,
+      platform: 'node',
+      external: ['electron', 'fs', 'path', 'os', 'crypto', 'util'],
+      target: ['node16'],
+      outfile: 'dist/preload.js',
+      logLevel: 'info'
+    }),
+    esbuild.build({
       entryPoints: ['src/renderer/renderer.js'],
       bundle: true,
       minify: true,
@@ -45,9 +45,11 @@ async function bundle() {
       }],
       sourcemap: true,
       logLevel: 'info'
-  });
+    })
+  ]);
 
   writeFileSync('dist/version.json', JSON.stringify({ version }, null, 2) + '\n');
+  if (!existsSync('main.js')) copyFileSync('src/main.js', 'main.js');
   console.log('[bundle] wrote dist files');
 }
 
