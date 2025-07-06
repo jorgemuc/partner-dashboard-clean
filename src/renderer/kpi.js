@@ -1,6 +1,7 @@
 import { getData } from './dataStore.js';
 import { getStatusBuckets } from './utils.js';
 import { createModal } from './modal.js';
+import { showMsg } from './ui/toast.js';
 let charts = {};
 export function setChartsRef(obj){ charts = obj; }
 
@@ -60,7 +61,7 @@ export function checkThresholds(kpis){
       el?.classList.add(th.op==='<'?'alert-crit':'alert-warn');
       el?.setAttribute('title', `${k.label}: ${k.value} ${th.op} ${th.value}`);
       if(!el?.dataset.notified){
-        window.showMsg?.(`KPI ${k.label} ${th.op}${th.value}`, 'error');
+        showMsg(`KPI ${k.label} ${th.op}${th.value}`, 'error');
         if(th.email && window.api?.sendMail && process.env.DEV_FLAG!=='true'){
           if(!last[k.label] || now-last[k.label]>600000){
             window.api.sendMail({subject:`KPI ${k.label}`, text:`${k.label}: ${k.value}`}).catch(()=>{});
