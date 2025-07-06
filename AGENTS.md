@@ -27,6 +27,9 @@ Run `npm test` and `npm run smoke` before committing. Verify that `BACKLOG.csv` 
 ### Dependency Management
 All third-party libraries must be installed via NPM. Local copies under `assets/` are forbidden.
 
+### Binary Assets
+Do not commit ICO or large PNG files directly. Store them as Base64 text and decode during installation or bundling.
+
 ### Logging Discipline
 Preload produces no console output on success. All fatal errors must start with `[pl-err]` so Smoke-Test can whitelist benign logs.
 
