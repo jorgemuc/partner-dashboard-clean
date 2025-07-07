@@ -3,7 +3,7 @@ export default {
     '\\.(css|png)$': 'identity-obj-proxy',
     '\\?raw$': '<rootDir>/tests/rawLoader.js'
   },
-  setupFilesAfterEnv: ['<rootDir>/tests/jest.setup.js'],
+  setupFiles: ['<rootDir>/jest.setup.js'],
   testEnvironmentOptions: { resources: 'usable' },
   testMatch: [
     '**/__tests__/*.test.js',

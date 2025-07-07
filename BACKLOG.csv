@@ -72,3 +72,18 @@ E9 - Qualität & Automatisierung,Build schema fix,remove certSubject|sign fields
 E29 - KPI Alerts,Threshold Mailer,Ampel-KPIs & Mails,done,Business KPI,S,codex
 E28 - Inline Edit,Direkte Bearbeitung,tableRenderer|validateCell|alertService,done,UX,M,codex
 E32 - Auto Version Bump,Automatisches Update,prebuild script|version.json schreiben,done,Automation,S,codex
+E34 - Regression Fixes,0.7.2 patch,preload path|demo csv|inline edit,done,Bugfix,S,codex
+E35 - Packaging Fix,Main entry packaging,copy main.js|update build files,done,Distribution,S,codex
+E36 - Icon Verify,Windows icon build,prepare-icon script|workflow check,done,Distribution,S,codex
+E37 - Build Fix,Workflow check fail,remove preload check step,done,CI,S,codex
+E38 - Parser Packaging,parser missing in build,add parser.js to build files,done,Distribution,S,codex
+E39 - Parser Path,parser path correction,package.json files updated,done,Distribution,S,codex
+E40 - Packaging Pipeline,Bundle verify,ci checks & exe test,done,Distribution,S,codex
+E41 - Path Integrity,tests failing,bundle fixes,done,CI,S,codex
+E42 - Preload Verification,asar check in win-package,workflow updated,done,CI,S,codex
+E43 - Portable Check,use EXE_PATH,workflow patch,done,CI,S,codex
+E44 - Chart Worker,stable chart worker & preload resolver,frontend fix,done,CI,S,codex
+E45 - CI Cleanup,Preload asar check,Deduplicate step,done,CI,S,codex
+E46 - Asar Path,robust exe lookup,workflow guard,done,CI,S,codex
+E47 - Preload Hardening,workflow dedup & fetch worker,preload path fix,done,CI,S,codex
+E48 - Workflow Fix,unify asar check,bundler dedup,done,CI,S,codex

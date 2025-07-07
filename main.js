@@ -1,8 +1,9 @@
 const { app, BrowserWindow, Menu, shell, dialog, ipcMain } = require('electron');
 const fs = require('fs');
-const { parseCsv } = require('./parser');
+const { parseCsv } = require('./src/utils/parser');
 const path = require('path');
-const PRELOAD = path.join(app.getAppPath(),'dist','preload.js');
+const PRELOAD = path.join(__dirname, '..', 'dist', 'preload.js');
+// works in dev (npm start) and in the packed ASAR
 const nodemailer = require('nodemailer');
 
 ipcMain.handle('get-version', () => app.getVersion());
@@ -32,8 +33,12 @@ const columnViews = {
 function getMenuTemplate(win){
   return [
     {label:'File',submenu:[
-      {label:'CSV laden…', click: (_item, focusedWindow) => {
-        focusedWindow.webContents.send('open-csv-dialog');
+      {label:'CSV laden…', click: async (_item, win) => {
+        const { canceled, filePaths } = await dialog.showOpenDialog(win, {
+          properties:['openFile'],
+          filters:[{ name:'CSV', extensions:['csv'] }]
+        });
+        if(!canceled && filePaths[0]) win.webContents.send('open-csv-dialog', filePaths[0]);
       }},
       {role:'quit'}]},
     {label:'View',submenu:[
@@ -93,10 +98,11 @@ function createWindow() {
       preload:PRELOAD
     }
   });
-  win.loadFile(path.join(__dirname, 'index.html'));
+  win.loadFile('index.html');
   // ----------  E2E Smoke-Test Handshake ----------
   win.webContents.once('did-finish-load', () => {
     win.webContents.send('app-loaded'); // guarantees the renderer is ready
+    if (process.send) process.send('app-loaded');
   });
   createMenu(win);
 }
