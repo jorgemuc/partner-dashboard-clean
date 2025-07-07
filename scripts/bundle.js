@@ -4,7 +4,7 @@ const importGlob = require('esbuild-plugin-import-glob').default;
 const fs = require('node:fs');
 const path = require('node:path');
 const { version } = require('../package.json');
-const { mkdirSync, writeFileSync } = require('node:fs');
+const { mkdirSync, writeFileSync, copyFileSync, existsSync } = require('node:fs');
 
 async function bundle() {
   mkdirSync('dist', { recursive: true });
@@ -45,9 +45,10 @@ async function bundle() {
       }],
       sourcemap: true,
       logLevel: 'info'
-  });
+    });
 
   writeFileSync('dist/version.json', JSON.stringify({ version }, null, 2) + '\n');
+  if (!existsSync('main.js')) copyFileSync('src/main.js', 'main.js');
   console.log('[bundle] wrote dist files');
 }
 
