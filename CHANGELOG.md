@@ -1,5 +1,4 @@
 # Changelog
-## v0.7.12 - fix: robust asar preload check
 ## v0.7.11 - fix: CI asar preload check
 ## v0.7.10 - fix: chart worker preload path and stable charts
 ## v0.7.9 - fix: portable EXE preload check via EXE_PATH
