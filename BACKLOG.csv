@@ -77,4 +77,5 @@ E35 - Packaging Fix,Main entry packaging,copy main.js|update build files,done,Di
 E36 - Icon Verify,Windows icon build,prepare-icon script|workflow check,done,Distribution,S,codex
 E37 - Build Fix,Workflow check fail,remove preload check step,done,CI,S,codex
 E38 - Parser Packaging,parser missing in build,add parser.js to build files,done,Distribution,S,codex
-E39 - Parser Path,parser path correction,package.json files updated,pending,Distribution,S,codex
+E39 - Parser Path,parser path correction,package.json files updated,done,Distribution,S,codex
+E40 - Packaging Pipeline,Bundle verify,ci checks & exe test,done,Distribution,S,codex

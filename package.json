@@ -44,11 +44,9 @@
     "appId": "com.jorgemuc.partnerdashboard",
     "asar": true,
     "files": [
-      "main.js",
-      "parser.js",
-      "src/preload.cjs",
+      "**/*",
       "dist/**/*",
-      "assets/icon.ico"
+      "!node_modules/**/*.{md,ts}"
     ],
     "win": {
       "target": "portable",

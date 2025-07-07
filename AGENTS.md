@@ -30,6 +30,11 @@ All third-party libraries must be installed via NPM. Local copies under `assets/
 ### Binary Assets
 Do not commit ICO or large PNG files directly. Store them as Base64 text and decode during installation or bundling.
 
+### Packaging Rule
+- `npm run bundle` **must** run immediately before any `electron-builder` call.
+- `build.files` must always include `main.js` and all `.js` files in the project root.
+- The portable smoke test must launch the built `.exe` to verify startup.
+
 ### Logging Discipline
 Preload produces no console output on success. All fatal errors must start with `[pl-err]` so Smoke-Test can whitelist benign logs.
 

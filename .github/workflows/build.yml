@@ -35,6 +35,12 @@ jobs:
 #      - name: npm run smoke
 #        run: npm run smoke
 
+      - name: Bundle app
+        run: npm run bundle
+
+      - name: Verify preload
+        run: test -s dist/preload.js || exit 1
+
       - name: Build app
         run: npm run bundle && npm run build:win32
 
