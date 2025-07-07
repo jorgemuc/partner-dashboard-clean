@@ -76,3 +76,4 @@ E34 - Regression Fixes,0.7.2 patch,preload path|demo csv|inline edit,done,Bugfix
 E35 - Packaging Fix,Main entry packaging,copy main.js|update build files,done,Distribution,S,codex
 E36 - Icon Verify,Windows icon build,prepare-icon script|workflow check,done,Distribution,S,codex
 E37 - Build Fix,Workflow check fail,remove preload check step,done,CI,S,codex
+E38 - Parser Packaging,parser missing in build,add parser.js to build files,done,Distribution,S,codex

@@ -1,6 +1,6 @@
 {
   "name": "partner-dashboard-clean",
-  "version": "0.7.4",
+  "version": "0.7.5",
   "main": "main.js",
   "scripts": {
     "start": "electron .",
@@ -46,7 +46,8 @@
     "files": [
       "main.js",
       "dist/**/*",
-      "assets/icon.ico"
+      "assets/icon.ico",
+      "src/shared/parser.js"
     ],
     "win": {
       "target": "portable",
