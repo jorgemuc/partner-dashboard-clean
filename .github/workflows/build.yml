@@ -53,11 +53,22 @@ jobs:
       - name: Verify preload
         run: test -s dist/preload.js || exit 1
 
-      - name: Bundle app
-        run: npm run bundle
+  win-package:
+    needs: test
+    runs-on: windows-latest
 
-      - name: Verify preload
-        run: test -s dist/preload.js || exit 1
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 20
+
+      - name: Install deps
+        run: npm ci
+
+      - name: Verify icon
+        run: test -s assets/icon.ico || exit 1
 
       - name: Build app
         run: npm run bundle && npm run build:win32
@@ -78,4 +89,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: partner-dashboard-win
-          path: dist/*.exe
+          path: ${{ steps.find_asar.outputs.exe }}
