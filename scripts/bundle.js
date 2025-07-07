@@ -45,7 +45,7 @@ async function bundle() {
       }],
       sourcemap: true,
       logLevel: 'info'
-    });
+    })
 
   writeFileSync('dist/version.json', JSON.stringify({ version }, null, 2) + '\n');
   if (!existsSync('main.js')) copyFileSync('src/main.js', 'main.js');

@@ -106,7 +106,7 @@ export function renderKPIs(_version){
 function renderStatusChart(){
   const b = getStatusBuckets(getData());
   const ctx = document.getElementById('barStatus').getContext('2d');
-  charts.barStatus?.destroy();
+  if (typeof charts.barStatus?.destroy === 'function') charts.barStatus.destroy();
   charts.barStatus = new Chart(ctx, {
     type: 'bar',
     data: {

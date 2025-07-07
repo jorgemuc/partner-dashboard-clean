@@ -3,3 +3,4 @@ assets/icons/*.png
 dist/**
 !dist/version.json
 assets/*.ico
+assets/icon.png

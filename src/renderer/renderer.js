@@ -111,6 +111,7 @@ function createChartWorker(){
 async function prepareWorkers(){
   await loadWorkerSrc();
   chartWorker = createChartWorker();
+  return () => { chartWorker?.terminate?.(); chartWorker = null; };
 }
 function resetCharts(){
   Object.values(charts).forEach(c=>c.destroy?.());
@@ -333,7 +334,8 @@ window.onload = async () => {
     localStorage.setItem('prefers-dark', document.body.classList.contains('dark'));
   };
   applyView('Alle');
-  await prepareWorkers();
+  const cleanupWorkers = await prepareWorkers();
+  window.addEventListener('beforeunload', cleanupWorkers);
   window.initInlineEdit?.();
   document.getElementById('columnBtn').onclick = () => {
     const menu = document.getElementById('columnMenu');
@@ -625,7 +627,9 @@ function renderCharts() {
  */
 function drawChart(canvasId, labels, values){
   if(!Chart) return;
-  const ctx = document.getElementById(canvasId).getContext('2d');
+  const canvas = document.getElementById(canvasId);
+  const ctx = canvas?.getContext?.('2d');
+  if(!ctx) return;
   const type = canvasId.startsWith('pie') ? 'pie' : 'bar';
   if(charts[canvasId]) charts[canvasId].destroy();
   charts[canvasId] = new Chart(ctx, {
