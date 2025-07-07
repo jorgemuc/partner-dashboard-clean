@@ -2,7 +2,7 @@ const { app, BrowserWindow, Menu, shell, dialog, ipcMain } = require('electron')
 const fs = require('fs');
 const { parseCsv } = require('./parser');
 const path = require('path');
-const PRELOAD = path.join(app.getAppPath(),'dist','preload.js');
+const PRELOAD = path.join(app.getAppPath(), 'dist', 'preload.js');
 const nodemailer = require('nodemailer');
 
 ipcMain.handle('get-version', () => app.getVersion());
@@ -93,10 +93,11 @@ function createWindow() {
       preload:PRELOAD
     }
   });
-  win.loadFile(path.join(__dirname, 'index.html'));
+  win.loadFile('index.html');
   // ----------  E2E Smoke-Test Handshake ----------
   win.webContents.once('did-finish-load', () => {
     win.webContents.send('app-loaded'); // guarantees the renderer is ready
+    if (process.send) process.send('app-loaded');
   });
   createMenu(win);
 }
