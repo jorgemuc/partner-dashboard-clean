@@ -85,9 +85,7 @@ let chartWorker;
 function createChartWorker(){
   if(window.location.protocol === 'file:') return null;
   try{
-    const blob = new Blob([chartWorkerSrc], { type:'text/javascript' });
-    const url = URL.createObjectURL(blob);
-    const w = new Worker(url, { type:'module' });
+    const w = new Worker(workerUrl, { type:'module' });
     w.onmessage = e => {
       const {id, labels, values, empty} = e.data;
       if(empty){
@@ -104,7 +102,6 @@ function createChartWorker(){
 }
 
 async function prepareWorkers(){
-  await loadWorkerSrc();
   chartWorker = createChartWorker();
   return () => { chartWorker?.terminate?.(); chartWorker = null; };
 }
