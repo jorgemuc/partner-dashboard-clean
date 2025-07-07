@@ -27,19 +27,25 @@ jobs:
       - name: Check for bare imports
         run: node scripts/lint-no-bare-imports.js
 
-      - name: Bundle sources
-        run: npm run bundle
-
-      - name: Ensure preload bundle exists
-        run: node -e "const fs=require('fs'); if(!fs.existsSync('dist/preload.js')){console.error('dist/preload.js missing'); process.exit(1);}"
+      - name: Verify icon
+        run: test -s assets/icon.ico || exit 1
 
       - name: Run unit tests
         run: npm test
 #      - name: npm run smoke
 #        run: npm run smoke
 
+      - name: Bundle app
+        run: npm run bundle
+
+      - name: Verify preload
+        run: test -s dist/preload.js || exit 1
+
       - name: Build app
         run: npm run build:win32
+
+      - name: Ensure preload in asar
+        run: npx asar list dist/*.exe | grep dist/preload.js || exit 1
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
