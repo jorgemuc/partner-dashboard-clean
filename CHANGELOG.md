@@ -1,4 +1,11 @@
 # Changelog
+## v0.7.8 - fix: preload verification in win-package job
+## v0.7.7 - fix: test stability and packaging paths
+## v0.7.6 – fix: package root parser module
+## v0.7.5 – fix: package parser module
+## v0.7.4 – fix: workflow preload check
+## v0.7.3 – fix: icon generation via sharp
+## v0.7.2 – fix: packaging main.js, preload path, demo-data, multi-csv, inline-edit save
 ## v0.7.1 – alerts & inline edit fixed
 ## v0.6.0 - KPI Alert UI makeover
 * threshold config for KPIs with optional mail sending
