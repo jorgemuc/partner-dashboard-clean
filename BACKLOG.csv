@@ -81,3 +81,4 @@ E39 - Parser Path,parser path correction,package.json files updated,done,Distrib
 E40 - Packaging Pipeline,Bundle verify,ci checks & exe test,done,Distribution,S,codex
 E41 - Path Integrity,tests failing,bundle fixes,done,CI,S,codex
 E42 - Preload Verification,asar check in win-package,workflow updated,done,CI,S,codex
+E43 - Renderer Stability,tests fail after 0.7.8,guard Worker|hoist undo,done,Bugfix,S,codex
