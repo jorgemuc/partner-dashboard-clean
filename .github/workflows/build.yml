@@ -1,30 +1,53 @@
-win-package:
-  needs: test
-  runs-on: windows-latest
+name: build
 
-  steps:
-    - uses: actions/checkout@v3
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
 
-    - uses: actions/setup-node@v3
-      with:
-        node-version: 20
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
 
-    - name: Install deps
-      run: npm ci
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with: { node-version: 20 }
+      - name: Install deps
+        run: npm ci
+      - name: Check for bare imports
+        run: node scripts/lint-no-bare-imports.js
+      - name: Run unit tests
+        run: npm test
 
-    - name: Verify icon
-      run: test -s assets/icon.ico || exit 1
+  win-package:
+    needs: test
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with: { node-version: 20 }
 
-    - name: Bundle & build app
-      run: |
-        npm run bundle
-        npm run build:win32
+      - name: Install deps
+        run: npm ci
 
-    - name: Ensure preload in asar
-      run: npx asar list dist/*.exe | grep dist/preload.js || exit 1
+      - name: Verify icon
+        run: test -s assets/icon.ico || exit 1
 
-    - name: Upload artifact
-      uses: actions/upload-artifact@v4
-      with:
-        name: partner-dashboard-win
-        path: dist/*.exe
+      - name: Bundle & build app
+        run: |
+          npm run bundle
+          npm run build:win32
+
+      - name: Ensure preload in asar
+        run: npx asar list dist/*.exe | grep dist/preload.js || exit 1
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: partner-dashboard-win
+          path: dist/*.exe
