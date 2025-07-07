@@ -50,9 +50,6 @@ jobs:
       - name: Bundle app
         run: npm run bundle
 
-      - name: Verify preload
-        run: test -s dist/preload.js || exit 1
-
       - name: Build app
         run: npm run bundle && npm run build:win32
 
@@ -92,6 +89,21 @@ jobs:
         shell: bash
         run: |
           npx asar list "${{ steps.artefacts.outputs.asar }}" | grep -q 'dist/preload.js'
+
+      - name: Locate artefacts
+        id: artefacts
+        shell: bash
+        run: |
+          EXE=$(ls -1 dist/win-unpacked/*.exe | head -n1)
+          ASAR=$(dirname "$EXE")/resources/app.asar
+          echo "exe=$EXE" >> "$GITHUB_OUTPUT"
+          echo "asar=$ASAR" >> "$GITHUB_OUTPUT"
+
+      - name: Check preload inside ASAR
+        shell: bash
+        run: |
+          npx asar list "${{ steps.artefacts.outputs.asar }}" |
+            grep -q '^dist/preload.js$'
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4

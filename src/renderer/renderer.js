@@ -8,7 +8,14 @@ import Chart from 'chart.js/auto';
 import { buildChart } from '../../chartWorker.mjs';
 import './inlineEdit.js';
 import './kpi.js';
-const workerUrl = new URL('../../chartWorker.mjs', import.meta.url);
+let chartWorkerSrc = '';
+async function loadWorkerSrc(){
+  if(chartWorkerSrc) return;
+  chartWorkerSrc = await (await fetch(
+    new URL('../../chartWorker.mjs', import.meta.url)
+  )).text();
+}
+// esbuild replaces import.meta.url; bundler keeps correct code path
 window.Chart = Chart;
 
 async function waitApi(){

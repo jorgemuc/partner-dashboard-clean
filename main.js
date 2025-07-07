@@ -2,15 +2,8 @@ const { app, BrowserWindow, Menu, shell, dialog, ipcMain } = require('electron')
 const fs = require('fs');
 const { parseCsv } = require('./src/utils/parser');
 const path = require('path');
-function resolvePreload(){
-  const dist = path.join(app.getAppPath(), 'dist', 'preload.js');
-  if (fs.existsSync(dist)) return dist;
-  if (process.resourcesPath) {
-    return path.join(process.resourcesPath, 'app', 'dist', 'preload.js');
-  }
-  return dist;
-}
-const PRELOAD = resolvePreload();
+const PRELOAD = path.join(__dirname, '..', 'dist', 'preload.js');
+// works in dev (npm start) and in the packed ASAR
 const nodemailer = require('nodemailer');
 
 ipcMain.handle('get-version', () => app.getVersion());
