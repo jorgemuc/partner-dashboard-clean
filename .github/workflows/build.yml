@@ -11,8 +11,8 @@ on:
     branches: [main]
 
 jobs:
-  build-win:
-    runs-on: windows-latest
+  test:
+    runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v3
@@ -27,22 +27,44 @@ jobs:
       - name: Check for bare imports
         run: node scripts/lint-no-bare-imports.js
 
-      - name: Bundle sources
-        run: npm run bundle
-
-      - name: Ensure preload bundle exists
-        run: node -e "const fs=require('fs'); if(!fs.existsSync('dist/preload.js')){console.error('dist/preload.js missing'); process.exit(1);}"
-
       - name: Run unit tests
         run: npm test
-#      - name: npm run smoke
-#        run: npm run smoke
+
+  win-package:
+    needs: test
+    runs-on: windows-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 20
+
+      - name: Install deps
+        run: npm ci
+
+      - name: Verify icon
+        run: test -s assets/icon.ico || exit 1
+
+      - name: Bundle app
+        run: npm run bundle
+
+      - name: Verify preload
+        run: test -s dist/preload.js || exit 1
 
       - name: Build app
         run: npm run build:win32
+
+      - name: Ensure preload in asar
+        shell: bash
+        run: |
+          if [[ -f "$EXE_PATH" ]]; then
+            npx asar list "$EXE_PATH" | grep dist/preload.js || exit 1
+          fi
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: partner-dashboard-win
-          path: dist/*.exe
+          path: ${{ env.EXE_PATH }}
