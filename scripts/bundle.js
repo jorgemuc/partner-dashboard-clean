@@ -9,18 +9,18 @@ const { mkdirSync, writeFileSync, copyFileSync, existsSync } = require('node:fs'
 async function bundle() {
   mkdirSync('dist', { recursive: true });
 
-  await esbuild.build({
-    entryPoints: ['src/preload.cjs'],
-    bundle: true,
-    minify: true,
-    platform: 'node',
-    external: ['electron', 'fs', 'path', 'os', 'crypto', 'util'],
-    target: ['node16'],
-    outfile: 'dist/preload.js',
-    logLevel: 'info'
-  });
-
-  await esbuild.build({
+  await Promise.all([
+    esbuild.build({
+      entryPoints: ['src/preload.cjs'],
+      bundle: true,
+      minify: true,
+      platform: 'node',
+      external: ['electron', 'fs', 'path', 'os', 'crypto', 'util'],
+      target: ['node16'],
+      outfile: 'dist/preload.js',
+      logLevel: 'info'
+    }),
+    esbuild.build({
       entryPoints: ['src/renderer/renderer.js'],
       bundle: true,
       minify: true,
