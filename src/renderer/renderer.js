@@ -626,7 +626,6 @@ function renderCharts() {
  * @param {number[]} values
  */
 function drawChart(canvasId, labels, values){
-  if(!Chart) return;
   const canvas = document.getElementById(canvasId);
   const ctx = canvas?.getContext?.('2d');
   if(!ctx) return;
