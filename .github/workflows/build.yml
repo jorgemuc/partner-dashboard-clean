@@ -48,7 +48,59 @@ jobs:
         run: test -s assets/icon.ico || exit 1
 
       - name: Build app
-        run: npm run build:win32
+        run: npm run bundle && npm run build:win32
+
+      - name: Ensure preload in asar
+        run: npx asar list dist/*.exe | grep dist/preload.js
+
+      - name: Ensure preload in asar
+        run: npx asar list dist/*.exe | grep dist/preload.js || exit 1
+
+      - name: Ensure preload in asar
+        run: npx asar list dist/*.exe | grep dist/preload.js || exit 1
+
+      - name: Ensure preload in asar
+        shell: bash
+        run: |
+          if [[ -f "$EXE_PATH" ]]; then
+            npx asar list "$EXE_PATH" | grep dist/preload.js || exit 1
+          fi
+
+      - name: Ensure preload in asar
+        shell: bash
+        run: |
+          if [[ -f "$EXE_PATH" ]]; then
+            npx asar list "$EXE_PATH" | grep dist/preload.js || exit 1
+          fi
+
+      - name: Locate build artefacts
+        id: artefacts
+        shell: bash
+        run: |
+          EXE="$(ls -1 dist/win-unpacked/*.exe | head -n1)"
+          ASAR="$(dirname "$EXE")/resources/app.asar"
+          echo "exe=$EXE" >> $GITHUB_OUTPUT
+          echo "asar=$ASAR" >> $GITHUB_OUTPUT
+
+      - name: Check preload inside ASAR
+        shell: bash
+        run: |
+          npx asar list "${{ steps.artefacts.outputs.asar }}" | grep -q 'dist/preload.js'
+
+      - name: Locate artefacts
+        id: artefacts
+        shell: bash
+        run: |
+          EXE=$(ls -1 dist/win-unpacked/*.exe | head -n1)
+          ASAR=$(dirname "$EXE")/resources/app.asar
+          echo "exe=$EXE" >> "$GITHUB_OUTPUT"
+          echo "asar=$ASAR" >> "$GITHUB_OUTPUT"
+
+      - name: Check preload inside ASAR
+        shell: bash
+        run: |
+          npx asar list "${{ steps.artefacts.outputs.asar }}" |
+            grep -q '^dist/preload.js$'
 
       - name: Locate ASAR
         id: find_asar
