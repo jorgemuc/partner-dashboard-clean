@@ -27,19 +27,7 @@ esbuild.build({
       target: ['es2022'],
       define: { 'process.env.NODE_ENV': '"production"' },
       external: ['electron'],
-      plugins: [importGlob(), {
-        name: 'raw-loader',
-        setup(build){
-          build.onResolve({filter:/\?raw$/}, args => ({
-            path: path.resolve(args.resolveDir, args.path.replace(/\?raw$/, '')),
-            namespace: 'raw'
-          }));
-          build.onLoad({filter:/.*/, namespace:'raw'}, async args => ({
-            contents: await fs.promises.readFile(args.path, 'utf8'),
-            loader: 'text'
-          }));
-        }
-      }],
+      plugins: [importGlob()],
       sourcemap: true,
       logLevel: 'info'
     }))

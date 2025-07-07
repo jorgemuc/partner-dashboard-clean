@@ -1,4 +1,5 @@
 # Changelog
+## v0.7.10 - fix: chart worker preload path and stable charts
 ## v0.7.9 - fix: portable EXE preload check via EXE_PATH
 ## v0.7.8 - fix: preload verification in win-package job
 ## v0.7.7 - fix: test stability and packaging paths

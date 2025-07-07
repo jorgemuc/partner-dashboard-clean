@@ -8,19 +8,7 @@ import Chart from 'chart.js/auto';
 import { buildChart } from '../../chartWorker.mjs';
 import './inlineEdit.js';
 import './kpi.js';
-let chartWorkerSrc = '';
-async function loadWorkerSrc(){
-  if(chartWorkerSrc) return;
-  if(typeof window !== 'undefined'){
-    chartWorkerSrc = (await import('../../chartWorker.mjs?raw')).default;
-  }else{
-    try{
-      const fs = await import('node:fs');
-      const url = new URL('../../chartWorker.mjs', import.meta.url);
-      chartWorkerSrc = fs.readFileSync(url, 'utf8');
-    }catch{}
-  }
-}
+const workerUrl = new URL('../../chartWorker.mjs', import.meta.url);
 window.Chart = Chart;
 
 async function waitApi(){
@@ -90,9 +78,7 @@ let chartWorker;
 function createChartWorker(){
   if(window.location.protocol === 'file:') return null;
   try{
-    const blob = new Blob([chartWorkerSrc], { type:'text/javascript' });
-    const url = URL.createObjectURL(blob);
-    const w = new Worker(url, { type:'module' });
+    const w = new Worker(workerUrl, { type:'module' });
     w.onmessage = e => {
       const {id, labels, values, empty} = e.data;
       if(empty){
@@ -109,7 +95,6 @@ function createChartWorker(){
 }
 
 async function prepareWorkers(){
-  await loadWorkerSrc();
   chartWorker = createChartWorker();
   return () => { chartWorker?.terminate?.(); chartWorker = null; };
 }
@@ -318,11 +303,7 @@ function renderAll() {
   renderCharts();
 }
 eventBus.on('data:updated', () => {
-  renderOverview();
-  renderTable();
-  renderFilters();
-  renderCards();
-  renderCharts();
+  renderAll();
   renderChangelog();
 });
 window.onload = async () => {
@@ -363,6 +344,8 @@ function renderOverview(){
   const version = window.api?.version || 'dev-test';
   appVersion = version;
   window.showVersion = () => alert(`Version ${version}`);
+  const titleEl = document.getElementById('appTitle');
+  if (titleEl) titleEl.textContent = `Partner-Dashboard v${version}`;
   renderAll();
 })();
 
@@ -371,8 +354,6 @@ document.body.setAttribute('data-testid', 'app-ready');
 // Signal an Playwright-Smoke, dass die App fertig ist
 window.api?.bus?.emit?.('e2e-ready');
 
-// CSV-Menü aus Preload registrieren –  jsdom hat keine Bridge
-window?.electronAPI?.onOpenCsvDialog?.(() => document.getElementById('csvFile').click());
 
 // === KPIs ===
 
