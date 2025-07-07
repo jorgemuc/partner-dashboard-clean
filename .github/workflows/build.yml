@@ -11,8 +11,8 @@ on:
     branches: [main]
 
 jobs:
-  build-win:
-    runs-on: windows-latest
+  test:
+    runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v3
@@ -27,22 +27,49 @@ jobs:
       - name: Check for bare imports
         run: node scripts/lint-no-bare-imports.js
 
-      - name: Bundle sources
-        run: npm run bundle
-
-      - name: Ensure preload bundle exists
-        run: node -e "const fs=require('fs'); if(!fs.existsSync('dist/preload.js')){console.error('dist/preload.js missing'); process.exit(1);}"
-
       - name: Run unit tests
         run: npm test
-#      - name: npm run smoke
-#        run: npm run smoke
+
+  win-package:
+    needs: test
+    runs-on: windows-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 20
+
+      - name: Install deps
+        run: npm ci
+
+      - name: Verify icon
+        run: test -s assets/icon.ico || exit 1
+
+      - name: Bundle app
+        run: npm run bundle
 
       - name: Build app
         run: npm run build:win32
+
+      - name: Locate artefacts
+        id: artefacts
+        shell: bash
+        run: |
+          EXE=$(ls -1 dist/win-unpacked/*.exe | head -n1)
+          ASAR=$(dirname "$EXE")/resources/app.asar
+          echo "exe=$EXE" >> "$GITHUB_OUTPUT"
+          echo "asar=$ASAR" >> "$GITHUB_OUTPUT"
+
+      - name: Check preload inside ASAR
+        shell: bash
+        run: |
+          npx asar list "${{ steps.artefacts.outputs.asar }}" |
+            grep -q '^dist/preload.js$'
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: partner-dashboard-win
-          path: dist/*.exe
+          path: ${{ steps.artefacts.outputs.exe }}
