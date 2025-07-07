@@ -1,4 +1,6 @@
 # Changelog
+## v0.7.9 - fix: portable EXE preload check via EXE_PATH
+## v0.7.8 - fix: preload verification in win-package job
 ## v0.7.7 - fix: test stability and packaging paths
 ## v0.7.6 – fix: package root parser module
 ## v0.7.5 – fix: package parser module

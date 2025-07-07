@@ -80,3 +80,5 @@ E38 - Parser Packaging,parser missing in build,add parser.js to build files,done
 E39 - Parser Path,parser path correction,package.json files updated,done,Distribution,S,codex
 E40 - Packaging Pipeline,Bundle verify,ci checks & exe test,done,Distribution,S,codex
 E41 - Path Integrity,tests failing,bundle fixes,done,CI,S,codex
+E42 - Preload Verification,asar check in win-package,workflow updated,done,CI,S,codex
+E43 - Portable Check,use EXE_PATH,workflow patch,done,CI,S,codex
