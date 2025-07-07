@@ -1,4 +1,5 @@
 # Changelog
+## v0.7.14 - fix: workflow ids and bundler dedup
 ## v0.7.13 - fix: build.yml preload check and worker fetch
 ## v0.7.12 - fix: robust asar preload check
 ## v0.7.11 - fix: CI asar preload check

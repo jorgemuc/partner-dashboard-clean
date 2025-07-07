@@ -86,3 +86,4 @@ E44 - Chart Worker,stable chart worker & preload resolver,frontend fix,done,CI,S
 E45 - CI Cleanup,Preload asar check,Deduplicate step,done,CI,S,codex
 E46 - Asar Path,robust exe lookup,workflow guard,done,CI,S,codex
 E47 - Preload Hardening,workflow dedup & fetch worker,preload path fix,done,CI,S,codex
+E48 - Workflow Fix,unify asar check,bundler dedup,done,CI,S,codex
