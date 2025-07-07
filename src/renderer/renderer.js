@@ -2,24 +2,13 @@ import { applyFilters, getFilterFields } from '../shared/filterUtils.mjs';
 import { getData, setData } from './dataStore.js';
 import { getStatusBuckets } from './utils.js';
 import { renderKPIs, setChartsRef, showAlertsOverview } from './kpi.js';
-import { parseCsv } from '../../parser.js';
 import Papa from 'papaparse';
 import * as XLSX from 'xlsx';
 import Chart from 'chart.js/auto';
 import { buildChart } from '../../chartWorker.mjs';
-let chartWorkerSrc = '';
-async function loadWorkerSrc(){
-  if(chartWorkerSrc) return;
-  if(typeof window !== 'undefined'){
-    chartWorkerSrc = (await import('../../chartWorker.mjs?raw')).default;
-  }else{
-    try{
-      const fs = await import('node:fs');
-      const url = new URL('../../chartWorker.mjs', import.meta.url);
-      chartWorkerSrc = fs.readFileSync(url, 'utf8');
-    }catch{}
-  }
-}
+import './inlineEdit.js';
+import './kpi.js';
+const workerUrl = new URL('../../chartWorker.mjs', import.meta.url);
 window.Chart = Chart;
 
 async function waitApi(){
@@ -89,9 +78,7 @@ let chartWorker;
 function createChartWorker(){
   if(window.location.protocol === 'file:') return null;
   try{
-    const blob = new Blob([chartWorkerSrc], { type:'text/javascript' });
-    const url = URL.createObjectURL(blob);
-    const w = new Worker(url, { type:'module' });
+    const w = new Worker(workerUrl, { type:'module' });
     w.onmessage = e => {
       const {id, labels, values, empty} = e.data;
       if(empty){
@@ -108,8 +95,8 @@ function createChartWorker(){
 }
 
 async function prepareWorkers(){
-  await loadWorkerSrc();
   chartWorker = createChartWorker();
+  return () => { chartWorker?.terminate?.(); chartWorker = null; };
 }
 function resetCharts(){
   Object.values(charts).forEach(c=>c.destroy?.());
@@ -240,8 +227,16 @@ function handleFile(file){
   reader.readAsText(file,'utf-8');
 }
 
+function resetFilters(){
+  document.querySelectorAll('#filters input').forEach(i=>{ i.value=''; });
+  document.querySelectorAll('#partnerTable .filter-row input')
+    .forEach(i=>{ i.value=''; });
+}
+
 function handleCsvLoaded(rows){
   setData(rows);
+  currentPage = 1;
+  resetFilters();
   renderAll();
 }
 
@@ -291,18 +286,10 @@ if(dropZone){
 }
 
 // === DEMO-DATEN ===
-async function loadDemo(){
-  demoMode=true;
-  resetCharts();
-  const raw = await fetch('demo/PARTNER.csv').then(r=>r.text());
-  const { data, unexpected=[] } = parseCsv(raw);
-  csvHeaders=[...referenceSchema, ...unexpected];
-  showAlert('Demo-Daten geladen.','success');
-  changelog=[];
-  currentPage=1;
-  eventBus.emit('data:loaded', data);
-}
-document.getElementById('demoDataBtn').onclick = loadDemo;
+document.getElementById('demoDataBtn').onclick = () =>
+  Papa.parse('./demo/PARTNER.csv', { download:true, header:true,
+    complete: r => { setData(r.data); currentPage=1; resetFilters(); renderAll(); }
+  });
 
 eventBus.on('data:loaded', handleCsvLoaded);
 
@@ -316,18 +303,8 @@ function renderAll() {
   renderCharts();
 }
 eventBus.on('data:updated', () => {
-  renderOverview();
-  renderTable();
-  renderFilters();
-  renderCards();
-  renderCharts();
+  renderAll();
   renderChangelog();
-});
-document.addEventListener('DOMContentLoaded', () => {
-  import('./tableRenderer.js').then(m =>
-    m.initInlineEdit({ changelog, pushChange, bus:eventBus })
-  );
-  import('./kpi.js').then(m => m.initKpiAlerts());
 });
 window.onload = async () => {
   if (localStorage.getItem('prefers-dark') === 'true') {
@@ -338,7 +315,9 @@ window.onload = async () => {
     localStorage.setItem('prefers-dark', document.body.classList.contains('dark'));
   };
   applyView('Alle');
-  await prepareWorkers();
+  const cleanupWorkers = await prepareWorkers();
+  window.addEventListener('beforeunload', cleanupWorkers);
+  window.initInlineEdit?.();
   document.getElementById('columnBtn').onclick = () => {
     const menu = document.getElementById('columnMenu');
     menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
@@ -354,14 +333,7 @@ window.onload = async () => {
 };
 
 // === UI MESSAGES ===
-function showMsg(txt, type="success") {
-  const msgDiv = document.getElementById("msg");
-  msgDiv.innerHTML = `<span class="${type}-msg">${txt}</span>`;
-  const live = document.getElementById('liveRegion');
-  if(live) live.textContent = txt;
-  setTimeout(() => { msgDiv.innerHTML = ""; }, 4000);
-}
-window.showMsg = showMsg;
+// moved to ./ui/toast.js
 
 function renderOverview(){
   if(appVersion) renderKPIs(appVersion);
@@ -372,6 +344,8 @@ function renderOverview(){
   const version = window.api?.version || 'dev-test';
   appVersion = version;
   window.showVersion = () => alert(`Version ${version}`);
+  const titleEl = document.getElementById('appTitle');
+  if (titleEl) titleEl.textContent = `Partner-Dashboard v${version}`;
   renderAll();
 })();
 
@@ -380,8 +354,6 @@ document.body.setAttribute('data-testid', 'app-ready');
 // Signal an Playwright-Smoke, dass die App fertig ist
 window.api?.bus?.emit?.('e2e-ready');
 
-// CSV-Menü aus Preload registrieren –  jsdom hat keine Bridge
-window?.electronAPI?.onOpenCsvDialog?.(() => document.getElementById('csvFile').click());
 
 // === KPIs ===
 
@@ -635,8 +607,9 @@ function renderCharts() {
  * @param {number[]} values
  */
 function drawChart(canvasId, labels, values){
-  if(!Chart) return;
-  const ctx = document.getElementById(canvasId).getContext('2d');
+  const canvas = document.getElementById(canvasId);
+  const ctx = canvas?.getContext?.('2d');
+  if(!ctx) return;
   const type = canvasId.startsWith('pie') ? 'pie' : 'bar';
   if(charts[canvasId]) charts[canvasId].destroy();
   charts[canvasId] = new Chart(ctx, {
