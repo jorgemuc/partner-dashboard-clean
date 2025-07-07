@@ -54,7 +54,23 @@ jobs:
         run: test -s dist/preload.js || exit 1
 
       - name: Build app
-        run: npm run build:win32
+        run: npm run bundle && npm run build:win32
+
+      - name: Ensure preload in asar
+        run: npx asar list dist/*.exe | grep dist/preload.js
+
+      - name: Ensure preload in asar
+        run: npx asar list dist/*.exe | grep dist/preload.js || exit 1
+
+      - name: Ensure preload in asar
+        run: npx asar list dist/*.exe | grep dist/preload.js || exit 1
+
+      - name: Ensure preload in asar
+        shell: bash
+        run: |
+          if [[ -f "$EXE_PATH" ]]; then
+            npx asar list "$EXE_PATH" | grep dist/preload.js || exit 1
+          fi
 
       - name: Ensure preload in asar
         shell: bash
