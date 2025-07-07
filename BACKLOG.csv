@@ -83,3 +83,5 @@ E41 - Path Integrity,tests failing,bundle fixes,done,CI,S,codex
 E42 - Preload Verification,asar check in win-package,workflow updated,done,CI,S,codex
 E43 - Portable Check,use EXE_PATH,workflow patch,done,CI,S,codex
 E44 - Chart Worker,stable chart worker & preload resolver,frontend fix,done,CI,S,codex
+E45 - CI Cleanup,Preload asar check,Deduplicate step,done,CI,S,codex
+E46 - Asar Path,robust exe lookup,workflow guard,done,CI,S,codex

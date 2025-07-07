@@ -79,8 +79,27 @@ jobs:
             npx asar list "$EXE_PATH" | grep dist/preload.js || exit 1
           fi
 
+      - name: Locate build artefacts
+        id: artefacts
+        shell: bash
+        run: |
+          EXE=$(ls -1 dist/win-unpacked/*.exe dist/*.exe 2>/dev/null | head -n1)
+          ASAR="$(dirname "$EXE")/resources/app.asar"
+          echo "exe=$EXE" >> $GITHUB_OUTPUT
+          echo "asar=$ASAR" >> $GITHUB_OUTPUT
+
+      - name: Check preload inside ASAR
+        shell: bash
+        run: |
+          if [ -f "${{ steps.artefacts.outputs.asar }}" ]; then
+            npx asar list "${{ steps.artefacts.outputs.asar }}" | grep -q 'dist/preload.js'
+          else
+            echo "asar not found" >&2
+            exit 1
+          fi
+
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: partner-dashboard-win
-          path: ${{ env.EXE_PATH }}
+          path: ${{ steps.artefacts.outputs.exe }}
