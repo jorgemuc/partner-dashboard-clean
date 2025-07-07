@@ -7,7 +7,7 @@
     "lint": "eslint main.js src/preload.cjs",
     "bundle": "node scripts/make-ico.js && node scripts/bundle.js",
     "prepare-icon": "node scripts/prepare-icon.js",
-    "prebuild:win32": "node scripts/bumpVersion.js",
+    "prebuild:win32": "npm run bundle && node scripts/bumpVersion.js",
     "build:win32": "electron-builder --win portable",
     "build": "npm run build:win32",
     "pack": "electron-builder --dir",
@@ -44,9 +44,11 @@
     "appId": "com.jorgemuc.partnerdashboard",
     "asar": true,
     "files": [
-      "**/*",
       "dist/**/*",
-      "!node_modules/**/*.{md,ts}"
+      "assets/**",
+      "main.js",
+      "index.html",
+      "!**/*.map"
     ],
     "win": {
       "target": "portable",

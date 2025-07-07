@@ -1,6 +1,6 @@
 const { app, BrowserWindow, Menu, shell, dialog, ipcMain } = require('electron');
 const fs = require('fs');
-const { parseCsv } = require('./parser');
+const { parseCsv } = require('./src/utils/parser');
 const path = require('path');
 const PRELOAD = path.join(app.getAppPath(), 'dist', 'preload.js');
 const nodemailer = require('nodemailer');

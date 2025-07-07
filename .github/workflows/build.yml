@@ -44,6 +44,9 @@ jobs:
       - name: Build app
         run: npm run bundle && npm run build:win32
 
+      - name: Ensure preload in asar
+        run: npx asar list dist/*.exe | grep dist/preload.js
+
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
