@@ -1,4 +1,5 @@
 # Changelog
+## v0.7.14 - chore: auto merge workflow
 ## v0.7.13 - fix: align bundle paths
 ## v0.7.12 - unify preload path & safer CI
 ## v0.7.11 - fix: unify preload path for packaging
