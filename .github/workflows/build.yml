@@ -35,58 +35,31 @@ jobs:
     runs-on: windows-latest
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - uses: actions/setup-node@v3
         with:
           node-version: 20
 
-      - name: Install deps
-        run: npm ci
+      - run: npm ci
 
-      - name: Verify icon
-        run: test -s assets/icon.ico || exit 1
+      - run: npm run build:dir
 
-      - name: Bundle app
-        run: npm run bundle
+      - name: Ensure preload in app.asar
+        shell: bash
+        run: |
+          asar_path="dist/win-unpacked/resources/app.asar"
+          test -f "$asar_path" || { echo "❌ $asar_path fehlt"; exit 1; }
+          npx asar list "$asar_path" | grep -q "dist/preload.js"
 
-      - name: Verify preload
-        run: test -s dist/preload.js || exit 1
+      - run: electron-builder --win portable
 
-  win-package:
-    needs: test
-    runs-on: windows-latest
+      - name: Check preload next to Asar
+        shell: bash
+        run: |
+          test -f dist/win-unpacked/resources/preload.js
 
-    steps:
-      - uses: actions/checkout@v3
-
-      - uses: actions/setup-node@v3
+      - uses: actions/upload-artifact@v4
         with:
-          node-version: 20
-
-      - name: Install deps
-        run: npm ci
-
-      - name: Verify icon
-        run: test -s assets/icon.ico || exit 1
-
-      - name: Build app
-        run: npm run bundle && npm run build:win32
-
-      - name: Ensure preload in asar
-        run: npx asar list dist/*.exe | grep dist/preload.js
-
-      - name: Ensure preload in asar
-        run: npx asar list dist/*.exe | grep dist/preload.js || exit 1
-
-      - name: Ensure preload in asar
-        run: npx asar list dist/*.exe | grep dist/preload.js || exit 1
-
-      - name: Ensure preload in asar
-        run: npx asar list dist/*.exe | grep dist/preload.js || exit 1
-
-      - name: Upload artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: partner-dashboard-win
-          path: ${{ steps.find_asar.outputs.exe }}
+          name: win-portable
+          path: dist/*.exe

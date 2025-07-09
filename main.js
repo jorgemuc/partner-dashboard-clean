@@ -2,7 +2,10 @@ const { app, BrowserWindow, Menu, shell, dialog, ipcMain } = require('electron')
 const fs = require('fs');
 const { parseCsv } = require('./src/utils/parser');
 const path = require('path');
-const PRELOAD = path.join(__dirname, '..', 'dist', 'preload.js');
+let PRELOAD = path.join(process.resourcesPath || __dirname, 'preload.js');
+if (!fs.existsSync(PRELOAD)) {
+  PRELOAD = path.resolve(__dirname, 'dist/preload.js');
+}
 // works in dev (npm start) and in the packed ASAR
 const nodemailer = require('nodemailer');
 
