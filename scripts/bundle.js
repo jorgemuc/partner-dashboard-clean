@@ -5,10 +5,10 @@ const fs = require('fs');
 const path = require('path');
 const { version } = require('../package.json');
 
-fs.mkdirSync('dist', { recursive: true });
+fs.mkdirSync('build/unpacked', { recursive: true });
 
 esbuild.build({
-    entryPoints: ['src/preload.cjs'],
+    entryPoints: ['src/preload.js'],
     bundle: true,
     minify: true,
     platform: 'node',
@@ -22,7 +22,7 @@ esbuild.build({
       bundle: true,
       minify: true,
       treeShaking: true,
-      outfile: 'dist/renderer.bundle.js',
+      outfile: 'build/unpacked/renderer.bundle.js',
       format: 'esm',
       target: ['es2022'],
       define: { 'process.env.NODE_ENV': '"production"' },
@@ -33,10 +33,10 @@ esbuild.build({
     }))
   .then(() => {
     fs.writeFileSync(
-      'dist/version.json',
+      'build/unpacked/version.json',
       JSON.stringify({ version }, null, 2) + '\n'
     );
     if (!fs.existsSync('main.js')) fs.copyFileSync('src/main.js', 'main.js');
-    console.log('[bundle] wrote dist files');
+    console.log('[bundle] wrote build files');
   })
   .catch(() => process.exit(1));
