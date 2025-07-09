@@ -1,6 +1,6 @@
 {
   "name": "partner-dashboard-clean",
-  "version": "0.7.8",
+  "version": "0.7.10",
   "main": "main.js",
   "scripts": {
     "start": "electron .",
@@ -8,6 +8,8 @@
     "bundle": "node scripts/make-ico.js && node scripts/bundle.js",
     "prepare-icon": "node scripts/prepare-icon.js",
     "prebuild:win32": "npm run bundle && node scripts/bumpVersion.js",
+    "prebuild:dir": "npm run bundle",
+    "build:dir": "electron-builder --win dir",
     "build:win32": "electron-builder --win portable",
     "build": "npm run build:win32",
     "pack": "electron-builder --dir",
