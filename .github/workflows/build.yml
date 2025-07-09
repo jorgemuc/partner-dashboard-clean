@@ -13,20 +13,14 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
-
     steps:
       - uses: actions/checkout@v3
-
       - uses: actions/setup-node@v3
-        with:
-          node-version: 20
-
+        with: { node-version: 20 }
       - name: Install deps
         run: npm ci
-
       - name: Check for bare imports
         run: node scripts/lint-no-bare-imports.js
-
       - name: Run unit tests
         run: npm test
 
