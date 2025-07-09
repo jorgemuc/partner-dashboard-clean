@@ -43,7 +43,9 @@ jobs:
 
       - name: Verify preload inside asar
         shell: bash
-        run: scripts/check-preload.sh
+        run: |
+          exe=$(ls dist/*.exe | head -n1)
+          npx asar list "$exe" | grep -q 'build/unpacked/renderer.bundle.js'
 
       - uses: actions/upload-artifact@v4
         with:
