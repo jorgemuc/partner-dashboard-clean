@@ -33,7 +33,7 @@ async function run(){
 
   // —— IPC-Ready-Signal zum Smoke-Test ————————————————
   global.window.api.bus.emit('e2e-ready');
-  await import('../dist/renderer.bundle.js');
+    await import('../build/unpacked/renderer.bundle.js');
   if(dom.window.document.body.classList.contains('no-csv') ||
      dom.window.document.body.classList.contains('no-chart')){
     console.error('feature flags active', dom.window.document.body.className);

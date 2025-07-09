@@ -1,4 +1,5 @@
 # Changelog
+## v0.7.11 - fix: unify preload path for packaging
 ## v0.7.10 - fix: verify asar before portable build
 ## v0.7.9 - fix: robust preload check using bash
 ## v0.7.8 - fix: preload verification in win-package job

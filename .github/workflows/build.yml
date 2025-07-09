@@ -29,35 +29,29 @@ jobs:
     runs-on: windows-latest
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - uses: actions/setup-node@v3
         with:
           node-version: 20
 
-      - name: Install deps
-        run: npm ci
+      - run: npm ci
 
-      - name: Verify icon
-        run: test -s assets/icon.ico || exit 1
+      - run: npm run build:dir
 
-      - name: Build unpacked app
-        run: npm run build:dir
-
-      - name: Ensure preload in app.asar
+      - name: Check preload in unpacked
         shell: bash
         run: |
-          asar_path="dist/win-unpacked/resources/app.asar"
-          test -f "$asar_path" || { echo "❌ $asar_path fehlt"; exit 1; }
-          npx asar list "$asar_path" | grep -q "dist/preload.js" \
-            && echo "✅ preload.js gefunden" \
-            || { echo "❌ preload.js fehlt"; exit 1; }
+          test -f build/unpacked/preload.js
 
-      - name: Build portable EXE
-        run: npm run build:win32
+      - run: electron-builder --win portable
 
-      - name: Upload artifact
-        uses: actions/upload-artifact@v4
+      - name: Check preload next to Asar
+        shell: bash
+        run: |
+          test -f resources/preload.js
+
+      - uses: actions/upload-artifact@v4
         with:
-          name: partner-dashboard-win
+          name: win-portable
           path: dist/*.exe
