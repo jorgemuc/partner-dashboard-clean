@@ -1,20 +1,18 @@
 {
   "name": "partner-dashboard-clean",
-  "version": "0.7.8",
+  "version": "0.7.12",
   "main": "main.js",
   "scripts": {
     "start": "electron .",
-    "lint": "eslint main.js src/preload.cjs",
+    "lint": "eslint main.js src/preload.js",
     "bundle": "node scripts/make-ico.js && node scripts/bundle.js",
     "prepare-icon": "node scripts/prepare-icon.js",
-    "prebuild:win32": "npm run bundle && node scripts/bumpVersion.js",
     "build:win32": "electron-builder --win portable",
-    "build": "npm run build:win32",
-    "pack": "electron-builder --dir",
+    "build:dir": "npm run bundle && electron-builder --dir",
     "postinstall": "node scripts/decode-icons.js && npm run prepare-icon",
     "test": "cross-env NODE_OPTIONS=--experimental-vm-modules jest",
     "smoke": "playwright test tests/smoke/preload.test.js",
-    "ci": "npm run lint && npm run bundle && npm test && npm run build",
+    "ci": "npm run lint && npm run bundle && npm test && npm run build:win32",
     "postversion": "npm run bundle"
   },
   "devDependencies": {
@@ -25,6 +23,8 @@
     "esbuild": "^0.21.0",
     "esbuild-plugin-import-glob": "^0.1.1",
     "eslint": "^8.57.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-plugin-import": "^2.32.0",
     "eslint-plugin-node": "^11.1.0",
     "jest": "^29.7.0",
     "jest-canvas-mock": "^2.5.2",
@@ -45,11 +45,13 @@
     "appId": "com.jorgemuc.partnerdashboard",
     "asar": true,
     "files": [
+      "dist/**/*",
+      "!dist/**/*.map",
       "main.js",
-      "dist/preload.js",
-      "dist/renderer.bundle.js",
       "assets/**"
     ],
+    "asarUnpack": [],
+    "extraResources": [],
     "win": {
       "target": "portable",
       "icon": "assets/icon.ico",
