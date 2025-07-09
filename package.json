@@ -7,16 +7,12 @@
     "lint": "eslint main.js src/preload.js",
     "bundle": "node scripts/make-ico.js && node scripts/bundle.js",
     "prepare-icon": "node scripts/prepare-icon.js",
-    "prebuild:win32": "npm run bundle && node scripts/bumpVersion.js",
-    "prebuild:dir": "npm run bundle",
-    "build:dir": "electron-builder --win dir",
-    "build:win": "npm run bundle && npm run build:dir && electron-builder --win portable",
-    "build": "npm run build:win",
-    "pack": "electron-builder --dir",
+    "build:win32": "electron-builder --win portable",
+    "build:dir": "npm run bundle && electron-builder --dir",
     "postinstall": "node scripts/decode-icons.js && npm run prepare-icon",
     "test": "cross-env NODE_OPTIONS=--experimental-vm-modules jest",
     "smoke": "playwright test tests/smoke/preload.test.js",
-    "ci": "npm run lint && npm run bundle && npm test && npm run build",
+    "ci": "npm run lint && npm run bundle && npm test && npm run build:win32",
     "postversion": "npm run bundle"
   },
   "devDependencies": {
@@ -49,16 +45,13 @@
     "appId": "com.jorgemuc.partnerdashboard",
     "asar": true,
     "files": [
-      "dist/**",
-      "*.js",
+      "dist/**/*",
+      "!dist/**/*.map",
+      "main.js",
       "assets/**"
     ],
-    "asarUnpack": [
-      "preload.js"
-    ],
-    "extraResources": [
-      { "from": "dist/preload.js", "to": "preload.js" }
-    ],
+    "asarUnpack": [],
+    "extraResources": [],
     "win": {
       "target": "portable",
       "icon": "assets/icon.ico",

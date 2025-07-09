@@ -1,4 +1,5 @@
 # Changelog
+## v0.7.12 - unify preload path & safer CI
 ## v0.7.12 - fix: packaging without copy script
 ## v0.7.11 - fix: unify preload path for packaging
 ## v0.7.10 - fix: verify asar before portable build
