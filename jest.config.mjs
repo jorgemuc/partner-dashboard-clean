@@ -4,6 +4,7 @@ export default {
     '\\?raw$': '<rootDir>/tests/rawLoader.js'
   },
   setupFiles: ['<rootDir>/jest.setup.js'],
+  setupFilesAfterEnv: ['<rootDir>/jest.afterEnv.js'],
   testEnvironmentOptions: { resources: 'usable' },
   testMatch: [
     '**/__tests__/*.test.js',
