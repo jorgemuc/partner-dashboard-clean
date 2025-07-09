@@ -87,3 +87,4 @@ E45 - Preload Unification,portable-safe path,copy script & new workflow,done,CI,
 E46 - Preload packaging cleanup,remove copy script & unify dist folder,done,CI,S,codex,
 E47 - Preload constant,unify path constant & CI check,done,CI,S,codex,
 E48 - Bundle dir constant,align build paths in tests & CI,done,CI,S,codex
+E49 - Codex Auto Merge,PRs merged automatically,GitHub workflow,done,CI,S,codex
