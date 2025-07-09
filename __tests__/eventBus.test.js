@@ -6,7 +6,7 @@ jest.mock('electron', () => ({__esModule: true,
 const { contextBridge } = require('electron');
 let bus;
 beforeAll(async () => {
-  await import('../src/preload.cjs');
+  await import('../src/preload.js');
   await new Promise(r => setImmediate(r));
   const call = contextBridge.exposeInMainWorld.mock.calls.find(c => c[0] === 'api');
   bus = call ? call[1].bus : undefined;

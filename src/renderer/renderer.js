@@ -8,6 +8,11 @@ import Chart from 'chart.js/auto';
 import { buildChart } from '../../chartWorker.mjs';
 import './inlineEdit.js';
 import './kpi.js';
+// --- test-environment stubs -------------------------------
+if (typeof window !== 'undefined' && !window.undoChange) {
+  window.undoChange = () => {};
+  window.redoChange = () => {};
+}
 let chartWorkerSrc = '';
 async function loadWorkerSrc(){
   if(chartWorkerSrc) return;
@@ -84,6 +89,8 @@ let chartWorker;
  */
 function createChartWorker(){
   if(window.location.protocol === 'file:') return null;
+  if (typeof Worker === 'undefined') return null; // JSDOM
+  if(window.location.protocol === 'file:') return null; // local file://
   try{
     const w = new Worker(workerUrl, { type:'module' });
     w.onmessage = e => {
@@ -313,6 +320,18 @@ eventBus.on('data:updated', () => {
   renderAll();
   renderChangelog();
 });
+function undoChange() {
+  changeIndex = undo(getData(), changelog, changeIndex);
+  eventBus.emit('data:updated', getData());
+  showAlert('Undo', 'success');
+}
+function redoChange() {
+  changeIndex = redo(getData(), changelog, changeIndex);
+  eventBus.emit('data:updated', getData());
+  showAlert('Redo', 'success');
+}
+window.undoChange = undoChange;
+window.redoChange  = redoChange;
 window.onload = async () => {
   if (localStorage.getItem('prefers-dark') === 'true') {
     document.body.classList.add('dark');
@@ -545,17 +564,6 @@ function renderChangelog() {
   document.getElementById("changelogTable").querySelector("tbody").innerHTML = html;
 }
 
-window.undoChange = function(){
-  changeIndex = undo(getData(), changelog, changeIndex);
-  eventBus.emit('data:updated', getData());
-  showAlert('Undo','success');
-};
-
-window.redoChange = function(){
-  changeIndex = redo(getData(), changelog, changeIndex);
-  eventBus.emit('data:updated', getData());
-  showAlert('Redo','success');
-};
 
 // === CSV EXPORT ===
 window.exportTableCSV = function() {

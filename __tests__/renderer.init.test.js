@@ -8,7 +8,7 @@ jest.mock('../chartWorker.mjs', () => ({
 }));
 
 test('renderer bootstraps without errors', async () => {
-  await import('../src/preload.cjs');
+  await import('../src/preload.js');
   await new Promise(r => setImmediate(r));
   const apiCall = contextBridge.exposeInMainWorld.mock.calls.find(c => c[0] === 'api');
   const { window } = new (require('jsdom').JSDOM)('<div id="dropZone"></div>');

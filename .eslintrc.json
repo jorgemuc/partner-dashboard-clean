@@ -1,8 +1,10 @@
 {
   "env": {
-    "es2020": true,
+    "es2023": true,
     "node": true
   },
+  "extends": ["airbnb-base"],
+  "parserOptions": { "ecmaVersion": 2023 },
   "plugins": ["node"],
   "rules": {
     "node/no-missing-require": "error",
