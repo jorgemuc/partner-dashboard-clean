@@ -13,45 +13,16 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
-
     steps:
       - uses: actions/checkout@v3
-
       - uses: actions/setup-node@v3
-        with:
-          node-version: 20
-
+        with: { node-version: 20 }
       - name: Install deps
         run: npm ci
-
       - name: Check for bare imports
         run: node scripts/lint-no-bare-imports.js
-
       - name: Run unit tests
         run: npm test
-
-  win-package:
-    needs: test
-    runs-on: windows-latest
-
-    steps:
-      - uses: actions/checkout@v3
-
-      - uses: actions/setup-node@v3
-        with:
-          node-version: 20
-
-      - name: Install deps
-        run: npm ci
-
-      - name: Verify icon
-        run: test -s assets/icon.ico || exit 1
-
-      - name: Bundle app
-        run: npm run bundle
-
-      - name: Verify preload
-        run: test -s dist/preload.js || exit 1
 
   win-package:
     needs: test
@@ -79,26 +50,8 @@ jobs:
           exe=$(ls dist/*.exe | head -n1)
           npx asar list "$exe" | grep 'dist/preload.js'
 
-      - name: Ensure preload in asar
-        shell: bash
-        run: |
-          exe=$(ls dist/*.exe | head -n1)
-          npx asar list "$exe" | grep 'dist/preload.js'
-
-      - name: Ensure preload in asar
-        shell: bash
-        run: |
-          exe=$(ls dist/*.exe | head -n1)
-          npx asar list "$exe" | grep 'dist/preload.js'
-
-      - name: Ensure preload in asar
-        shell: bash
-        run: |
-          exe=$(ls dist/*.exe | head -n1)
-          npx asar list "$exe" | grep 'dist/preload.js'
-
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: partner-dashboard-win
-          path: ${{ steps.find_asar.outputs.exe }}
+          path: dist/*.exe
