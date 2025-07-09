@@ -14,7 +14,7 @@ esbuild.build({
     platform: 'node',
     external: ['electron', 'fs', 'path', 'os', 'crypto', 'util'],
     target: ['node16'],
-    outfile: 'build/unpacked/preload.js',
+    outfile: 'dist/preload.js',
     logLevel: 'info'
   })
   .then(() => esbuild.build({
