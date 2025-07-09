@@ -1,15 +1,18 @@
 {
   "name": "partner-dashboard-clean",
-  "version": "0.7.8",
+  "version": "0.7.11",
   "main": "main.js",
   "scripts": {
     "start": "electron .",
-    "lint": "eslint main.js src/preload.cjs",
-    "bundle": "node scripts/make-ico.js && node scripts/bundle.js",
+    "lint": "eslint main.js src/preload/index.js",
+    "bundle": "node scripts/make-ico.js && node scripts/bundle.js && npm run copy-preload",
+    "copy-preload": "node scripts/copy-preload.js",
     "prepare-icon": "node scripts/prepare-icon.js",
     "prebuild:win32": "npm run bundle && node scripts/bumpVersion.js",
-    "build:win32": "electron-builder --win portable",
-    "build": "npm run build:win32",
+    "prebuild:dir": "npm run bundle",
+    "build:dir": "electron-builder --win dir",
+    "build:win": "npm run bundle && npm run build:dir && electron-builder --win portable",
+    "build": "npm run build:win",
     "pack": "electron-builder --dir",
     "postinstall": "node scripts/decode-icons.js && npm run prepare-icon",
     "test": "cross-env NODE_OPTIONS=--experimental-vm-modules jest",
@@ -45,10 +48,11 @@
     "appId": "com.jorgemuc.partnerdashboard",
     "asar": true,
     "files": [
-      "main.js",
-      "dist/preload.js",
-      "dist/renderer.bundle.js",
-      "assets/**"
+      "build/unpacked/**",
+      "resources/preload.js"
+    ],
+    "asarUnpack": [
+      "resources/preload.js"
     ],
     "win": {
       "target": "portable",

@@ -17,7 +17,7 @@ const libs = {
 
 let version = 'dev';
 try {
-  version = require('../dist/version.json').version;
+  version = require('../build/unpacked/version.json').version;
 } catch (e) {
   try { version = require('../package.json').version; } catch {} }
 

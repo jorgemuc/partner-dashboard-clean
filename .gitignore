@@ -2,5 +2,7 @@ node_modules/
 assets/icons/*.png
 dist/**
 !dist/version.json
+build/
+resources/preload.js
 assets/*.ico
 assets/icon.png
