@@ -41,14 +41,20 @@ jobs:
       - name: Verify icon
         run: test -s assets/icon.ico || exit 1
 
-      - name: Build app
-        run: npm run bundle && npm run build:win32
+      - name: Build unpacked app
+        run: npm run build:dir
 
-      - name: Ensure preload in asar
+      - name: Ensure preload in app.asar
         shell: bash
         run: |
-          exe=$(ls dist/*.exe | head -n1)
-          npx asar list "$exe" | grep 'dist/preload.js'
+          asar_path="dist/win-unpacked/resources/app.asar"
+          test -f "$asar_path" || { echo "❌ $asar_path fehlt"; exit 1; }
+          npx asar list "$asar_path" | grep -q "dist/preload.js" \
+            && echo "✅ preload.js gefunden" \
+            || { echo "❌ preload.js fehlt"; exit 1; }
+
+      - name: Build portable EXE
+        run: npm run build:win32
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
