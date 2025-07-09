@@ -39,17 +39,19 @@ jobs:
 
       - run: npm run build:dir
 
-      - name: Check preload in unpacked
+      - name: Ensure preload in app.asar
         shell: bash
         run: |
-          test -f build/unpacked/preload.js
+          asar_path="dist/win-unpacked/resources/app.asar"
+          test -f "$asar_path" || { echo "❌ $asar_path fehlt"; exit 1; }
+          npx asar list "$asar_path" | grep -q "dist/preload.js"
 
       - run: electron-builder --win portable
 
       - name: Check preload next to Asar
         shell: bash
         run: |
-          test -f resources/preload.js
+          test -f dist/win-unpacked/resources/preload.js
 
       - uses: actions/upload-artifact@v4
         with:

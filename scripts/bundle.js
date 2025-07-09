@@ -8,7 +8,7 @@ const { version } = require('../package.json');
 fs.mkdirSync('build/unpacked', { recursive: true });
 
 esbuild.build({
-    entryPoints: ['src/preload/index.js'],
+    entryPoints: ['src/preload.js'],
     bundle: true,
     minify: true,
     platform: 'node',

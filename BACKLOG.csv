@@ -84,3 +84,4 @@ E42 - Preload Verification,asar check in win-package,workflow updated,done,CI,S,
 E43 - Preload Step,verify inside exe via bash,build.yml check uses bash,done,CI,S,codex
 E44 - Build Pipeline,asar check before portable,workflow split,done,CI,S,codex
 E45 - Preload Unification,portable-safe path,copy script & new workflow,done,CI,S,codex
+E46 - Preload packaging cleanup,remove copy script & unify dist folder,done,CI,S,codex,
