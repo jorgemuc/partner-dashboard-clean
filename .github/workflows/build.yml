@@ -74,16 +74,28 @@ jobs:
         run: npm run bundle && npm run build:win32
 
       - name: Ensure preload in asar
-        run: npx asar list dist/*.exe | grep dist/preload.js
+        shell: bash
+        run: |
+          exe=$(ls dist/*.exe | head -n1)
+          npx asar list "$exe" | grep 'dist/preload.js'
 
       - name: Ensure preload in asar
-        run: npx asar list dist/*.exe | grep dist/preload.js || exit 1
+        shell: bash
+        run: |
+          exe=$(ls dist/*.exe | head -n1)
+          npx asar list "$exe" | grep 'dist/preload.js'
 
       - name: Ensure preload in asar
-        run: npx asar list dist/*.exe | grep dist/preload.js || exit 1
+        shell: bash
+        run: |
+          exe=$(ls dist/*.exe | head -n1)
+          npx asar list "$exe" | grep 'dist/preload.js'
 
       - name: Ensure preload in asar
-        run: npx asar list dist/*.exe | grep dist/preload.js || exit 1
+        shell: bash
+        run: |
+          exe=$(ls dist/*.exe | head -n1)
+          npx asar list "$exe" | grep 'dist/preload.js'
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
