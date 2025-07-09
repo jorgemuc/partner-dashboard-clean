@@ -1,5 +1,5 @@
 # Changelog
-## v0.7.9 - fix: guard Worker in tests & hoist undo/redo (#226)
+## v0.7.9 - fix: robust preload check using bash
 ## v0.7.8 - fix: preload verification in win-package job
 ## v0.7.7 - fix: test stability and packaging paths
 ## v0.7.6 – fix: package root parser module
