@@ -48,9 +48,7 @@ jobs:
 
       - name: Verify preload in portable
         shell: pwsh
-        run: |
-          7z e -aoa (Get-ChildItem -Path dist -Filter *.exe).FullName resources/app.asar -odist/extracted
-          node scripts/verify-preload-in-asar.js dist/extracted/app.asar
+        run: scripts/verify-preload-in-portable.ps1
 
       - uses: actions/upload-artifact@v4
         with:

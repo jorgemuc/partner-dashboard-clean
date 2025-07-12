@@ -1,4 +1,5 @@
 # Changelog
+## v0.7.16 - fix: portable preload verification
 ## v0.7.15 - fix: verify preload inside asar
 ## v0.7.14 - chore: auto merge workflow
 ## v0.7.13 - fix: align bundle paths
