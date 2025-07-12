@@ -37,9 +37,12 @@ jobs:
 
       - run: npm ci
 
+      - run: npm run bundle
+
       - run: npm run build:dir
 
-      - run: node scripts/verify-preload-in-asar.js dist/win-unpacked/resources/app.asar
+      - name: Verify preload inside asar
+        run: node scripts/verify-preload-in-asar.js dist/win-unpacked/resources/app.asar
 
       - run: npm run bundle
 
