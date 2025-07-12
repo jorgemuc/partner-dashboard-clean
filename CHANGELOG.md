@@ -1,4 +1,7 @@
 # Changelog
+## v0.7.17 - fix: portable extraction for asar verification
+## v0.7.16 - fix: portable preload verification
+## v0.7.15 - fix: verify preload inside asar
 ## v0.7.14 - chore: auto merge workflow
 ## v0.7.13 - fix: align bundle paths
 ## v0.7.12 - unify preload path & safer CI
