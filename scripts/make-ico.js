@@ -2,6 +2,11 @@ const fs = require('fs');
 const path = require('path');
 const sharp = require('sharp');
 
+// ----- sorgt dafür, dass der Ordner immer existiert -----
+const fs = require('fs');
+fs.mkdirSync(require('path').resolve(__dirname, '..', 'dist'), { recursive: true });
+// --------------------------------------------------------
+
 (async () => {
   try {
     const src = path.join(__dirname, '..', 'assets', 'icon.png');
