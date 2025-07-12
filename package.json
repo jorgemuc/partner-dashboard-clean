@@ -45,13 +45,11 @@
     "appId": "com.jorgemuc.partnerdashboard",
     "asar": true,
     "files": [
-      "build/unpacked/**/*",
-      "!build/unpacked/**/*.map",
+      "dist/**/*",
+      "!dist/**/*.map",
       "main.js",
       "assets/**"
     ],
-    "asarUnpack": [],
-    "extraResources": [],
     "win": {
       "target": "portable",
       "icon": "assets/icon.ico",
