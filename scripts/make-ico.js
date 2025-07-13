@@ -1,5 +1,4 @@
 // ----- sorgt dafür, dass der Ordner immer existiert -----
-const fs = require('fs');
 fs.mkdirSync(require('path').resolve(__dirname, '..', 'dist'), { recursive: true });
 // --------------------------------------------------------
 
