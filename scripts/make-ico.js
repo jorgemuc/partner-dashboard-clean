@@ -10,6 +10,7 @@ const sharp = require('sharp');
       console.error('icon.png missing');
       process.exit(1);
     }
+    fs.mkdirSync(path.dirname(dest), { recursive: true });
     await sharp(src).resize(256, 256).toFile(dest);
     console.log('generated dist/icon.ico');
   } catch (err) {
