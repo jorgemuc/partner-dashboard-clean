@@ -10,7 +10,6 @@
    "sign": false,
    "verifyUpdateCodeSignature": false
   "directories": {
-    // sorgt dafür, dass wir wieder 'dist/win-unpacked' bekommen
     "output": "dist/win-unpacked"
  } 
  }
