@@ -1,10 +1,10 @@
-// ----- sorgt dafür, dass der Ordner immer existiert -----
-fs.mkdirSync(require('path').resolve(__dirname, '..', 'dist'), { recursive: true });
-// --------------------------------------------------------
-
-const fs = require('fs');
-const path = require('path');
+const path  = require('path');
+const fs    = require('fs');               // ← erst import …
 const sharp = require('sharp');
+
+// ----- sorgt dafür, dass der Ordner immer existiert -----
+fs.mkdirSync(path.resolve(__dirname, '..', 'dist'), { recursive: true });
+// --------------------------------------------------------
 
 (async () => {
   try {
