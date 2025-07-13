@@ -38,6 +38,11 @@ jobs:
       - run: npm ci
 
       - run: npm run bundle
+      - run: npm run build:dir
 
       - name: Verify preload in asar
-        run: node scripts/verify-preload-in-asar.js dist/win-unpacked/resources/app.asar
+        shell: pwsh
+        run: |
+          $asar = (Get-ChildItem -Recurse -Filter app.asar dist | Select-Object -First 1).FullName
+          if (-not $asar) { Write-Error 'app.asar not found'; exit 1 }
+          node scripts/verify-preload-in-asar.js $asar

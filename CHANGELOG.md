@@ -1,4 +1,5 @@
 # Changelog
+## v0.7.20 - fix: verify preload after build
 ## v0.7.19 - fix: reliable portable ASAR extraction
 ## v0.7.18 - fix: ensure dist dir for icon build
 ## v0.7.17 - fix: portable extraction for asar verification

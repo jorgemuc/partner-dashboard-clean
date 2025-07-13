@@ -4,13 +4,11 @@
    "main.js",
    "assets/**"
  ],
- "asarUnpack": [],
- "win": {
-   "target": [{ "target": "dir", "arch": ["x64"] }],
-   "sign": false,
-   "verifyUpdateCodeSignature": false
-  "directories": {
-    "output": "dist/win-unpacked"
- } 
- }
+  "asarUnpack": [],
+  "directories": { "output": "dist/win-unpacked" },
+  "win": {
+    "target": [{ "target": "dir", "arch": ["x64"] }],
+    "sign": false,
+    "verifyUpdateCodeSignature": false
+  }
 }
