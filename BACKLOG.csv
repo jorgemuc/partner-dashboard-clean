@@ -92,3 +92,4 @@ E50 - Preload ASAR verify,dist preload check,test & CI,done,CI,S,codex
 E51 - Portable preload verify,extract exe & check asar,portable check script,done,CI,S,codex
 E52 - Portable extraction fix,find app.asar in nested archive,7z extraction fix,done,CI,S,codex
 E53 - Icon build guard,dist dir check before icon build,script fix,done,CI,S,codex
+E54 - Portable verify fix,extract app-64.7z first,portable script fix,done,CI,S,codex
