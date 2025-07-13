@@ -48,7 +48,8 @@ jobs:
 
       - name: Verify preload in portable
         shell: pwsh
-        run: scripts/verify-preload-in-portable.ps1
+        run: |
+          pwsh scripts/verify-preload-in-portable.ps1 "$(Get-ChildItem -Path dist -Filter *.exe | Select-Object -First 1).FullName"
 
       - uses: actions/upload-artifact@v4
         with:
