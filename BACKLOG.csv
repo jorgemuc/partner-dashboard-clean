@@ -88,4 +88,7 @@ E46 - Preload packaging cleanup,remove copy script & unify dist folder,done,CI,S
 E47 - Preload constant,unify path constant & CI check,done,CI,S,codex,
 E48 - Bundle dir constant,align build paths in tests & CI,done,CI,S,codex,
 E49 - Codex Auto Merge,PRs merged automatically,GitHub workflow,done,CI,S,codex
-E50 - Preload ASAR verify,dist preload check,test & CI,wip,CI,S,codex
+E50 - Preload ASAR verify,dist preload check,test & CI,done,CI,S,codex
+E51 - Portable preload verify,extract exe & check asar,portable check script,done,CI,S,codex
+E52 - Portable extraction fix,find app.asar in nested archive,7z extraction fix,done,CI,S,codex
+E53 - Icon build guard,dist dir check before icon build,script fix,done,CI,S,codex
