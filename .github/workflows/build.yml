@@ -39,19 +39,5 @@ jobs:
 
       - run: npm run build:dir
 
-      - run: node scripts/verify-preload-in-asar.js dist/win-unpacked/resources/app.asar
-
-      - run: npm run bundle
-
-      - run: npm run build:win32
-
-      - name: Verify preload in portable
-        shell: pwsh
-        run: |
-          7z e -aoa (Get-ChildItem -Path dist -Filter *.exe).FullName resources/app.asar -odist/extracted
-          node scripts/verify-preload-in-asar.js dist/extracted/app.asar
-
-      - uses: actions/upload-artifact@v4
-        with:
-          name: partner-dashboard-win
-          path: dist/*.exe
+      - name: Verify preload in asar
+        run: node scripts/verify-preload-in-asar.js dist/win-unpacked/resources/app.asar

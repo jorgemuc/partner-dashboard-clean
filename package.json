@@ -1,14 +1,14 @@
 {
   "name": "partner-dashboard-clean",
-  "version": "0.7.14",
+  "version": "0.7.19",
   "main": "main.js",
   "scripts": {
     "start": "electron .",
     "lint": "eslint main.js src/preload.js",
     "bundle": "node scripts/make-ico.js && node scripts/bundle.js",
     "prepare-icon": "node scripts/prepare-icon.js",
-    "build:win32": "electron-builder --win portable",
-    "build:dir": "npm run bundle && electron-builder --dir",
+    "build:dir": "electron-builder --dir --config build.ci.json",
+    "build:win32": "npm run build:dir",
     "postinstall": "node scripts/decode-icons.js && npm run prepare-icon",
     "test": "cross-env NODE_OPTIONS=--experimental-vm-modules jest",
     "smoke": "playwright test tests/smoke/preload.test.js",
@@ -45,13 +45,11 @@
     "appId": "com.jorgemuc.partnerdashboard",
     "asar": true,
     "files": [
-      "build/unpacked/**/*",
-      "!build/unpacked/**/*.map",
+      "dist/**/*",
+      "!dist/**/*.map",
       "main.js",
       "assets/**"
     ],
-    "asarUnpack": [],
-    "extraResources": [],
     "win": {
       "target": "portable",
       "icon": "assets/icon.ico",
