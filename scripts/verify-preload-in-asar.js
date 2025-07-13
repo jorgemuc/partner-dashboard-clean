@@ -1,15 +1,19 @@
 #!/usr/bin/env node
 const { listPackage } = require('@electron/asar');
-const asarPath = process.argv[2];
-if (!asarPath) {
-  console.error('asar path required');
-  process.exit(1);
-}
+
+const asar = process.argv[2];
+if (!asar) { console.error('asar path required'); process.exit(1); }
+
 try {
-  const entries = listPackage(asarPath);
-  if (entries.includes('dist/preload.js')) process.exit(0);
-} catch (err) {
-  console.error(err.message);
+  // ▸ Einträge normalisieren: Backslash → Slash, führenden Slash kappen
+  const normalised = listPackage(asar).map(e =>
+    e.replace(/^[\\/]/, '').replace(/\\/g, '/')
+  );
+
+  if (normalised.includes('dist/preload.js')) process.exit(0);
+  console.error('dist/preload.js not found in ASAR');
+} catch (e) {
+  console.error(e.message);
 }
 process.exit(1);
 
