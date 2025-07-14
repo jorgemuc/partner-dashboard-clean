@@ -95,3 +95,4 @@ E53 - Icon build guard,dist dir check before icon build,script fix,done,CI,S,cod
 E54 - Portable verify fix,extract app-64.7z first,portable script fix,done,CI,S,codex
 E55 - Win asar check,missing build step,workflow fix,done,CI,S,codex
 E56 - Build config fix,remove stray bracket in build.ci.json,bug fixed,done,CI,S,codex
+E57 - Portable build simplification,verify single ASAR path,config & workflow updated,in progress,CI,S,codex
