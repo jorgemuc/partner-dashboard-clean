@@ -1,14 +1,26 @@
 {
- "files": [
-   "build/unpacked/**/*",
-   "main.js",
-   "assets/**"
- ],
- "asarUnpack": [],
-"directories": { "output": "dist/win-unpacked" },
-  "win": {
-    "target": [{ "target": "dir", "arch": ["x64"] }]
+  "files": [
+    "build/unpacked/**/*",
+    "main.js",
+    "assets/**"
+  ],
+
+  "asarUnpack": [],
+
+  "directories": {
+    "output": "dist/win-unpacked"
   },
-  "signAndEditExecutable": false,
-  "verifyUpdateCodeSignature": false
+
+  "win": {
+    "target": [
+      { "target": "dir", "arch": ["x64"] }
+    ]
+    /*  ⚠️ Kein Signing nötig → nichts weiter angeben.
+        Wenn ihr später signieren wollt, nutzt die
+        offiziellen Optionen (`signAndEditExecutable`,
+        `cscLink`, … ) – solange ihr sie **wirklich** braucht. */
+  }
+
+  /* Top-Level-Felder wie `verifyUpdateCodeSignature`
+     wurden ab v25 entfernt – deshalb hier nicht mehr aufführen. */
 }
