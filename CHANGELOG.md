@@ -1,4 +1,5 @@
 # Changelog
+## v0.7.23 - fix: correct PowerShell asar verify command
 ## v0.7.22 - fix: portable build verifies single ASAR path
 ## v0.7.21 - fix: correct build config JSON
 ## v0.7.20 - fix: run build step before asar verification
