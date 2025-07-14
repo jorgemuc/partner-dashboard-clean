@@ -96,3 +96,5 @@ E54 - Portable verify fix,extract app-64.7z first,portable script fix,done,CI,S,
 E55 - Win asar check,missing build step,workflow fix,done,CI,S,codex
 E56 - Build config fix,remove stray bracket in build.ci.json,bug fixed,done,CI,S,codex
 E57 - Portable build simplification,verify single ASAR path,config & workflow updated,done,CI,S,codex
+E58 - Portable verify fix,2-step extraction for asar check,bug fixed,done,CI,S,codex
+E59 - Portable verify stable,final fix for nested app-64 archive,done,CI,S,codex

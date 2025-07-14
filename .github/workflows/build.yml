@@ -41,10 +41,8 @@ jobs:
 
       - run: npm run build:win32
 
-      - name: Verify preload inside portable ASAR
+      - name: Verify preload in portable
         shell: pwsh
         run: |
-          $exe = Get-ChildItem -Path dist -Filter *.exe | Select-Object -First 1
-          if (-not $exe) { Write-Error 'portable EXE not found'; exit 1 }
-          7z e -aoa "$($exe.FullName)" 'resources/app.asar' -odist/extracted | Out-Null
-          node scripts/verify-preload-in-asar.js dist/extracted/app.asar
+          pwsh scripts/verify-preload-in-portable.ps1 `
+            (Get-ChildItem -Path dist -Filter *.exe | Select-Object -First 1).FullName
