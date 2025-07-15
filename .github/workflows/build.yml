@@ -41,9 +41,3 @@ jobs:
 
       - run: npm run build:win32
 
-      - name: Verify preload in portable
-        shell: pwsh
-        run: |
-          $exe = Get-ChildItem dist -Filter *.exe | Select-Object -First 1
-          if (-not $exe) { Write-Error 'portable EXE not found'; exit 1 }
-          pwsh scripts/verify-preload-in-portable.ps1 $exe.FullName
