@@ -1,4 +1,11 @@
 # Changelog
+## [0.7.32] - 2025-07-15
+### Fixed
+* Switched to @electron/asar; CI install no longer fails on missing asar@3.2.5.
+## [0.7.31] - 2025-07-22
+### Changed
+* Preload-integrity check now runs as afterPack hook; no more 7-Zip in CI.
+
 ## v0.7.30 - fix: CLI outputs newline for parse7zListing
 ## v0.7.29 - fix: parse portable listing with node helper
 ## v0.7.28 - chore: remove build.ci.json and update portable checks

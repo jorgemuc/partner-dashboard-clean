@@ -103,3 +103,5 @@ E61 - Portable verify listing,regex parse listing,scripts updated,done,CI,S,code
 E62 - Remove build config,use package.json only,CI workflow updated,done,CI,S,codex
 E63 - Portable verify helper,parse 7z listing via node,script updated,done,CI,S,codex
 E64 - parse7z CLI newline,newline fix,add newline to CLI output,done,CI,S,codex
+E7,Packaging & Distribution,afterPack hook replaces fragile preload check,,done,Distribution,
+E8,Build,Replace deprecated asar dep with @electron/asar,,done,Infrastructure,
