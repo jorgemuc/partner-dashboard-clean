@@ -68,7 +68,7 @@ function getMenuTemplate(win){
           }
         });
         about.setMenu(null);
-        about.loadFile('about.html');
+        about.loadFile(require('path').join(__dirname, 'about.html'));
       }},
       {label:'Hilfe (Online README)',click:()=>{
         const help=new BrowserWindow({
@@ -82,7 +82,7 @@ function getMenuTemplate(win){
           }
         });
         help.setMenu(null);
-        help.loadFile('help.html');
+        help.loadFile(require('path').join(__dirname, 'help.html'));
       }}]}
   ];
 }

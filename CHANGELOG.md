@@ -1,4 +1,7 @@
 # Changelog
+## [0.7.36] – 2025-07-15
+### Fixed
+* Packaged about/help HTML and demo CSV; windows now render, demo-button fills table.
 ## [0.7.35] - 2025-07-15
 ### Fixed
 * Guarded module-export in preload (no sandbox crash).
