@@ -40,4 +40,8 @@ jobs:
       - run: npm run bundle
 
       - run: npm run build:win32
-
+      - name: Upload portable EXE
+          uses: actions/upload-artifact@v4
+          with:
+            name: partner-dashboard-win32
+            path: dist/*.exe
