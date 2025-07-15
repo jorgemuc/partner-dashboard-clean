@@ -1,4 +1,7 @@
 # Changelog
+## [0.7.33] - 2025-07-15
+### Fixed
+* afterPack hook now accepts any archive path that ends with preload.js.
 ## [0.7.32] - 2025-07-15
 ### Fixed
 * Switched to @electron/asar; CI install no longer fails on missing asar@3.2.5.

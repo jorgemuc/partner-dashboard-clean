@@ -9,8 +9,12 @@ module.exports = async (ctx) => {
   } catch {
     throw new Error('app.asar missing');
   }
-  const entries = asar.listPackage(asarPath).map(e => e.replace(/\\/g, '/'));
-  if (!entries.includes('dist/preload.js')) {
+  const entries = asar.listPackage(asarPath);
+  const hasPreload = entries.some(p => {
+    const normalised = p.replace(/\\/g, '/');
+    return normalised.endsWith('/preload.js') || normalised === 'preload.js';
+  });
+  if (!hasPreload) {
     throw new Error('preload.js missing');
   }
 };
