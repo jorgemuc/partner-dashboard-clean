@@ -1,6 +1,6 @@
 const path = require('node:path');
 const fs = require('node:fs/promises');
-const asar = require('asar');
+const asar = require('@electron/asar');
 
 module.exports = async (ctx) => {
   const asarPath = path.join(ctx.appOutDir, 'resources', 'app.asar');
