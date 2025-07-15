@@ -1,32 +1,25 @@
-<#
-  Usage:
-    pwsh scripts/verify-preload-in-portable.ps1 <PortableExe>
-  Exit 0  →  dist/preload.js steckt im ASAR
-  Exit 1  →  nicht drin / Fehler
-#>
+param(
+  [Parameter(Mandatory=$true)][string]$PortableExe
+)
+$ErrorActionPreference='Stop'
+$tmp = 'dist\extract'
+Remove-Item $tmp -Recurse -EA SilentlyContinue
+New-Item $tmp -ItemType Directory | Out-Null
 
-param([Parameter(Mandatory=$true)][string]$PortableExe)
-$ErrorActionPreference = 'Stop'
+# 1) Liste aller Pfade im EXE lesen (per Node-Helper parsen)
+$asarEntry = & 7z l -ba "$PortableExe" | node scripts/parse7zListing.js
 
+if (-not $asarEntry) { Write-Error 'app.asar not found in EXE'; exit 1 }
 
-$tmp    = 'dist\extracted'
-$tmp2   = 'dist\inner'
-Remove-Item $tmp,$tmp2 -Recurse -Force -EA SilentlyContinue
-New-Item   $tmp,$tmp2 -ItemType Directory | Out-Null
-
-# determine app.asar path inside the portable package
-$list  = 7z l "$PortableExe" | Out-String
-$match = [regex]::Match($list, '\S*resources[\\/]app\.asar')
-if ($match.Success) {
-  7z e -aoa "$PortableExe" "$($match.Value)" -o"$tmp" | Out-Null
-} else {
-  # fallback: app-64.7z nested archive (legacy)
-  7z e -aoa "$PortableExe" 'app-64.7z' -o"$tmp2" | Out-Null
-  7z e -aoa "$tmp2\app-64.7z" 'resources/app.asar' -o"$tmp" | Out-Null
+# 2) Extrahieren (kann auch app-64.7z sein)
+if ($asarEntry -like '*.asar') {
+  & 7z e -aoa "$PortableExe" "$asarEntry" -o"$tmp" | Out-Null
 }
+elseif ($asarEntry -like '*.7z') {
+  & 7z e -aoa "$PortableExe" "$asarEntry"          -o"$tmp" | Out-Null
+  & 7z e -aoa "$tmp\$([IO.Path]::GetFileName($asarEntry))" 'resources/app.asar' -o"$tmp" | Out-Null
+}
+else { Write-Error "Unknown archive layout: $asarEntry"; exit 1 }
 
-$asar = Join-Path $tmp 'app.asar'
-if (-not (Test-Path $asar)) { Write-Error 'app.asar not found'; exit 1 }
-
-node scripts/verify-preload-in-asar.js $asar
+node scripts/verify-preload-in-asar.js (Join-Path $tmp 'app.asar')
 exit $LASTEXITCODE
