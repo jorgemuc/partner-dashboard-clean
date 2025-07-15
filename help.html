@@ -1,19 +1,64 @@
-<!DOCTYPE html>
-<html lang="de">
-<head>
-<meta charset="UTF-8">
-<title>Hilfe</title>
-<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-<style>body{font-family:Arial;margin:1rem;}article{max-width:800px;margin:auto;}</style>
-</head>
-<body>
-<article id="readme"></article>
-<div style="text-align:right;padding:0 1rem;" id="ver">…</div>
+<!-- help.html  – wird von main.js in ein BrowserWindow geladen -->
+<style>
+ body{font-family:system-ui,Arial,sans-serif;margin:1rem 2rem;max-width:980px;line-height:1.45}
+ h1{margin-top:0}  h2{border-bottom:1px solid #ccc;padding-bottom:.25rem;margin-top:2.2rem}
+ code{background:#f4f4f4;padding:.1rem .3rem;border-radius:3px}
+ .kbd{border:1px solid #bbb;border-radius:3px;padding:.05rem .25rem;background:#fafafa;font-family:monospace}
+ table{border-collapse:collapse;margin:1rem 0;width:100%}
+ th,td{border:1px solid #ddd;padding:.4rem .6rem;text-align:left}
+ .tag{display:inline-block;background:#0057b8;color:#fff;border-radius:3px;padding:.1rem .35rem;font-size:.8rem}
+</style>
+
+<h1>Partner‑Dashboard <small id="verSpan"></small></h1>
+
+<p>Willkommen zum <strong>Partner Cockpit Dashboard</strong>. Diese Desktop‑App
+bündelt alle CSV‑gestützten Kennzahlen rund um Ihre
+Software‑Partner in einer Oberfläche.</p>
+
+<h2>1 · Schnellstart</h2>
+<ol>
+  <li>CSV per <span class="kbd">Drag & Drop</span> auf den grauen Bereich ziehen
+      oder über <em>Datei auswählen</em> laden.</li>
+  <li><strong>Demo‑Daten</strong> laden, um die Funktionen ohne eigene Datei zu testen.</li>
+  <li>Zwischen den Tabs <em>Übersicht</em>, <em>Tabelle</em>, <em>Karten</em>,
+      <em>Diagramme</em> und <em>Änderungsprotokoll</em> wechseln.</li>
+</ol>
+
+<h2>2 · Navigation &amp; Tastenkürzel</h2>
+<table>
+  <tr><th>Aktion</th><th>Kürzel</th></tr>
+  <tr><td>Tab wechseln</td><td class="kbd">Ctrl + 1–5</td></tr>
+  <tr><td>Undo / Redo</td><td><span class="kbd">Ctrl + Z</span> / <span class="kbd">Ctrl + Y</span></td></tr>
+  <tr><td>Suche fokussieren</td><td class="kbd">Ctrl + F</td></tr>
+</table>
+
+<h2>3 · Tab‑Funktionen</h2>
+<ul>
+  <li><strong>Übersicht</strong> – KPI‑Kacheln und Ampel‑Bar‑Chart.</li>
+  <li><strong>Tabelle</strong> – Inline‑Edit, Spaltenauswahl, Presets &amp; Export
+      (<span class="tag">CSV</span> / <span class="tag">XLSX</span>).</li>
+  <li><strong>Karten</strong> – Leaflet‑Basiskarte der Partnerstandorte.</li>
+  <li><strong>Diagramme</strong> – Balken‑ und Liniendiagramme via Chart.js.</li>
+  <li><strong>Änderungsprotokoll</strong> – Undo‑/Redo‑Stack chronologisch.</li>
+  <li><strong>Alerts</strong> – Schwellenwerte (z.&nbsp;B. Kündigungsfristen) administrieren.</li>
+</ul>
+
+<h2>4 · Änderungsprotokoll (Changelog)</h2>
+<p>Die wichtigsten Releases sind in der App unter <em>View → Changelog</em> verlinkt.
+Hier die letzten Einträge:</p>
+<ul id="clList"></ul>
+
+<h2>5 · Fehler‑Meldungen &amp; Logs</h2>
+<p>Bei Parsing‑Fehlern blinkt ein
+<span class="tag" style="background:#e53935;">Alert</span>.
+Details finden Sie in der DevTools‑Konsole (<span class="kbd">Ctrl+Shift+I</span>).</p>
+
 <script>
-fetch('README.md').then(r=>r.text()).then(t=>{
-  document.getElementById('readme').innerHTML = marked.parse(t);
-});
-document.getElementById('ver').textContent = 'v'+(window.api?.version || 'dev');
+  // füllt Version und Changelog dynamisch
+  document.getElementById('verSpan').textContent = window.api?.version || '';
+  fetch('CHANGELOG.md').then(r=>r.text()).then(md=>{
+    const items = md.split('\n').filter(l=>l.startsWith('## [')).slice(0,5)
+      .map(l=>'<li>'+l.replace(/^## /,'')+'</li>').join('');
+    document.getElementById('clList').innerHTML = items;
+  }).catch(()=>{});
 </script>
-</body>
-</html>
