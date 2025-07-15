@@ -101,3 +101,4 @@ E59 - Portable verify stable,final fix for nested app-64 archive,workflow update
 E60 - Portable verify fallback,handle direct & nested extraction,script update,done,CI,S,codex
 E61 - Portable verify listing,regex parse listing,scripts updated,done,CI,S,codex
 E62 - Remove build config,use package.json only,CI workflow updated,done,CI,S,codex
+E63 - Portable verify helper,parse 7z listing via node,script updated,done,CI,S,codex

@@ -6,11 +6,8 @@ $tmp = 'dist\extract'
 Remove-Item $tmp -Recurse -EA SilentlyContinue
 New-Item $tmp -ItemType Directory | Out-Null
 
-# 1) Liste aller Pfade im EXE lesen
-$asarEntry = & 7z l -ba "$PortableExe" |
-             Select-String -Pattern 'app\.asar$' |
-             Select-Object -First 1 |
-             ForEach-Object { $_.Line.Trim() }
+# 1) Liste aller Pfade im EXE lesen (per Node-Helper parsen)
+$asarEntry = & 7z l -ba "$PortableExe" | node scripts/parse7zListing.js
 
 if (-not $asarEntry) { Write-Error 'app.asar not found in EXE'; exit 1 }
 
