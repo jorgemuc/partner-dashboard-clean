@@ -105,3 +105,4 @@ E63 - Portable verify helper,parse 7z listing via node,script updated,done,CI,S,
 E64 - parse7z CLI newline,newline fix,add newline to CLI output,done,CI,S,codex
 E7,Packaging & Distribution,afterPack hook replaces fragile preload check,,done,Distribution,
 E8,Build,Replace deprecated asar dep with @electron/asar,,done,Infrastructure,
+E9,Build,Relax preload path check to endsWith(),,done,Infrastructure,
