@@ -1,4 +1,5 @@
 # Changelog
+## v0.7.30 - fix: CLI outputs newline for parse7zListing
 ## v0.7.29 - fix: parse portable listing with node helper
 ## v0.7.28 - chore: remove build.ci.json and update portable checks
 ## v0.7.27 - fix: parse 7z listing for app.asar

@@ -11,7 +11,7 @@ if (require.main === module) {
   process.stdin.on('data', chunk => { data += chunk; });
   process.stdin.on('end', () => {
     const path = findAppAsarPath(data);
-    if (path) process.stdout.write(path);
+    if (path) process.stdout.write(path + '\n');
   });
 } else {
   module.exports = { findAppAsarPath };
