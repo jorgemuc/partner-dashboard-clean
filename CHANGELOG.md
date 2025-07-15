@@ -1,4 +1,9 @@
 # Changelog
+## [0.7.37] – 2025-07-15
+### Added
+* Full help.html with user guide & changelog integration.
+### Fixed
+* Table view no longer hides all columns when hiddenColumns persisted from earlier runs.
 ## [0.7.36] – 2025-07-15
 ### Fixed
 * Packaged about/help HTML and demo CSV; windows now render, demo-button fills table.

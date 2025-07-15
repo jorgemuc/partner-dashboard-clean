@@ -251,6 +251,8 @@ function handleCsvLoaded(rows){
   setData(rows);
   currentPage = 1;
   resetFilters();
+  hiddenColumns = [];           // Reset column visibility
+  localStorage.removeItem('hiddenColumns');
   renderAll();
 }
 

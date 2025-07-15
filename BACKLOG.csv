@@ -109,3 +109,4 @@ E9,Build,Relax preload path check to endsWith(),,done,Infrastructure,
 E65 - Packaging Fix,Include runtime src in build,update build.files,done,Distribution,S,codex
 E10,Build,Package renderer assets & preload guard,,done,Distribution,
 E11,UI,Help/About & Demo data now shown,,done,UX,
+E12,UX,Restore help page & fix table hiddenColumns bug,,done,UX,
