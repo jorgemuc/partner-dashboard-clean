@@ -100,3 +100,4 @@ E58 - Portable verify fix,2-step extraction for asar check,bug fixed,done,CI,S,c
 E59 - Portable verify stable,final fix for nested app-64 archive,workflow update,done,CI,S,codex
 E60 - Portable verify fallback,handle direct & nested extraction,script update,done,CI,S,codex
 E61 - Portable verify listing,regex parse listing,scripts updated,done,CI,S,codex
+E62 - Remove build config,use package.json only,CI workflow updated,done,CI,S,codex

@@ -1,4 +1,5 @@
 # Changelog
+## v0.7.28 - chore: remove build.ci.json and update portable checks
 ## v0.7.27 - fix: parse 7z listing for app.asar
 ## v0.7.26 - fix: robust preload check for portable build
 ## v0.7.25 - fix: stable preload verification in portable build
