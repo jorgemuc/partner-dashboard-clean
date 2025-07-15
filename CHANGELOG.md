@@ -1,4 +1,7 @@
 # Changelog
+## [0.7.34] - 2025-07-15
+### Fixed
+* Included src/**/* and parser.js in Electron package; app no longer crashes on launch.
 ## [0.7.33] - 2025-07-15
 ### Fixed
 * afterPack hook now accepts any archive path that ends with preload.js.
