@@ -33,5 +33,8 @@ const api = {
 };
 
 contextBridge.exposeInMainWorld('api', api);
-module.exports = api;
-module.exports.default = api;
+// safe-export: nur in Node-Kontext
+if (typeof module !== 'undefined') {
+  module.exports = api;
+  module.exports.default = api;
+}
