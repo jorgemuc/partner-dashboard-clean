@@ -14,16 +14,19 @@ $tmp2   = 'dist\inner'
 Remove-Item $tmp,$tmp2 -Recurse -Force -EA SilentlyContinue
 New-Item   $tmp,$tmp2 -ItemType Directory | Out-Null
 
-# direct extraction for modern portable builds
-7z e -aoa "$PortableExe" 'resources/app.asar' -o"$tmp" | Out-Null
-
-$asar = Join-Path $tmp 'app.asar'
-if (-not (Test-Path $asar)) {
+# determine app.asar path inside the portable package
+$list  = 7z l "$PortableExe" | Out-String
+$match = [regex]::Match($list, '\S*resources[\\/]app\.asar')
+if ($match.Success) {
+  7z e -aoa "$PortableExe" "$($match.Value)" -o"$tmp" | Out-Null
+} else {
   # fallback: app-64.7z nested archive (legacy)
   7z e -aoa "$PortableExe" 'app-64.7z' -o"$tmp2" | Out-Null
   7z e -aoa "$tmp2\app-64.7z" 'resources/app.asar' -o"$tmp" | Out-Null
-  if (-not (Test-Path $asar)) { Write-Error 'app.asar not found'; exit 1 }
 }
+
+$asar = Join-Path $tmp 'app.asar'
+if (-not (Test-Path $asar)) { Write-Error 'app.asar not found'; exit 1 }
 
 node scripts/verify-preload-in-asar.js $asar
 exit $LASTEXITCODE
