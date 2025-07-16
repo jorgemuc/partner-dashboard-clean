@@ -126,11 +126,25 @@ body.dark .log-table th { background: #3a3a3a; }
     <button class="tab-btn active" data-tab="overview">Übersicht</button>
     <button class="tab-btn" data-tab="table">Tabelle</button>
     <button class="tab-btn" data-tab="cards">Karten</button>
+    <button class="tab-btn" data-tab="profileView">Steckbrief</button>
     <button class="tab-btn" data-tab="charts">Diagramme</button>
     <button class="tab-btn" data-tab="changelog">Änderungsprotokoll</button>
     <button id="alertsSettingsBtn">Alerts</button>
   </nav>
   <main>
+    <section id="profileView" style="display:none">
+      <div class="header">
+        <div class="logo" style="width:60px;height:60px;background:#eee;display:inline-block;margin-right:1rem"></div>
+        <h1 id="pfName"></h1>
+        <span id="pfMeta"></span>
+        <span id="pfHealth" class="badge">-</span>
+        <button class="edit-btn">Edit</button>
+      </div>
+      <section class="card"><h3>Stammdaten</h3><ul id="pfContacts"></ul></section>
+      <section class="card"><h3>Vertragsdaten</h3><ul></ul></section>
+      <section class="card"><h3>Technik</h3><ul></ul></section>
+      <section class="card"><h3>KPIs</h3><table></table></section>
+    </section>
     <!-- Übersicht -->
     <section id="overview" class="active">
       <div style="height:140px"><canvas id="barStatus"></canvas></div>
