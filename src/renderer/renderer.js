@@ -152,18 +152,26 @@ function applyView(name){
 }
 
 // === TAB NAVIGATION ===
+const profileSection = document.getElementById('profileView');
 document.querySelectorAll('.tab-btn').forEach(btn => {
   btn.onclick = () => {
     document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
+    if(btn.dataset.tab === 'profileView'){
+      document.querySelectorAll('main section').forEach(sec => sec.style.display='none');
+      profileSection.style.display = 'block';
+      return;
+    }
+    profileSection.style.display = 'none';
     document.querySelectorAll('main section').forEach(sec => sec.classList.remove('active'));
-    document.getElementById(btn.dataset.tab).classList.add('active');
+    const sec = document.getElementById(btn.dataset.tab);
+    if(sec){ sec.classList.add('active'); }
     if (btn.dataset.tab === 'overview') renderOverview();
     if (btn.dataset.tab === 'table') renderTable();
     if (btn.dataset.tab === 'cards') renderCards();
     if (btn.dataset.tab === 'charts') renderCharts();
     if (btn.dataset.tab === 'changelog') renderChangelog();
-  }
+  };
 });
 
 // === CSV IMPORT & PARSE ===
@@ -268,6 +276,17 @@ function handleCsvLoaded(rows){
     console.log('[DEBUG] rows.length', rows.length);
     console.log('[DEBUG] first row', rows[0]);
     console.log('[DEBUG] hiddenColumns BEFORE reset', hiddenColumns);
+  }
+  if(rows[0]){
+    const r = rows[0];
+    document.getElementById('pfName').textContent = r['Partnername'] || '';
+    document.getElementById('pfMeta').textContent = `${r['Partnertyp']||''} · ${r['Land']||''}`;
+    document.getElementById('pfHealth').textContent = r['Score']||'-';
+    document.getElementById('pfContacts').innerHTML = `
+      <li>${r['Ansprechpartner_Name']||'-'}</li>
+      <li>${r['Ansprechpartner_E-Mail']||'-'}</li>
+      <li>${r['Telefon']||'-'}</li>
+      <li>${r['Rolle']||'-'}</li>`;
   }
   hiddenColumns = [];           // Reset column visibility
   localStorage.removeItem('hiddenColumns');

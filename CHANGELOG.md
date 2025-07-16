@@ -1,4 +1,8 @@
 # Changelog
+## [0.8.0] – 2025-07-16
+### Added
+* New "Steckbrief" tab showing a basic 360° partner view.
+
 ## [0.7.38] – 2025-07-15
 ### Fixed
 * File-input resets so the same CSV can be selected multiple times.
