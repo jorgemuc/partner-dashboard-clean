@@ -1,4 +1,8 @@
 # Changelog
+## [0.8.1] – 2025-07-17
+### Fixed
+* Tab switching keeps other views visible and profile dropdown selects partners.
+
 ## [0.8.0] – 2025-07-16
 ### Added
 * New "Steckbrief" tab showing a basic 360° partner view.

@@ -132,21 +132,22 @@ body.dark .log-table th { background: #3a3a3a; }
     <button id="alertsSettingsBtn">Alerts</button>
   </nav>
   <main>
-    <section id="profileView" style="display:none">
+    <section id="profileView" class="view hidden">
       <div class="header">
         <div class="logo" style="width:60px;height:60px;background:#eee;display:inline-block;margin-right:1rem"></div>
+        <select id="partnerSelect"></select>
         <h1 id="pfName"></h1>
         <span id="pfMeta"></span>
         <span id="pfHealth" class="badge">-</span>
         <button class="edit-btn">Edit</button>
       </div>
       <section class="card"><h3>Stammdaten</h3><ul id="pfContacts"></ul></section>
-      <section class="card"><h3>Vertragsdaten</h3><ul></ul></section>
-      <section class="card"><h3>Technik</h3><ul></ul></section>
-      <section class="card"><h3>KPIs</h3><table></table></section>
+      <div class="card placeholder">– Vertragsdaten folgen –</div>
+      <div class="card placeholder">– Finanzdaten folgen –</div>
+      <div class="card placeholder">– Tickets-Block folgt –</div>
     </section>
     <!-- Übersicht -->
-    <section id="overview" class="active">
+    <section id="overview" class="view">
       <div style="height:140px"><canvas id="barStatus"></canvas></div>
       <div class="kpi-boxes" id="kpiBoxes"></div>
       <div id="dropZone" class="drop-zone">CSV hierher ziehen <span id="dropStatus"></span></div>
@@ -156,7 +157,7 @@ body.dark .log-table th { background: #3a3a3a; }
       </div>
     </section>
     <!-- Tabelle -->
-    <section id="table">
+    <section id="table" class="view hidden">
       <div class="search-filter" id="filters"></div>
       <div style="position:relative;margin-bottom:.5rem;">
         <select id="viewSelect" style="margin-right:.5rem;">
@@ -179,14 +180,14 @@ body.dark .log-table th { background: #3a3a3a; }
       <div id="pagination" style="margin-top:.5rem;"><button id="prevPage" class="export-btn" style="background:#777;margin-right:.5rem;">Prev</button><span id="pageInfo"></span><button id="nextPage" class="export-btn" style="background:#777;margin-left:.5rem;">Next</button></div>
     </section>
     <!-- Kartenansicht -->
-    <section id="cards">
+    <section id="cards" class="view hidden">
       <div class="search-filter">
         <input type="text" id="cardSearchInput" placeholder="Suche Partner...">
       </div>
       <div class="cards" id="partnerCards"></div>
     </section>
     <!-- Chart-Tab -->
-    <section id="charts">
+    <section id="charts" class="view hidden">
       <div style="display:flex;flex-wrap:wrap;gap:2rem;">
         <div class="chart-box">
           <h3>Vertragstypen (Pie)</h3>
@@ -207,7 +208,7 @@ body.dark .log-table th { background: #3a3a3a; }
       </div>
     </section>
     <!-- Änderungsprotokoll -->
-    <section id="changelog">
+    <section id="changelog" class="view hidden">
       <h3>Änderungsprotokoll</h3>
       <table class="log-table" id="changelogTable">
         <thead>

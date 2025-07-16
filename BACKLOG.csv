@@ -113,3 +113,4 @@ E12,UX,Restore help page & fix table hiddenColumns bug,,done,UX,
 E13,Fix,Table renders after CSV load,set csvHeaders on load,done,Fix,codex
 E13,UX,CSV reload & open-dialog fixed,,done,UX,
 E66 - Steckbrief Tab,360° Partneransicht,HTML + CSV Hook + Tab Logic,done,UX,S,codex
+E67 - Steckbrief Integration,Tab-Refactor & Mock Daten,view classes|dropdown|placeholders,done,UX,S,codex
