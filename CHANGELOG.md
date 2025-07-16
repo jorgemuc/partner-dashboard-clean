@@ -17,6 +17,9 @@
 ### Fixed
 * File-input resets so the same CSV can be selected multiple times.
 * Menu “CSV laden …” opens native dialog again and loads file.
+## [0.7.39] – 2025-07-16
+### Added
+* Enriched demo CSV with partner fields for Steckbrief mock.
 ## [0.7.37] – 2025-07-15
 ### Added
 * Full help.html with user guide & changelog integration.

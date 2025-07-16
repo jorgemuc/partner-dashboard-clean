@@ -65,7 +65,7 @@ npm run build:win32
 
 Die portable EXE findet sich anschließend unter `dist/Partner Cockpit Dashboard.exe`.
 
-Für einen kompletten UI-Test kann die Datei demo/PARTNER.csv mit allen Spalten importiert werden.
+Für einen kompletten UI-Test kann die Datei assets/demo/partner-demo.csv mit allen Spalten importiert werden.
 
 ## Troubleshooting
 

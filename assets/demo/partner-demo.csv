@@ -1,0 +1,6 @@
+Partner_ID,Partnername,Partnertyp,Land,Status,Health_Score,Ansprechpartner_Name,Ansprechpartner_Email,Telefon,Letztes_Update
+P-1001,AlphaSoft,SaaS,DE,aktiv,95,Hans Müller,h.mueller@alphasoft.de,+49-30-123456,2025-07-16
+P-1002,BetaWare,ERP,CH,aktiv,88,Peter Muster,p.muster@betaware.ch,+41-44-987654,2025-07-15
+P-1003,CasaPortal,Portal,DE,gekündigt,70,Julia Kaiser,j.kaiser@casaportal.de,+49-89-555555,2025-07-14
+P-1004,DataMax,ERP,AT,aktiv,90,Sabine Förtner,s.foertner@datamax.at,+43-1-222333,2025-07-13
+P-1005,EdgeCloud,SaaS,DE,aktiv,85,Markus Dähn,m.daehn@edgecloud.de,+49-40-777777,2025-07-12
