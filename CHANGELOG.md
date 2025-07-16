@@ -1,4 +1,7 @@
 # Changelog
+## [0.7.38] – 2025-07-16
+### Fixed
+* Table renders correctly after CSV or demo import.
 ## [0.7.37] – 2025-07-15
 ### Added
 * Full help.html with user guide & changelog integration.

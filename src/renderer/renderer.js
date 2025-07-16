@@ -8,6 +8,7 @@ import Chart from 'chart.js/auto';
 import { buildChart } from '../../chartWorker.mjs';
 import './inlineEdit.js';
 import './kpi.js';
+window.__DEBUG__ = true;
 // --- test-environment stubs -------------------------------
 if (typeof window !== 'undefined' && !window.undoChange) {
   window.undoChange = () => {};
@@ -248,9 +249,17 @@ function resetFilters(){
 }
 
 function handleCsvLoaded(rows){
+  if(!csvHeaders.length && rows.length){
+    csvHeaders = Object.keys(rows[0]);
+  }
   setData(rows);
   currentPage = 1;
   resetFilters();
+  if (window.__DEBUG__) {
+    console.log('[DEBUG] rows.length', rows.length);
+    console.log('[DEBUG] first row', rows[0]);
+    console.log('[DEBUG] hiddenColumns BEFORE reset', hiddenColumns);
+  }
   hiddenColumns = [];           // Reset column visibility
   localStorage.removeItem('hiddenColumns');
   renderAll();
@@ -304,7 +313,7 @@ if(dropZone){
 // === DEMO-DATEN ===
 document.getElementById('demoDataBtn').onclick = () =>
   Papa.parse('./demo/PARTNER.csv', { download:true, header:true,
-    complete: r => { setData(r.data); currentPage=1; resetFilters(); renderAll(); }
+    complete: r => { handleCsvLoaded(r.data); }
   });
 
 eventBus.on('data:loaded', handleCsvLoaded);
@@ -463,6 +472,13 @@ function renderColumnMenu(){
 // === TABELLE + EDITOR ===
 function renderTable() {
   const data = getData();
+  if (window.__DEBUG__) {
+    console.log('[DEBUG] renderTable called with', {
+      rows: data.length,
+      hiddenColumns,
+      tableDom: document.getElementById('partnerTable')
+    });
+  }
   if (!data.length) {
     document.getElementById("partnerTable").querySelector("thead").innerHTML = "";
     document.getElementById("partnerTable").querySelector("tbody").innerHTML = "";
