@@ -1,4 +1,7 @@
 # Changelog
+## [0.7.47] – 2025-07-18
+### Fixed
+* finalize wizard: closeWizard handler and aligned radio layout
 ## [0.7.46] – 2025-07-18
 ### Fixed
 * Wizard UX polish: proper close, minimal required fields, summary page
