@@ -708,30 +708,100 @@ window.exportTableXLSX = function(){
   writeFile(wb, 'partner_export.xlsx');
 };
 
-// === ORDER WIZARD ===
-const wizardSteps = [
-  document.getElementById('wizardBody')?.innerHTML,
-  '<p>Mock-Formular folgt…</p>',
-  '<p>Mock-Formular folgt…</p>',
-  '<p>Mock-Formular folgt…</p>'
+// === WIZARD MODAL ===
+const sites = ['Weststraße 17','Parkallee 5','Hauptplatz 12','Bergweg 9'];
+const formatMatrix = [
+  {process:'Heizkostenabrechnung', format:'CSV', transport:'Kundenportal'},
+  {process:'Unterjährige Verbrauchsinformation', format:'XML', transport:'Webservice'},
+  {process:'Unterjährige Nutzerwechsel', format:'JSON', transport:'Cloud'}
 ];
-let wizardIdx = 0;
-function renderWizardStep(){
-  byId('wizardBody').innerHTML = wizardSteps[wizardIdx];
-  byId('wizardBreadcrumb')?.querySelectorAll('li').forEach((li,i)=>{
-    li.classList.toggle('active', i===wizardIdx);
-  });
-  byId('wizardBack').disabled = wizardIdx===0;
-  byId('wizardNext').disabled = wizardIdx===wizardSteps.length-1;
+
+const wizardTemplates = [
+  `<form id="step1"><label><input type="radio" name="process" value="hk"> Heizkostenabrechnung – bved</label>
+   <label><input type="radio" name="process" value="uvi"> Unterjährige Verbrauchsinformation – UVI</label>
+   <label><input type="radio" name="process" value="uw"> Nutzerwechsel – UVI Empfänger</label>
+   <label><input type="radio" name="process" value="ers"> Elektronischer Rechnungsservice</label>
+   <label><input type="radio" name="process" value="za"> Zwischenablesung</label></form>`,
+  `<form id="step2"><label>Software‑Partner<select><option>Aareon</option><option>Hausbank</option><option>Domus</option></select></label>
+   <label>Ansprechpartner Kunde<input type="text"></label>
+   <label>Ansprechpartner Partner<input type="text"></label></form>`,
+  `<table><thead><tr><th>Prozess</th><th>Format</th><th>Übermittlung</th></tr></thead>
+     <tbody>${formatMatrix.map(r=>`<tr><td>${r.process}</td><td>${r.format}</td><td>${r.transport}</td></tr>`).join('')}</tbody></table>`,
+  `<form id="step4"><label><input type="radio" name="scope" value="all"> Alle</label>
+   <label><input type="radio" name="scope" value="some"> Einzelne</label>
+   <select id="siteSelect" multiple class="hidden">${sites.map(s=>`<option>${s}</option>`).join('')}</select></form>`,
+  `<div><p>Zusammenfassung folgt…</p><p>Setup 299 € einmalig</p>
+   <label><input type="checkbox" id="agbCheck"> AGB gelesen</label>
+   <button id="wizardSubmit" class="primary">Beauftragen</button></div>`
+];
+
+let wizardStep = 0;
+let focusHandler;
+const wizardEl = byId('wizardModal');
+const wizardBody = byId('wizardBody');
+const stepper = byId('wizardStepper');
+const nextBtn = byId('wizardNext');
+const backBtn = byId('wizardBack');
+
+function trapFocus(el){
+  const focusable = el.querySelectorAll('a,button,input,select,textarea,[tabindex]');
+  if(!focusable.length) return;
+  const first = focusable[0];
+  const last = focusable[focusable.length-1];
+  focusHandler = e => {
+    if(e.key==='Tab'){
+      if(e.shiftKey){
+        if(document.activeElement===first){e.preventDefault();last.focus();}
+      }else if(document.activeElement===last){e.preventDefault();first.focus();}
+    }
+  };
+  el.addEventListener('keydown',focusHandler);
+  first.focus();
 }
-const wizardEl = byId('orderWizard');
+function releaseFocus(el){ if(focusHandler){ el.removeEventListener('keydown',focusHandler); focusHandler=null; } }
+
+function validateStep(){
+  if(wizardStep===0) return !!wizardBody.querySelector('input[name="process"]:checked');
+  if(wizardStep===3) return !!wizardBody.querySelector('input[name="scope"]:checked');
+  if(wizardStep===4) return wizardBody.querySelector('#agbCheck')?.checked;
+  return true;
+}
+
+function renderWizardStep(){
+  wizardBody.innerHTML = wizardTemplates[wizardStep];
+  stepper.querySelectorAll('li').forEach((li,i)=>{
+    li.classList.toggle('active', i===wizardStep);
+    li.classList.toggle('done', i<wizardStep);
+  });
+  backBtn.disabled = wizardStep===0;
+  nextBtn.disabled = wizardStep===wizardTemplates.length-1 || !validateStep();
+  if(wizardStep===3){
+    const radios = wizardBody.querySelectorAll('input[name="scope"]');
+    const sel = wizardBody.querySelector('#siteSelect');
+    radios.forEach(r=>r.addEventListener('change',()=>{
+      sel.classList.toggle('hidden', !radios[1].checked);
+      nextBtn.disabled = !validateStep();
+    }));
+  }
+  if(wizardStep===4){
+    wizardBody.querySelector('#wizardSubmit').onclick = hide;
+    wizardBody.querySelector('#agbCheck').addEventListener('change',()=>{nextBtn.disabled = !validateStep();});
+  }
+  if(wizardStep===0){
+    wizardBody.querySelectorAll('input[name="process"]').forEach(r=>r.addEventListener('change',()=>{
+      nextBtn.disabled = !validateStep();
+    }));
+  }
+}
+
+function hide(){ wizardEl.classList.add('hidden'); releaseFocus(wizardEl); }
+
 if(wizardEl){
-  byId('btnNewOrder').onclick = () => { wizardIdx = 0; renderWizardStep(); wizardEl.classList.remove('hidden'); };
-  const hide = () => wizardEl.classList.add('hidden');
+  byId('btnNewOrder').onclick = () => { wizardStep = 0; renderWizardStep(); wizardEl.classList.remove('hidden'); trapFocus(wizardEl); };
   byId('wizardClose').onclick = hide;
   byId('wizardAbort').onclick = hide;
-  byId('wizardNext').onclick = () => { if(wizardIdx<wizardSteps.length-1){ wizardIdx++; renderWizardStep(); } };
-  byId('wizardBack').onclick = () => { if(wizardIdx>0){ wizardIdx--; renderWizardStep(); } };
+  nextBtn.onclick = () => { if(wizardStep<wizardTemplates.length-1){ wizardStep++; renderWizardStep(); } };
+  backBtn.onclick = () => { if(wizardStep>0){ wizardStep--; renderWizardStep(); } };
 }
 
 // === CHARTS ===
