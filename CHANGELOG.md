@@ -1,4 +1,7 @@
 # Changelog
+## [0.7.45] – 2025-07-18
+### Added
+* add full 5-step wizard click-dummy incl. UI validation
 ## [0.7.44] – 2025-07-18
 ### Added
 * add click-dummy wizard modal; does not affect existing views

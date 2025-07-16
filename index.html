@@ -261,26 +261,21 @@ body.dark .log-table th { background: #3a3a3a; }
       </div>
     </div>
 
-    <div id="orderWizard" class="wizard hidden view-modal">
-      <div class="wizard-header">Neue Beauftragung
-        <span id="wizardClose">×</span>
+    <div id="wizardModal" class="hidden" role="dialog" aria-modal="true">
+      <div class="wizard-header">
+        <span>Neue Beauftragung</span>
+        <button id="wizardClose" aria-label="Schließen">×</button>
       </div>
-      <div class="wizard-steps">
-        <ul id="wizardBreadcrumb">
-          <li class="active">1 Auswahl</li><li>2 Partner‑Basis</li><li>3 Details</li><li>4 Review</li>
+      <nav id="wizardStepper" aria-label="Wizard steps">
+        <ul>
+          <li class="active">1 Prozess</li>
+          <li>2 Software</li>
+          <li>3 Parameter</li>
+          <li>4 Liegenschaften</li>
+          <li>5 Beauftragung</li>
         </ul>
-      </div>
-      <div class="wizard-body" id="wizardBody">
-        <div class="wizard-grid">
-          <button data-type="arge">ARGE</button>
-          <button data-type="bved">BVED</button>
-          <button data-type="datev">DATEV</button>
-          <button data-type="edi">EDI</button>
-          <button data-type="zugferd">ZUGFeRD</button>
-          <button data-type="opentext">OpenText</button>
-          <button data-type="rest">REST</button>
-        </div>
-      </div>
+      </nav>
+      <div class="wizard-body" id="wizardBody"></div>
       <div class="wizard-footer">
         <button id="wizardBack" class="secondary">Zurück</button>
         <button id="wizardNext" class="primary">Weiter</button>

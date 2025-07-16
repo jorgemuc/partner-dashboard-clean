@@ -17,15 +17,17 @@ beforeAll(async () => {
   renderer = await import('../src/renderer/renderer.js');
 });
 
-test('wizard opens and navigates', () => {
-  const wizard = document.getElementById('orderWizard');
-  expect(wizard.classList.contains('hidden')).toBe(true);
+test('5-step wizard validates required fields', () => {
+  const modal = document.getElementById('wizardModal');
+  expect(modal.classList.contains('hidden')).toBe(true);
   document.getElementById('btnNewOrder').click();
-  expect(wizard.classList.contains('hidden')).toBe(false);
-  expect(document.querySelector('#wizardBreadcrumb li.active').textContent).toContain('1');
-  document.getElementById('wizardNext').click();
-  expect(document.querySelector('#wizardBreadcrumb li.active').textContent).toContain('2');
-  expect(document.getElementById('wizardBody').textContent).toContain('Mock-Formular');
+  expect(modal.classList.contains('hidden')).toBe(false);
+  const next = document.getElementById('wizardNext');
+  expect(next.disabled).toBe(true);
+  modal.querySelector('input[name="process"]').click();
+  expect(next.disabled).toBe(false);
+  next.click();
+  expect(document.querySelector('#wizardStepper li.active').textContent).toContain('2');
   document.getElementById('wizardBack').click();
-  expect(document.querySelector('#wizardBreadcrumb li.active').textContent).toContain('1');
+  expect(document.querySelector('#wizardStepper li.active').textContent).toContain('1');
 });
