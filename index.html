@@ -139,12 +139,38 @@ body.dark .log-table th { background: #3a3a3a; }
         <h1 id="pfName"></h1>
         <span id="pfMeta"></span>
         <span id="pfHealth" class="badge">-</span>
-        <button class="edit-btn">Edit</button>
+        <button id="profileEditBtn" class="edit-btn" onclick="openProfileEdit()">Edit</button>
       </div>
       <section class="card"><h3>Stammdaten</h3><ul id="pfContacts"></ul></section>
-      <div class="card placeholder">– Vertragsdaten folgen –</div>
-      <div class="card placeholder">– Finanzdaten folgen –</div>
-      <div class="card placeholder">– Tickets-Block folgt –</div>
+      <div id="contractCard" class="card">
+        <h3>Vertrag</h3>
+        <ul>
+          <li><span class="label">Beginn</span><span id="contract_start">–</span></li>
+          <li><span class="label">Ende</span><span id="contract_end">–</span></li>
+          <li><span class="label">Projekt</span><span id="project_tag">–</span></li>
+          <li><span class="label">Dokument</span><a id="doc_contract" target="_blank">–</a></li>
+        </ul>
+      </div>
+      <div id="financeCard" class="card">
+        <h3>Finanzen</h3>
+        <ul>
+          <li><span class="label">Umsatz 12M</span><span id="sales_12m">–</span></li>
+          <li><span class="label">Offene Rechnungen</span><span id="open_invoices">0</span></li>
+          <li><span class="label">Marketing</span><a id="doc_marketing" target="_blank">–</a></li>
+        </ul>
+      </div>
+      <div id="ticketCard" class="card">
+        <h3>Tickets</h3>
+        <ul>
+          <li><span class="label">SLA-Verletzungen 30d</span><span id="sla_breaches">0</span></li>
+        </ul>
+      </div>
+      <div id="editModal" class="modal hidden">
+        <h3>Bearbeiten</h3>
+        <label>Health-Score <input type="number" id="editScore"></label>
+        <label>Status <select id="editStatus"><option>aktiv</option><option>gekündigt</option></select></label>
+        <button id="saveEdit">Speichern</button>
+      </div>
     </section>
     <!-- Übersicht -->
     <section id="overviewView" class="view active">

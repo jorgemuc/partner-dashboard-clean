@@ -88,6 +88,19 @@ eventBus.on('chart:empty', id => {
 let appVersion;
 let chartWorker;
 
+const byId = id => document.getElementById(id);
+function formatCurrency(val){
+  const num = parseFloat(String(val).replace(/[^\d.-]/g, ''));
+  if(Number.isNaN(num)) return '–';
+  return num.toLocaleString('de-DE',{style:'currency',currency:'EUR',minimumFractionDigits:0});
+}
+function linkOrDash(id, url){
+  const el = byId(id);
+  if(!el) return;
+  if(url){ el.textContent = 'Öffnen'; el.href = url; }
+  else{ el.textContent='–'; el.removeAttribute('href'); }
+}
+
 /**
  * Instantiate chart worker when allowed.
  * @returns {Worker|null}
@@ -123,6 +136,18 @@ function resetCharts(){
 }
 let demoMode = false;
 let currentPartner = null;
+
+function fillProfile(row){
+  if(!row) return;
+  byId('contract_start').textContent = row.Vertragsbeginn || '–';
+  byId('contract_end').textContent = row.Vertragsende || '–';
+  byId('sales_12m').textContent = row.Umsatz_12M ? formatCurrency(row.Umsatz_12M) : '–';
+  byId('open_invoices').textContent = row.Offene_Rechnungen || '0';
+  byId('sla_breaches').textContent = row.SLA_Verletzungen_30d || '0';
+  linkOrDash('doc_contract', row.Dokument_Vertrag);
+  linkOrDash('doc_marketing', row.Dokument_Marketing);
+  byId('project_tag').textContent = row.Projekt_Tag || '–';
+}
 let hiddenColumns = JSON.parse(localStorage.getItem('hiddenColumns')||'[]');
 const columnViews = {
   Alle: [],
@@ -275,12 +300,13 @@ function resetFilters(){
 function updateProfile(){
   if(!currentPartner) return;
   const r = currentPartner;
-  document.getElementById('pfName').textContent = r['Partnername'] || '';
-  document.getElementById('pfMeta').textContent = `${r['Partnertyp']||''} · ${r['Land']||''}`;
-  document.getElementById('pfHealth').textContent = r['Health_Score'] || '-';
-  document.getElementById('pfContacts').innerHTML = `
+  byId('pfName').textContent = r['Partnername'] || '';
+  byId('pfMeta').textContent = `${r['Partnertyp']||''} · ${r['Land']||''} · ${r['Status']||''}`;
+  byId('pfHealth').textContent = r['Health_Score'] || '-';
+  byId('pfContacts').innerHTML = `
     <li>${r['Ansprechpartner_Name']||'-'}</li>
     <li>${r['Ansprechpartner_Email']||'-'}</li>`;
+  fillProfile(r);
 }
 
 function populatePartnerDropdown(rows){
@@ -622,6 +648,20 @@ window.openEditor = function(idx) {
     if (changed) { setData(data); showAlert("Änderung gespeichert!","success"); }
   };
   document.getElementById("modalCloseBtn").onclick = ()=>{ document.getElementById("modalBg").style.display = "none"; }
+};
+
+window.openProfileEdit = function(){
+  if(!currentPartner) return;
+  byId('editScore').value = currentPartner.Health_Score || '';
+  byId('editStatus').value = currentPartner.Status || '';
+  byId('editModal').classList.remove('hidden');
+};
+byId('saveEdit').onclick = function(){
+  if(!currentPartner) return;
+  currentPartner.Health_Score = byId('editScore').value;
+  currentPartner.Status = byId('editStatus').value;
+  byId('editModal').classList.add('hidden');
+  updateProfile();
 };
 
 // === CHANGELOG ===

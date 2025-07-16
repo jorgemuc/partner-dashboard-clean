@@ -117,3 +117,4 @@ E67 - Steckbrief Integration,Tab-Refactor & Mock Daten,view classes|dropdown|pla
 E68 - DOM ID Align,IDs after tab rename,renderer & HTML fix,done,Fix,S,codex
 E13 - Regression fix,restore view classes,,done,Fix,S,codex
 E18 – Demo- & Test-Daten,Add Steckbrief fields to demo CSV,,done,Demo,S,
+E11,UI,Steckbrief mock filled,,done,UX,codex

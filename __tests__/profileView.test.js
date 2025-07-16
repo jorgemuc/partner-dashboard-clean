@@ -45,3 +45,21 @@ test('profile tab toggles section visibility', () => {
   expect(document.getElementById('profileView').classList.contains('active')).toBe(true);
   expect(document.getElementById('overviewView').classList.contains('active')).toBe(false);
 });
+
+test('profile cards show contract and finance data', () => {
+  renderer.handleCsvLoaded([
+    {Partnername:'Foo',Partnertyp:'T',Land:'DE',Status:'aktiv',Health_Score:'90',Ansprechpartner_Name:'N',Ansprechpartner_Email:'a',Vertragsbeginn:'2024-01-01',Vertragsende:'2025-12-31',Umsatz_12M:'1000',Offene_Rechnungen:'1',SLA_Verletzungen_30d:'0',Dokument_Vertrag:'http://x',Dokument_Marketing:'http://m',Projekt_Tag:'Tag'}
+  ]);
+  expect(document.getElementById('contract_start').textContent).toBe('2024-01-01');
+  expect(document.getElementById('open_invoices').textContent).toBe('1');
+  expect(document.getElementById('doc_contract').getAttribute('href')).toBe('http://x');
+});
+
+test('edit modal updates score and status in header', () => {
+  document.getElementById('profileEditBtn').click();
+  document.getElementById('editScore').value = '77';
+  document.getElementById('editStatus').value = 'gekündigt';
+  document.getElementById('saveEdit').click();
+  expect(document.getElementById('pfHealth').textContent).toBe('77');
+  expect(document.getElementById('pfMeta').textContent).toContain('gekündigt');
+});

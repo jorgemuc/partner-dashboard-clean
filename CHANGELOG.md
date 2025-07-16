@@ -1,4 +1,7 @@
 # Changelog
+## [0.7.43] – 2025-07-18
+### Added
+* add mock contract/finance/tickets to Steckbrief + editable fields (non-persist)
 ## [0.7.41] – 2025-07-17
 ### Fixed
 * fix empty views after ID rename.

@@ -9,7 +9,9 @@ th,td{white-space:nowrap;padding:0.6rem 0.8rem;border:1px solid #e0e0e0;max-widt
 @media (max-width:1000px){.kpi{padding:.8rem 1.2rem;font-size:.9rem}}
 body.no-chart [data-tab="charts"] { pointer-events:none; opacity:.4; }
 .badge{border-radius:9999px;padding:2px 8px;font-weight:600}
-.card{border:1px solid #ddd;margin:1rem 0;padding:1rem}
+.card{border:1px solid #eee;border-radius:12px;padding:1rem;margin:1rem 0}
+.label{font-weight:600;width:160px;display:inline-block}
+.modal{position:fixed;top:20%;left:30%;width:40%;background:#fff;padding:2rem;box-shadow:0 4px 14px rgba(0,0,0,.15)}
 .placeholder{color:#666;background:#f7f7f7;font-style:italic}
 .view{display:none}
 .view.active{display:block}
