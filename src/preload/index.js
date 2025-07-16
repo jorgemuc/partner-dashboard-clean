@@ -22,6 +22,7 @@ try {
   try { version = require('../package.json').version; } catch {} }
 
 const bus = mitt();
+ipcRenderer.on('menu-open-csv', () => bus.emit('menu-open-csv'));
 
 const api = {
   bus,
@@ -31,4 +32,8 @@ const api = {
   sendMail: opts => ipcRenderer.invoke('send-mail', opts)
 };
 contextBridge.exposeInMainWorld('api', api);
+contextBridge.exposeInMainWorld('csvApi', {
+  openDialog: () => ipcRenderer.invoke('dialog:openCsv'),
+  onCsvPath: cb => ipcRenderer.on('csv:path', (_, p) => cb(p))
+});
 module.exports = api;

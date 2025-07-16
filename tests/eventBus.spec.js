@@ -11,7 +11,8 @@ test('eventBus module exports mitt instance', async () => {
   });
   global.window = dom.window;
   jest.mock('electron', () => ({__esModule: true,
-    contextBridge: { exposeInMainWorld: jest.fn() }
+    contextBridge: { exposeInMainWorld: jest.fn() },
+    ipcRenderer: { on: jest.fn(), invoke: jest.fn() }
   }));
   const { contextBridge } = require('electron');
   await import('../src/preload.js');

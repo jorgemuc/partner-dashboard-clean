@@ -7,6 +7,7 @@ let PRELOAD = path.join(process.resourcesPath || __dirname, 'preload.js');
 if (!fs.existsSync(PRELOAD)) {
   PRELOAD = path.resolve(__dirname, PRELOAD_PATH_DIST);
 }
+let mainWindow;
 // works in dev (npm start) and in the packed ASAR
 const nodemailer = require('nodemailer');
 
@@ -25,6 +26,14 @@ ipcMain.handle('send-mail', async (_e, opts) => {
   }
 });
 
+ipcMain.handle('dialog:openCsv', async () => {
+  const { canceled, filePaths } = await dialog.showOpenDialog({
+    filters:[{name:'CSV', extensions:['csv']}],
+    properties:['openFile']
+  });
+  if (!canceled) mainWindow.webContents.send('csv:path', filePaths[0]);
+});
+
 const columnViews = {
   Alle: [],
   Vertrag:["Partnername","Systemname","Vertragstyp","Vertragsstatus","Vertragsbeginn","Vertragsende","Kündigungsfrist"],
@@ -36,15 +45,12 @@ const columnViews = {
 
 function getMenuTemplate(win){
   return [
-    {label:'File',submenu:[
-      {label:'CSV laden…', click: async (_item, win) => {
-        const { canceled, filePaths } = await dialog.showOpenDialog(win, {
-          properties:['openFile'],
-          filters:[{ name:'CSV', extensions:['csv'] }]
-        });
-        if(!canceled && filePaths[0]) win.webContents.send('open-csv-dialog', filePaths[0]);
-      }},
-      {role:'quit'}]},
+    { label:'File',
+      submenu:[
+        { label:'CSV laden…', id:'openCsv', click: () =>
+            mainWindow.webContents.send('menu-open-csv') },
+        { role:'quit' }
+      ]},
     {label:'View',submenu:[
       {role:'reload'},
       {role:'forcereload'},
@@ -92,7 +98,7 @@ function createMenu(win){
 }
 
 function createWindow() {
-  const win = new BrowserWindow({
+  mainWindow = new BrowserWindow({
     width: 1200,
     height: 800,
     title: `Partner-Dashboard v${app.getVersion()}`,
@@ -102,13 +108,13 @@ function createWindow() {
       preload:PRELOAD
     }
   });
-  win.loadFile('index.html');
+  mainWindow.loadFile('index.html');
   // ----------  E2E Smoke-Test Handshake ----------
-  win.webContents.once('did-finish-load', () => {
-    win.webContents.send('app-loaded'); // guarantees the renderer is ready
+  mainWindow.webContents.once('did-finish-load', () => {
+    mainWindow.webContents.send('app-loaded'); // guarantees the renderer is ready
     if (process.send) process.send('app-loaded');
   });
-  createMenu(win);
+  createMenu(mainWindow);
 }
 
 if (require.main === module) {

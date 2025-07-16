@@ -37,6 +37,10 @@ await waitApi();
 
 const { mitt: Mitt } = window.api.libs || {};
 const eventBus = window.api.bus;
+eventBus.on('menu-open-csv', () => window.csvApi?.openDialog());
+window.csvApi?.onCsvPath?.(loadCsvFromPath);
+document.getElementById('menuOpenCsv')
+  ?.addEventListener('click', () => window.csvApi.openDialog());
 const { utils: XLSXUtils = {}, writeFile = () => {} } = XLSX;
 if(!Papa){ document.body.classList.add('no-csv'); console.error('CSV disabled'); }
 if(!Chart){ document.body.classList.add('no-chart'); console.error('Charts disabled'); }
@@ -242,6 +246,11 @@ function handleFile(file){
   reader.readAsText(file,'utf-8');
 }
 
+function loadCsvFromPath(fp){
+  if(!fp) return;
+  Papa.parse(fp, { download:true, header:true, complete:r=>handleCsvLoaded(r.data) });
+}
+
 function resetFilters(){
   document.querySelectorAll('#filters input').forEach(i=>{ i.value=''; });
   document.querySelectorAll('#partnerTable .filter-row input')
@@ -282,7 +291,12 @@ function loadCsvFile(file){
 }
 window.loadCsvFile = loadCsvFile;
 
-document.getElementById('csvFile').addEventListener('change', e => loadCsvFile(e.target.files[0]));
+document.getElementById('csvFile').addEventListener('change', e => {
+  const file = e.target.files[0];
+  if (file) loadCsvFromPath(file.path);
+  // allow selecting the same file again
+  e.target.value = '';
+});
 
 const dropZone = document.getElementById('dropZone');
 if(dropZone){
