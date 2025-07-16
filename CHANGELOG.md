@@ -1,4 +1,7 @@
 # Changelog
+## [0.7.44] – 2025-07-18
+### Added
+* add click-dummy wizard modal; does not affect existing views
 ## [0.7.43] – 2025-07-18
 ### Added
 * add mock contract/finance/tickets to Steckbrief + editable fields (non-persist)
