@@ -21,7 +21,7 @@ test('App exposes version and renders charts', async () => {
   expect(count).toBeGreaterThan(0);
   await page.setInputFiles('#csvFile', require('path').join(__dirname, '../fixtures/partner.csv'));
   await page.waitForTimeout(300);
-  const rows = await page.evaluate(() => document.querySelectorAll('#partnerTable tbody tr').length);
+  const rows = await page.evaluate(() => document.querySelectorAll('#tablePartnerTable tbody tr').length);
   expect(rows).toBeGreaterThan(0);
   await app.close();
 }, 30_000);

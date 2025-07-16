@@ -49,15 +49,6 @@ if(demoBtn && !Papa) demoBtn.disabled = true;
 const I18N={
   de:{demoBtn:"Demo-Daten laden"}
 }; // TODO(Epic-9)
-const tabMap = {
-  Dashboard: 'overview',
-  Partner: 'table',
-  Karten: 'map',
-  Analytics: 'chart',
-  '360° Steckbrief': 'profile',
-  Verlauf: 'history',
-  Alerts: 'alerts'
-};
 // TODO(Epic-8): Onboarding docs
 // TODO(Epic-10): Portable build tweaks
 // === GLOBAL DATA STRUCTURES ===
@@ -162,23 +153,31 @@ function applyView(name){
 }
 
 // === TAB NAVIGATION ===
-function switchTab(tabName){
-  const id = tabMap[tabName] ? `${tabMap[tabName]}View` : tabName;
-  document.querySelectorAll('.view').forEach(v=>v.classList.add('hidden'));
-  const el = document.getElementById(id);
-  if(el) el.classList.remove('hidden');
+function switchTab(name){
+  const map = {
+    'Übersicht': 'overview',
+    'Tabelle': 'table',
+    'Karten': 'map',
+    'Diagramme': 'chart',
+    'Steckbrief': 'profile',
+    'Änderungsprotokoll': 'history',
+    'Alerts': 'alerts'
+  };
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  const id = map[name] + 'View';
+  document.getElementById(id)?.classList.add('active');
 }
 document.querySelectorAll('.tab-btn').forEach(btn => {
   btn.onclick = () => {
     document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
-    switchTab(btn.dataset.tab);
     const name = btn.dataset.tab;
-    if (name === 'overviewView' || name === 'Dashboard') renderOverview();
-    if (name === 'tableView' || name === 'Partner') renderTable();
-    if (name === 'mapView' || name === 'Karten') renderCards();
-    if (name === 'chartView' || name === 'Analytics') renderCharts();
-    if (name === 'changelog' || name === 'Verlauf') renderChangelog();
+    switchTab(name);
+    if (name === 'Übersicht') renderOverview();
+    if (name === 'Tabelle') renderTable();
+    if (name === 'Karten') renderCards();
+    if (name === 'Diagramme') renderCharts();
+    if (name === 'Änderungsprotokoll') renderChangelog();
   };
 });
 
@@ -255,7 +254,7 @@ function handleFile(file){
   setData([]);
   csvHeaders=[];
   hiddenColumns = JSON.parse(localStorage.getItem('hiddenColumns')||'[]');
-  document.getElementById('partnerTable').querySelector('tbody').innerHTML='';
+  document.getElementById('tablePartnerTable').querySelector('tbody').innerHTML='';
   const reader = new FileReader();
   reader.onload = e => loadCsvFromString(e.target.result);
   reader.onerror = e => showAlert('Fehler beim Laden: '+e.target.error,'error');
@@ -269,7 +268,7 @@ function loadCsvFromPath(fp){
 
 function resetFilters(){
   document.querySelectorAll('#filters input').forEach(i=>{ i.value=''; });
-  document.querySelectorAll('#partnerTable .filter-row input')
+  document.querySelectorAll('#tablePartnerTable .filter-row input')
     .forEach(i=>{ i.value=''; });
 }
 
@@ -455,7 +454,7 @@ function detectType(field) {
 }
 function renderFilters() {
   const div = document.getElementById('filters');
-  const thead = document.getElementById('partnerTable').querySelector('thead');
+  const thead = document.getElementById('tablePartnerTable').querySelector('thead');
   const data = getData();
   if (!data.length) { div.innerHTML=''; thead.querySelector('.filter-row')?.remove(); return; }
   const presets = JSON.parse(localStorage.getItem('filterPresets')||'[]');
@@ -531,16 +530,16 @@ function renderTable() {
     console.log('[DEBUG] renderTable called with', {
       rows: data.length,
       hiddenColumns,
-      tableDom: document.getElementById('partnerTable')
+      tableDom: document.getElementById('tablePartnerTable')
     });
   }
   if (!data.length) {
-    document.getElementById("partnerTable").querySelector("thead").innerHTML = "";
-    document.getElementById("partnerTable").querySelector("tbody").innerHTML = "";
+    document.getElementById("tablePartnerTable").querySelector("thead").innerHTML = "";
+    document.getElementById("tablePartnerTable").querySelector("tbody").innerHTML = "";
     return;
   }
   let ths = csvHeaders.map(h=>`<th data-col="${h}" class="${hiddenColumns.includes(h)?'hidden':''}">${h}</th>`).join("") + "<th>Aktion</th>";
-  document.getElementById("partnerTable").querySelector("thead").innerHTML = `<tr>${ths}</tr>`;
+  document.getElementById("tablePartnerTable").querySelector("thead").innerHTML = `<tr>${ths}</tr>`;
   const filtered = getFilteredData();
   const totalPages = Math.max(1, Math.ceil(filtered.length / rowsPerPage));
   if(currentPage>totalPages) currentPage = totalPages;
@@ -551,7 +550,7 @@ function renderTable() {
     tds += `<td><button class="edit-btn" onclick="openEditor(${data.indexOf(row)})">Edit</button></td>`;
     rows += `<tr>${tds}</tr>`;
   });
-  document.getElementById("partnerTable").querySelector("tbody").innerHTML = rows;
+  document.getElementById("tablePartnerTable").querySelector("tbody").innerHTML = rows;
   document.getElementById('pageInfo').textContent = `${currentPage}/${totalPages}`;
 }
 

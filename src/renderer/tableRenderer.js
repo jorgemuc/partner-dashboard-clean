@@ -8,7 +8,7 @@ let bus;
 
 export function initInlineEdit(opts) {
   ({ changelog, pushChange, bus } = opts);
-  const table = document.getElementById('partnerTable');
+  const table = document.getElementById('tablePartnerTable');
   table.addEventListener('dblclick', onDblClick);
 }
 

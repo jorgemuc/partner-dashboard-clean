@@ -1,5 +1,5 @@
 export function initInlineEdit() {
-  const table = document.getElementById('partnerTable');
+  const table = document.getElementById('tablePartnerTable');
   table.addEventListener('dblclick', e => {
     const td = e.target.closest('td[data-edit]');
     if (!td) return;

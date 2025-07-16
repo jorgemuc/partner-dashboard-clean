@@ -26,6 +26,6 @@ test('loads multiple csv files sequentially', () => {
   const first = store.getData().length;
   mod.handleCsvLoaded([{A:'1'},{A:'2'}]);
   expect(store.getData().length).not.toBe(first);
-  const rows = document.querySelectorAll('#partnerTable tbody tr').length;
+  const rows = document.querySelectorAll('#tablePartnerTable tbody tr').length;
   expect(rows).toBeGreaterThan(1);
 });
