@@ -1,4 +1,7 @@
 # Changelog
+## [0.7.46] – 2025-07-18
+### Fixed
+* Wizard opens on demand, contact fields added, process-filtered parameters, polish Step 5
 ## [0.7.45] – 2025-07-18
 ### Added
 * add full 5-step wizard click-dummy incl. UI validation

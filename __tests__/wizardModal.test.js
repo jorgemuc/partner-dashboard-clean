@@ -27,7 +27,20 @@ test('5-step wizard validates required fields', () => {
   modal.querySelector('input[name="process"]').click();
   expect(next.disabled).toBe(false);
   next.click();
-  expect(document.querySelector('#wizardStepper li.active').textContent).toContain('2');
+  // step 2 validation
+  expect(next.disabled).toBe(true);
+  modal.querySelector('#custName').value = 'A';
+  modal.querySelector('#custName').dispatchEvent(new window.Event('input'));
+  modal.querySelector('#partnerName').value = 'B';
+  modal.querySelector('#partnerName').dispatchEvent(new window.Event('input'));
+  expect(next.disabled).toBe(true);
+  modal.querySelector('#custEmail').value = 'a@test.de';
+  modal.querySelector('#custEmail').dispatchEvent(new window.Event('input'));
+  modal.querySelector('#partnerEmail').value = 'b@test.de';
+  modal.querySelector('#partnerEmail').dispatchEvent(new window.Event('input'));
+  expect(next.disabled).toBe(false);
+  next.click();
+  expect(modal.querySelector('#selectFormat').options.length).toBeGreaterThan(0);
   document.getElementById('wizardBack').click();
-  expect(document.querySelector('#wizardStepper li.active').textContent).toContain('1');
+  expect(document.querySelector('#wizardStepper li.active').textContent).toContain('2');
 });
