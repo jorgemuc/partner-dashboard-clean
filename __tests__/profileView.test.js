@@ -43,5 +43,5 @@ test('profile tab toggles section visibility', () => {
   const btn = document.querySelector('[data-tab="profileView"]');
   btn.click();
   expect(document.getElementById('profileView').classList.contains('hidden')).toBe(false);
-  expect(document.getElementById('overview').classList.contains('hidden')).toBe(true);
+  expect(document.getElementById('overviewView').classList.contains('hidden')).toBe(true);
 });

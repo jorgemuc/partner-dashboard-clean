@@ -123,11 +123,11 @@ body.dark .log-table th { background: #3a3a3a; }
     <div id="liveRegion" role="status" aria-live="polite" class="hidden"></div>
   </header>
   <nav>
-    <button class="tab-btn active" data-tab="overview">Übersicht</button>
-    <button class="tab-btn" data-tab="table">Tabelle</button>
-    <button class="tab-btn" data-tab="cards">Karten</button>
+    <button class="tab-btn active" data-tab="overviewView">Übersicht</button>
+    <button class="tab-btn" data-tab="tableView">Tabelle</button>
+    <button class="tab-btn" data-tab="mapView">Karten</button>
     <button class="tab-btn" data-tab="profileView">Steckbrief</button>
-    <button class="tab-btn" data-tab="charts">Diagramme</button>
+    <button class="tab-btn" data-tab="chartView">Diagramme</button>
     <button class="tab-btn" data-tab="changelog">Änderungsprotokoll</button>
     <button id="alertsSettingsBtn">Alerts</button>
   </nav>
@@ -147,7 +147,7 @@ body.dark .log-table th { background: #3a3a3a; }
       <div class="card placeholder">– Tickets-Block folgt –</div>
     </section>
     <!-- Übersicht -->
-    <section id="overview" class="view">
+    <section id="overviewView" class="view">
       <div style="height:140px"><canvas id="barStatus"></canvas></div>
       <div class="kpi-boxes" id="kpiBoxes"></div>
       <div id="dropZone" class="drop-zone">CSV hierher ziehen <span id="dropStatus"></span></div>
@@ -157,7 +157,7 @@ body.dark .log-table th { background: #3a3a3a; }
       </div>
     </section>
     <!-- Tabelle -->
-    <section id="table" class="view hidden">
+    <section id="tableView" class="view hidden">
       <div class="search-filter" id="filters"></div>
       <div style="position:relative;margin-bottom:.5rem;">
         <select id="viewSelect" style="margin-right:.5rem;">
@@ -180,14 +180,14 @@ body.dark .log-table th { background: #3a3a3a; }
       <div id="pagination" style="margin-top:.5rem;"><button id="prevPage" class="export-btn" style="background:#777;margin-right:.5rem;">Prev</button><span id="pageInfo"></span><button id="nextPage" class="export-btn" style="background:#777;margin-left:.5rem;">Next</button></div>
     </section>
     <!-- Kartenansicht -->
-    <section id="cards" class="view hidden">
+    <section id="mapView" class="view hidden">
       <div class="search-filter">
         <input type="text" id="cardSearchInput" placeholder="Suche Partner...">
       </div>
       <div class="cards" id="partnerCards"></div>
     </section>
     <!-- Chart-Tab -->
-    <section id="charts" class="view hidden">
+    <section id="chartView" class="view hidden">
       <div style="display:flex;flex-wrap:wrap;gap:2rem;">
         <div class="chart-box">
           <h3>Vertragstypen (Pie)</h3>
