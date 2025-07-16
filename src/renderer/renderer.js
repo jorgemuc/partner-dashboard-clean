@@ -49,6 +49,15 @@ if(demoBtn && !Papa) demoBtn.disabled = true;
 const I18N={
   de:{demoBtn:"Demo-Daten laden"}
 }; // TODO(Epic-9)
+const tabMap = {
+  Dashboard: 'overview',
+  Partner: 'table',
+  Karten: 'map',
+  Analytics: 'chart',
+  '360° Steckbrief': 'profile',
+  Verlauf: 'history',
+  Alerts: 'alerts'
+};
 // TODO(Epic-8): Onboarding docs
 // TODO(Epic-10): Portable build tweaks
 // === GLOBAL DATA STRUCTURES ===
@@ -154,8 +163,9 @@ function applyView(name){
 
 // === TAB NAVIGATION ===
 function switchTab(tabName){
+  const id = tabMap[tabName] ? `${tabMap[tabName]}View` : tabName;
   document.querySelectorAll('.view').forEach(v=>v.classList.add('hidden'));
-  const el = document.getElementById(tabName);
+  const el = document.getElementById(id);
   if(el) el.classList.remove('hidden');
 }
 document.querySelectorAll('.tab-btn').forEach(btn => {
@@ -163,11 +173,12 @@ document.querySelectorAll('.tab-btn').forEach(btn => {
     document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
     switchTab(btn.dataset.tab);
-    if (btn.dataset.tab === 'overview') renderOverview();
-    if (btn.dataset.tab === 'table') renderTable();
-    if (btn.dataset.tab === 'cards') renderCards();
-    if (btn.dataset.tab === 'charts') renderCharts();
-    if (btn.dataset.tab === 'changelog') renderChangelog();
+    const name = btn.dataset.tab;
+    if (name === 'overviewView' || name === 'Dashboard') renderOverview();
+    if (name === 'tableView' || name === 'Partner') renderTable();
+    if (name === 'mapView' || name === 'Karten') renderCards();
+    if (name === 'chartView' || name === 'Analytics') renderCharts();
+    if (name === 'changelog' || name === 'Verlauf') renderChangelog();
   };
 });
 

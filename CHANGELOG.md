@@ -1,4 +1,7 @@
 # Changelog
+## [0.7.40] – 2025-07-17
+### Fixed
+* fix: align DOM IDs after tab rename (table renders).
 ## [0.8.1] – 2025-07-17
 ### Fixed
 * Tab switching keeps other views visible and profile dropdown selects partners.
