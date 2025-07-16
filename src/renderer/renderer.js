@@ -57,7 +57,7 @@ const referenceSchema = [
   "Vertragsstatus","Vertragstyp","Vertragsbeginn","Vertragsende","Kündigungsfrist",
   "Modul/Zweck","Schnittstelle","Format","API URL","Schnittstellenstatus",
   "Anzahl_Kunden","Anzahl_Liegenschaften","Anzahl_NE","Nutzungsfrequenz",
-  "Störungen_90d","Score","Ansprechpartner_Name","Ansprechpartner_E-Mail",
+  "Störungen_90d","Score","Ansprechpartner_Name","Ansprechpartner_Email",
   "Telefon","Rolle","Landingpage","Webinar_Termine","Marketingkampagne",
   "Produktflyer_URL","Präsentation_URL","Referenzprojekte","Schulungstypen",
   "Schulungsunterlagen","Trainingsstatus","Developer_Portal_Zugang",
@@ -277,9 +277,10 @@ function updateProfile(){
   const r = currentPartner;
   document.getElementById('pfName').textContent = r['Partnername'] || '';
   document.getElementById('pfMeta').textContent = `${r['Partnertyp']||''} · ${r['Land']||''}`;
+  document.getElementById('pfHealth').textContent = r['Health_Score'] || '-';
   document.getElementById('pfContacts').innerHTML = `
     <li>${r['Ansprechpartner_Name']||'-'}</li>
-    <li>${r['Ansprechpartner_E-Mail']||'-'}</li>`;
+    <li>${r['Ansprechpartner_Email']||'-'}</li>`;
 }
 
 function populatePartnerDropdown(rows){
@@ -365,10 +366,12 @@ if(dropZone){
 }
 
 // === DEMO-DATEN ===
-document.getElementById('demoDataBtn').onclick = () =>
-  Papa.parse('./demo/PARTNER.csv', { download:true, header:true,
-    complete: r => { handleCsvLoaded(r.data); }
-  });
+document.getElementById('demoDataBtn').onclick = async () => {
+  const res = await fetch('assets/demo/partner-demo.csv');
+  const text = await res.text();
+  const out = Papa.parse(text, { header:true, skipEmptyLines:true });
+  handleCsvLoaded(out.data);
+};
 
 eventBus.on('data:loaded', handleCsvLoaded);
 

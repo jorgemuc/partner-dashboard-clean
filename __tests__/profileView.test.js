@@ -23,8 +23,8 @@ beforeAll(async () => {
 
 test('profile header fills with csv first row and dropdown', () => {
   renderer.handleCsvLoaded([
-    {Partnername:'Foo',Partnertyp:'T',Land:'DE',Ansprechpartner_Name:'N','Ansprechpartner_E-Mail':'a@b'},
-    {Partnername:'Bar',Partnertyp:'X',Land:'US',Ansprechpartner_Name:'Z','Ansprechpartner_E-Mail':'c@d'}
+    {Partnername:'Foo',Partnertyp:'T',Land:'DE',Ansprechpartner_Name:'N','Ansprechpartner_Email':'a@b'},
+    {Partnername:'Bar',Partnertyp:'X',Land:'US',Ansprechpartner_Name:'Z','Ansprechpartner_Email':'c@d'}
   ]);
   expect(document.getElementById('pfName').textContent).toBe('Foo');
   expect(document.getElementById('pfMeta').textContent).toContain('T');

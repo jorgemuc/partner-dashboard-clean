@@ -116,3 +116,4 @@ E66 - Steckbrief Tab,360° Partneransicht,HTML + CSV Hook + Tab Logic,done,UX,S,
 E67 - Steckbrief Integration,Tab-Refactor & Mock Daten,view classes|dropdown|placeholders,done,UX,S,codex
 E68 - DOM ID Align,IDs after tab rename,renderer & HTML fix,done,Fix,S,codex
 E13 - Regression fix,restore view classes,,done,Fix,S,codex
+E18 – Demo- & Test-Daten,Add Steckbrief fields to demo CSV,,done,Demo,S,
