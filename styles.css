@@ -15,3 +15,6 @@ body.no-chart [data-tab="charts"] { pointer-events:none; opacity:.4; }
 .placeholder{color:#666;background:#f7f7f7;font-style:italic}
 .view{display:none}
 .view.active{display:block}
+.view-modal{position:fixed;top:8%;left:20%;width:60%;background:#fff;z-index:1000}
+.wizard-header,.wizard-footer{padding:1rem;border-bottom:1px solid #ccc}
+.wizard-footer{border-top:1px solid #ccc;border-bottom:0}

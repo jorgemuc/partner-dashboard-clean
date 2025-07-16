@@ -708,6 +708,32 @@ window.exportTableXLSX = function(){
   writeFile(wb, 'partner_export.xlsx');
 };
 
+// === ORDER WIZARD ===
+const wizardSteps = [
+  document.getElementById('wizardBody')?.innerHTML,
+  '<p>Mock-Formular folgt…</p>',
+  '<p>Mock-Formular folgt…</p>',
+  '<p>Mock-Formular folgt…</p>'
+];
+let wizardIdx = 0;
+function renderWizardStep(){
+  byId('wizardBody').innerHTML = wizardSteps[wizardIdx];
+  byId('wizardBreadcrumb')?.querySelectorAll('li').forEach((li,i)=>{
+    li.classList.toggle('active', i===wizardIdx);
+  });
+  byId('wizardBack').disabled = wizardIdx===0;
+  byId('wizardNext').disabled = wizardIdx===wizardSteps.length-1;
+}
+const wizardEl = byId('orderWizard');
+if(wizardEl){
+  byId('btnNewOrder').onclick = () => { wizardIdx = 0; renderWizardStep(); wizardEl.classList.remove('hidden'); };
+  const hide = () => wizardEl.classList.add('hidden');
+  byId('wizardClose').onclick = hide;
+  byId('wizardAbort').onclick = hide;
+  byId('wizardNext').onclick = () => { if(wizardIdx<wizardSteps.length-1){ wizardIdx++; renderWizardStep(); } };
+  byId('wizardBack').onclick = () => { if(wizardIdx>0){ wizardIdx--; renderWizardStep(); } };
+}
+
 // === CHARTS ===
 function renderCharts() {
   const data = getData();
