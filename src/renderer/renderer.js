@@ -122,6 +122,7 @@ function resetCharts(){
   charts={};
 }
 let demoMode = false;
+let currentPartner = null;
 let hiddenColumns = JSON.parse(localStorage.getItem('hiddenColumns')||'[]');
 const columnViews = {
   Alle: [],
@@ -152,20 +153,16 @@ function applyView(name){
 }
 
 // === TAB NAVIGATION ===
-const profileSection = document.getElementById('profileView');
+function switchTab(tabName){
+  document.querySelectorAll('.view').forEach(v=>v.classList.add('hidden'));
+  const el = document.getElementById(tabName);
+  if(el) el.classList.remove('hidden');
+}
 document.querySelectorAll('.tab-btn').forEach(btn => {
   btn.onclick = () => {
     document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
-    if(btn.dataset.tab === 'profileView'){
-      document.querySelectorAll('main section').forEach(sec => sec.style.display='none');
-      profileSection.style.display = 'block';
-      return;
-    }
-    profileSection.style.display = 'none';
-    document.querySelectorAll('main section').forEach(sec => sec.classList.remove('active'));
-    const sec = document.getElementById(btn.dataset.tab);
-    if(sec){ sec.classList.add('active'); }
+    switchTab(btn.dataset.tab);
     if (btn.dataset.tab === 'overview') renderOverview();
     if (btn.dataset.tab === 'table') renderTable();
     if (btn.dataset.tab === 'cards') renderCards();
@@ -265,6 +262,26 @@ function resetFilters(){
     .forEach(i=>{ i.value=''; });
 }
 
+function updateProfile(){
+  if(!currentPartner) return;
+  const r = currentPartner;
+  document.getElementById('pfName').textContent = r['Partnername'] || '';
+  document.getElementById('pfMeta').textContent = `${r['Partnertyp']||''} · ${r['Land']||''}`;
+  document.getElementById('pfContacts').innerHTML = `
+    <li>${r['Ansprechpartner_Name']||'-'}</li>
+    <li>${r['Ansprechpartner_E-Mail']||'-'}</li>`;
+}
+
+function populatePartnerDropdown(rows){
+  const sel = document.getElementById('partnerSelect');
+  if(!sel) return;
+  sel.innerHTML = rows.map((r,i)=>`<option value="${i}">${r.Partnername||'?'}</option>`).join('');
+  sel.onchange = function(){
+    currentPartner = rows[this.value];
+    updateProfile();
+  };
+}
+
 function handleCsvLoaded(rows){
   if(!csvHeaders.length && rows.length){
     csvHeaders = Object.keys(rows[0]);
@@ -278,15 +295,9 @@ function handleCsvLoaded(rows){
     console.log('[DEBUG] hiddenColumns BEFORE reset', hiddenColumns);
   }
   if(rows[0]){
-    const r = rows[0];
-    document.getElementById('pfName').textContent = r['Partnername'] || '';
-    document.getElementById('pfMeta').textContent = `${r['Partnertyp']||''} · ${r['Land']||''}`;
-    document.getElementById('pfHealth').textContent = r['Score']||'-';
-    document.getElementById('pfContacts').innerHTML = `
-      <li>${r['Ansprechpartner_Name']||'-'}</li>
-      <li>${r['Ansprechpartner_E-Mail']||'-'}</li>
-      <li>${r['Telefon']||'-'}</li>
-      <li>${r['Rolle']||'-'}</li>`;
+    currentPartner = rows[0];
+    populatePartnerDropdown(rows);
+    updateProfile();
   }
   hiddenColumns = [];           // Reset column visibility
   localStorage.removeItem('hiddenColumns');

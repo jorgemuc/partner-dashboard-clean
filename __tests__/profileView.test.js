@@ -21,16 +21,27 @@ beforeAll(async () => {
   renderer = await import('../src/renderer/renderer.js');
 });
 
-test('profile header fills with csv first row', () => {
-  renderer.handleCsvLoaded([{Partnername:'Foo',Partnertyp:'T',Land:'DE',Ansprechpartner_Name:'N',
-    'Ansprechpartner_E-Mail':'a@b',Telefon:'1',Rolle:'R',Score:'5'}]);
+test('profile header fills with csv first row and dropdown', () => {
+  renderer.handleCsvLoaded([
+    {Partnername:'Foo',Partnertyp:'T',Land:'DE',Ansprechpartner_Name:'N','Ansprechpartner_E-Mail':'a@b'},
+    {Partnername:'Bar',Partnertyp:'X',Land:'US',Ansprechpartner_Name:'Z','Ansprechpartner_E-Mail':'c@d'}
+  ]);
   expect(document.getElementById('pfName').textContent).toBe('Foo');
   expect(document.getElementById('pfMeta').textContent).toContain('T');
-  expect(document.getElementById('pfContacts').textContent).toContain('N');
+  const options = document.querySelectorAll('#partnerSelect option');
+  expect(options.length).toBe(2);
+});
+
+test('profile dropdown switches partner', () => {
+  const select = document.getElementById('partnerSelect');
+  select.value = '1';
+  select.dispatchEvent(new window.Event('change'));
+  expect(document.getElementById('pfName').textContent).toBe('Bar');
 });
 
 test('profile tab toggles section visibility', () => {
   const btn = document.querySelector('[data-tab="profileView"]');
   btn.click();
-  expect(document.getElementById('profileView').style.display).toBe('block');
+  expect(document.getElementById('profileView').classList.contains('hidden')).toBe(false);
+  expect(document.getElementById('overview').classList.contains('hidden')).toBe(true);
 });
