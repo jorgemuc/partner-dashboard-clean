@@ -719,13 +719,16 @@ const processMap = {
   za: 'Zwischenablesung'
 };
 let currentProcess = '';
+const current = {process:'', partner:'', format:'', transport:'', sites:[]};
 
 const wizardTemplates = [
-  `<form id="step1"><label><input type="radio" name="process" value="hk"> Heizkostenabrechnung – bved</label>
-   <label><input type="radio" name="process" value="uvi"> Unterjährige Verbrauchsinformation – UVI</label>
-   <label><input type="radio" name="process" value="uw"> Nutzerwechsel – UVI Empfänger</label>
-   <label><input type="radio" name="process" value="ers"> Elektronischer Rechnungsservice</label>
-   <label><input type="radio" name="process" value="za"> Zwischenablesung</label></form>`,
+  `<form id="step1">
+     <label class="row"><input type="radio" name="process" value="hk"><span>Heizkostenabrechnung – bved</span></label>
+     <label class="row"><input type="radio" name="process" value="uvi"><span>Unterjährige Verbrauchsinformation – UVI</span></label>
+     <label class="row"><input type="radio" name="process" value="uw"><span>Nutzerwechsel – UVI Empfänger</span></label>
+     <label class="row"><input type="radio" name="process" value="ers"><span>Elektronischer Rechnungsservice</span></label>
+     <label class="row"><input type="radio" name="process" value="za"><span>Zwischenablesung</span></label>
+   </form>`,
   `<form id="step2">
      <label>Kundenname<input id="custName" type="text"></label>
      <label>Kunden E-Mail<input id="custEmail" type="email"></label>
@@ -738,17 +741,17 @@ const wizardTemplates = [
      <label>Format<select id="selectFormat"></select></label>
      <label>Übertragung<select id="selectTransport"></select></label>
    </form>`,
-  `<form id="step4"><label><input type="radio" name="scope" value="all"> Alle</label>
-   <label><input type="radio" name="scope" value="some"> Einzelne</label>
-   <select id="siteSelect" multiple class="hidden">${sites.map(s=>`<option>${s}</option>`).join('')}</select></form>`,
-  `<div id="step5"><p class="price">Setup 299 € einmalig</p>
-   <label><input type="checkbox" id="agbCheck"> AGB gelesen</label>
-   <div style="text-align:right"><button id="btnSubmit" class="primary" disabled>Kostenpflichtig beauftragen</button></div></div>`
+  `<form id="step4">
+     <label class="row"><input type="radio" name="scope" value="all"><span>Alle</span></label>
+     <label class="row"><input type="radio" name="scope" value="some"><span>Einzelne</span></label>
+     <select id="siteSelect" multiple class="hidden">${sites.map(s=>`<option>${s}</option>`).join('')}</select>
+   </form>`,
+  `<div id="step5"></div>`
 ];
 
 let wizardStep = 0;
 let focusHandler;
-const wizardEl = byId('wizardModal');
+const wizardModal = byId('wizardModal');
 const wizardBody = byId('wizardBody');
 const stepper = byId('wizardStepper');
 const nextBtn = byId('wizardNext');
@@ -775,17 +778,25 @@ function validateStep(){
   if(wizardStep===0) return !!wizardBody.querySelector('input[name="process"]:checked');
   if(wizardStep===1){
     const val = id => wizardBody.querySelector(`#${id}`)?.value.trim();
-    const cOk = val('custName') && (val('custEmail') || val('custPhone'));
-    const pOk = val('partnerName') && (val('partnerEmail') || val('partnerPhone'));
-    return cOk && pOk;
+    return val('custName') && val('partnerName');
   }
   if(wizardStep===3) return !!wizardBody.querySelector('input[name="scope"]:checked');
   if(wizardStep===4) return wizardBody.querySelector('#agbCheck')?.checked;
   return true;
 }
 
-function renderWizardStep(){
-  wizardBody.innerHTML = wizardTemplates[wizardStep];
+function buildSummary(){
+  wizardBody.innerHTML = `\n        <h4>Zusammenfassung</h4>\n        <ul class="summary">\n          <li>Prozess: ${current.process}</li>\n          <li>Software‑Partner: ${current.partner}</li>\n          <li>Parameter: ${current.format} / ${current.transport}</li>\n          <li>Liegenschaften: ${current.sites.join(', ')}</li>\n        </ul>\n        <p>Setup 299 € einmalig</p>\n        <label><input type="checkbox" id="chkAGB"> AGB gelesen</label>\n        <button id="btnSubmit" class="primary" disabled>Kostenpflichtig beauftragen</button>`;
+  byId('chkAGB').onchange = e => byId('btnSubmit').disabled = !e.target.checked;
+  byId('btnSubmit').onclick = () => resetWizard();
+}
+
+function renderStep(){
+  if(wizardStep===4){
+    buildSummary();
+  }else{
+    wizardBody.innerHTML = wizardTemplates[wizardStep];
+  }
   stepper.querySelectorAll('li').forEach((li,i)=>{
     li.classList.toggle('active', i===wizardStep);
     li.classList.toggle('done', i<wizardStep);
@@ -813,11 +824,6 @@ function renderWizardStep(){
       nextBtn.disabled = !validateStep();
     }));
   }
-  if(wizardStep===4){
-    const submit = wizardBody.querySelector('#btnSubmit');
-    wizardBody.querySelector('#agbCheck').addEventListener('change',e=>{submit.disabled = !e.target.checked;});
-    submit.onclick = hide;
-  }
   if(wizardStep===0){
     wizardBody.querySelectorAll('input[name="process"]').forEach(r=>r.addEventListener('change',()=>{
       currentProcess = processMap[r.value];
@@ -826,15 +832,37 @@ function renderWizardStep(){
   }
 }
 
-function hide(){ wizardEl.classList.add('hidden'); releaseFocus(wizardEl); wizardStep=0; renderWizardStep(); }
+function resetWizard(){
+  wizardModal.classList.add('hidden');
+  wizardStep = 0;
+  renderStep();
+}
 
-if(wizardEl){
-  renderWizardStep();
-  byId('btnNewOrder').onclick = () => wizardEl.classList.remove('hidden');
-  byId('wizardClose').onclick = hide;
-  byId('wizardAbort').onclick = hide;
-  nextBtn.onclick = () => { if(wizardStep<wizardTemplates.length-1){ wizardStep++; renderWizardStep(); } };
-  backBtn.onclick = () => { if(wizardStep>0){ wizardStep--; renderWizardStep(); } };
+if(wizardModal){
+  renderStep();
+  byId('btnNewOrder').onclick = () => wizardModal.classList.remove('hidden');
+  ['wizardAbort','wizardClose'].forEach(id=>{
+    byId(id).onclick = ()=> resetWizard();
+  });
+  nextBtn.onclick = () => { if(wizardStep<wizardTemplates.length-1){
+      if(wizardStep===0){
+        const chk = wizardBody.querySelector('input[name="process"]:checked');
+        if(chk) current.process = processMap[chk.value];
+      }
+      if(wizardStep===1){
+        current.partner = wizardBody.querySelector('#partnerName').value.trim();
+      }
+      if(wizardStep===2){
+        current.format = wizardBody.querySelector('#selectFormat').value;
+        current.transport = wizardBody.querySelector('#selectTransport').value;
+      }
+      if(wizardStep===3){
+        const scope = wizardBody.querySelector('input[name="scope"]:checked').value;
+        current.sites = scope==='all' ? ['Alle'] : Array.from(wizardBody.querySelector('#siteSelect').selectedOptions).map(o=>o.value);
+      }
+      wizardStep++; renderStep();
+    } };
+  backBtn.onclick = () => { if(wizardStep>0){ wizardStep--; renderStep(); } };
 }
 
 // === CHARTS ===

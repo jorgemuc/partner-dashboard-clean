@@ -28,6 +28,9 @@ body.no-chart [data-tab="charts"] { pointer-events:none; opacity:.4; }
 #wizardModal nav li.active{font-weight:600}
 #wizardModal nav li:not(.active):not(.done){color:#BDBDBD}
 #wizardModal .wizard-body{padding:1.2rem 2rem;display:flex;flex-direction:column;gap:1.2rem;max-height:70vh;overflow:auto}
+#wizardModal .wizard-body label{display:flex;align-items:center;gap:.6rem}
+#wizardModal .wizard-body input[type="radio"]{margin:0}
+#wizardModal .row{display:flex;align-items:center}
 #wizardModal .wizard-footer{display:flex;justify-content:flex-end;gap:.5rem;padding:1rem;border-top:1px solid #ccc}
 #wizardModal .wizard-footer button{min-width:96px}
 #wizardModal button.primary{background:#0075ff;color:#fff;border:0;padding:.5rem 1rem;cursor:pointer}
