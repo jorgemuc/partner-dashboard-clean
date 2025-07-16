@@ -1,7 +1,7 @@
 const { JSDOM } = require('jsdom');
 
 beforeEach(() => {
-  const dom = new JSDOM('<table id="partnerTable"></table><div class="kpi" data-kpi="Foo"></div>', { url:'http://localhost' });
+  const dom = new JSDOM('<table id="tablePartnerTable"></table><div class="kpi" data-kpi="Foo"></div>', { url:'http://localhost' });
   global.window = dom.window;
   global.document = dom.window.document;
 });

@@ -40,8 +40,8 @@ test('profile dropdown switches partner', () => {
 });
 
 test('profile tab toggles section visibility', () => {
-  const btn = document.querySelector('[data-tab="profileView"]');
+  const btn = document.querySelector('[data-tab="Steckbrief"]');
   btn.click();
-  expect(document.getElementById('profileView').classList.contains('hidden')).toBe(false);
-  expect(document.getElementById('overviewView').classList.contains('hidden')).toBe(true);
+  expect(document.getElementById('profileView').classList.contains('active')).toBe(true);
+  expect(document.getElementById('overviewView').classList.contains('active')).toBe(false);
 });

@@ -126,7 +126,7 @@ function handleFile(file){
   setData([]);
   csvHeaders=[];
   hiddenColumns = JSON.parse(localStorage.getItem('hiddenColumns')||'[]');
-  document.getElementById('partnerTable').querySelector('tbody').innerHTML='';
+  document.getElementById('tablePartnerTable').querySelector('tbody').innerHTML='';
   const finish = raw => {
     const validation = validateCsvRaw(raw);
     if(!validation.valid){ showMsg('CSV Fehler: '+validation.errors.join('; '),'error'); return; }
@@ -306,7 +306,7 @@ function detectType(field) {
 }
 function renderFilters() {
   const div = document.getElementById('filters');
-  const thead = document.getElementById('partnerTable').querySelector('thead');
+  const thead = document.getElementById('tablePartnerTable').querySelector('thead');
   const data = getData();
   if (!data.length) { div.innerHTML=''; thead.querySelector('.filter-row')?.remove(); return; }
   const presets = JSON.parse(localStorage.getItem('filterPresets')||'[]');
@@ -389,12 +389,12 @@ function renderColumnMenu(){
 function renderTable() {
   const data = getData();
   if (!data.length) {
-    document.getElementById("partnerTable").querySelector("thead").innerHTML = "";
-    document.getElementById("partnerTable").querySelector("tbody").innerHTML = "";
+    document.getElementById("tablePartnerTable").querySelector("thead").innerHTML = "";
+    document.getElementById("tablePartnerTable").querySelector("tbody").innerHTML = "";
     return;
   }
   let ths = csvHeaders.map(h=>`<th data-col="${h}" class="${hiddenColumns.includes(h)?'hidden':''}">${h}</th>`).join("") + "<th>Aktion</th>";
-  document.getElementById("partnerTable").querySelector("thead").innerHTML = `<tr>${ths}</tr>`;
+  document.getElementById("tablePartnerTable").querySelector("thead").innerHTML = `<tr>${ths}</tr>`;
   const filtered = getFilteredData();
   const totalPages = Math.max(1, Math.ceil(filtered.length / rowsPerPage));
   if(currentPage>totalPages) currentPage = totalPages;
@@ -404,7 +404,7 @@ function renderTable() {
     tds += `<td><button class="edit-btn" onclick="openEditor(${data.indexOf(row)})">Edit</button></td>`;
     rows += `<tr>${tds}</tr>`;
   });
-  document.getElementById("partnerTable").querySelector("tbody").innerHTML = rows;
+  document.getElementById("tablePartnerTable").querySelector("tbody").innerHTML = rows;
   document.getElementById('pageInfo').textContent = `${currentPage}/${totalPages}`;
 }
 

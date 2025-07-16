@@ -123,16 +123,16 @@ body.dark .log-table th { background: #3a3a3a; }
     <div id="liveRegion" role="status" aria-live="polite" class="hidden"></div>
   </header>
   <nav>
-    <button class="tab-btn active" data-tab="overviewView">Übersicht</button>
-    <button class="tab-btn" data-tab="tableView">Tabelle</button>
-    <button class="tab-btn" data-tab="mapView">Karten</button>
-    <button class="tab-btn" data-tab="profileView">Steckbrief</button>
-    <button class="tab-btn" data-tab="chartView">Diagramme</button>
-    <button class="tab-btn" data-tab="changelog">Änderungsprotokoll</button>
+    <button class="tab-btn active" data-tab="Übersicht">Übersicht</button>
+    <button class="tab-btn" data-tab="Tabelle">Tabelle</button>
+    <button class="tab-btn" data-tab="Karten">Karten</button>
+    <button class="tab-btn" data-tab="Steckbrief">Steckbrief</button>
+    <button class="tab-btn" data-tab="Diagramme">Diagramme</button>
+    <button class="tab-btn" data-tab="Änderungsprotokoll">Änderungsprotokoll</button>
     <button id="alertsSettingsBtn">Alerts</button>
   </nav>
   <main>
-    <section id="profileView" class="view hidden">
+    <section id="profileView" class="view">
       <div class="header">
         <div class="logo" style="width:60px;height:60px;background:#eee;display:inline-block;margin-right:1rem"></div>
         <select id="partnerSelect"></select>
@@ -147,7 +147,7 @@ body.dark .log-table th { background: #3a3a3a; }
       <div class="card placeholder">– Tickets-Block folgt –</div>
     </section>
     <!-- Übersicht -->
-    <section id="overviewView" class="view">
+    <section id="overviewView" class="view active">
       <div style="height:140px"><canvas id="barStatus"></canvas></div>
       <div class="kpi-boxes" id="kpiBoxes"></div>
       <div id="dropZone" class="drop-zone">CSV hierher ziehen <span id="dropStatus"></span></div>
@@ -157,7 +157,7 @@ body.dark .log-table th { background: #3a3a3a; }
       </div>
     </section>
     <!-- Tabelle -->
-    <section id="tableView" class="view hidden">
+    <section id="tableView" class="view">
       <div class="search-filter" id="filters"></div>
       <div style="position:relative;margin-bottom:.5rem;">
         <select id="viewSelect" style="margin-right:.5rem;">
@@ -172,7 +172,7 @@ body.dark .log-table th { background: #3a3a3a; }
         <div id="columnMenu" class="column-menu"></div>
       </div>
       <div class="table-scroll">
-        <table id="partnerTable">
+        <table id="tablePartnerTable">
           <thead></thead>
           <tbody></tbody>
         </table>
@@ -180,14 +180,14 @@ body.dark .log-table th { background: #3a3a3a; }
       <div id="pagination" style="margin-top:.5rem;"><button id="prevPage" class="export-btn" style="background:#777;margin-right:.5rem;">Prev</button><span id="pageInfo"></span><button id="nextPage" class="export-btn" style="background:#777;margin-left:.5rem;">Next</button></div>
     </section>
     <!-- Kartenansicht -->
-    <section id="mapView" class="view hidden">
+    <section id="mapView" class="view">
       <div class="search-filter">
         <input type="text" id="cardSearchInput" placeholder="Suche Partner...">
       </div>
       <div class="cards" id="partnerCards"></div>
     </section>
     <!-- Chart-Tab -->
-    <section id="chartView" class="view hidden">
+    <section id="chartView" class="view">
       <div style="display:flex;flex-wrap:wrap;gap:2rem;">
         <div class="chart-box">
           <h3>Vertragstypen (Pie)</h3>
@@ -208,7 +208,7 @@ body.dark .log-table th { background: #3a3a3a; }
       </div>
     </section>
     <!-- Änderungsprotokoll -->
-    <section id="changelog" class="view hidden">
+    <section id="historyView" class="view">
       <h3>Änderungsprotokoll</h3>
       <table class="log-table" id="changelogTable">
         <thead>

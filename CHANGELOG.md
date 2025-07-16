@@ -1,4 +1,7 @@
 # Changelog
+## [0.7.41] – 2025-07-17
+### Fixed
+* fix empty views after ID rename.
 ## [0.7.40] – 2025-07-17
 ### Fixed
 * fix: align DOM IDs after tab rename (table renders).

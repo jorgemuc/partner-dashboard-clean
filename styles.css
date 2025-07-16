@@ -11,5 +11,5 @@ body.no-chart [data-tab="charts"] { pointer-events:none; opacity:.4; }
 .badge{border-radius:9999px;padding:2px 8px;font-weight:600}
 .card{border:1px solid #ddd;margin:1rem 0;padding:1rem}
 .placeholder{color:#666;background:#f7f7f7;font-style:italic}
-.view.hidden{display:none}
+.view{display:none}
 .view.active{display:block}

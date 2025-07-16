@@ -1,7 +1,7 @@
 const { JSDOM } = require('jsdom');
 
 test('inline edit module exposes init function', async () => {
-  const dom = new JSDOM('<table id="partnerTable"></table>');
+  const dom = new JSDOM('<table id="tablePartnerTable"></table>');
   global.window = dom.window;
   global.document = dom.window.document;
   const mod = await import('../src/renderer/inlineEdit.js');
