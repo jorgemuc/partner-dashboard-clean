@@ -6,6 +6,7 @@ import Papa from 'papaparse';
 import * as XLSX from 'xlsx';
 import Chart from 'chart.js/auto';
 import { buildChart } from '../../chartWorker.mjs';
+import { paramOptions } from '../../wizardData.mjs';
 import './inlineEdit.js';
 import './kpi.js';
 window.__DEBUG__ = true;
@@ -710,11 +711,14 @@ window.exportTableXLSX = function(){
 
 // === WIZARD MODAL ===
 const sites = ['Weststraße 17','Parkallee 5','Hauptplatz 12','Bergweg 9'];
-const formatMatrix = [
-  {process:'Heizkostenabrechnung', format:'CSV', transport:'Kundenportal'},
-  {process:'Unterjährige Verbrauchsinformation', format:'XML', transport:'Webservice'},
-  {process:'Unterjährige Nutzerwechsel', format:'JSON', transport:'Cloud'}
-];
+const processMap = {
+  hk: 'Heizkostenabrechnung',
+  uvi: 'Unterjährige Verbrauchsinformation',
+  uw: 'Unterjährige Nutzerwechsel',
+  ers: 'Elektronischer Rechnungsservice',
+  za: 'Zwischenablesung'
+};
+let currentProcess = '';
 
 const wizardTemplates = [
   `<form id="step1"><label><input type="radio" name="process" value="hk"> Heizkostenabrechnung – bved</label>
@@ -722,17 +726,24 @@ const wizardTemplates = [
    <label><input type="radio" name="process" value="uw"> Nutzerwechsel – UVI Empfänger</label>
    <label><input type="radio" name="process" value="ers"> Elektronischer Rechnungsservice</label>
    <label><input type="radio" name="process" value="za"> Zwischenablesung</label></form>`,
-  `<form id="step2"><label>Software‑Partner<select><option>Aareon</option><option>Hausbank</option><option>Domus</option></select></label>
-   <label>Ansprechpartner Kunde<input type="text"></label>
-   <label>Ansprechpartner Partner<input type="text"></label></form>`,
-  `<table><thead><tr><th>Prozess</th><th>Format</th><th>Übermittlung</th></tr></thead>
-     <tbody>${formatMatrix.map(r=>`<tr><td>${r.process}</td><td>${r.format}</td><td>${r.transport}</td></tr>`).join('')}</tbody></table>`,
+  `<form id="step2">
+     <label>Kundenname<input id="custName" type="text"></label>
+     <label>Kunden E-Mail<input id="custEmail" type="email"></label>
+     <label>Kunden Telefon<input id="custPhone" type="tel"></label>
+     <label>Partnername<input id="partnerName" type="text"></label>
+     <label>Partner E-Mail<input id="partnerEmail" type="email"></label>
+     <label>Partner Telefon<input id="partnerPhone" type="tel"></label>
+   </form>`,
+  `<form id="step3">
+     <label>Format<select id="selectFormat"></select></label>
+     <label>Übertragung<select id="selectTransport"></select></label>
+   </form>`,
   `<form id="step4"><label><input type="radio" name="scope" value="all"> Alle</label>
    <label><input type="radio" name="scope" value="some"> Einzelne</label>
    <select id="siteSelect" multiple class="hidden">${sites.map(s=>`<option>${s}</option>`).join('')}</select></form>`,
-  `<div><p>Zusammenfassung folgt…</p><p>Setup 299 € einmalig</p>
+  `<div id="step5"><p class="price">Setup 299 € einmalig</p>
    <label><input type="checkbox" id="agbCheck"> AGB gelesen</label>
-   <button id="wizardSubmit" class="primary">Beauftragen</button></div>`
+   <div style="text-align:right"><button id="btnSubmit" class="primary" disabled>Kostenpflichtig beauftragen</button></div></div>`
 ];
 
 let wizardStep = 0;
@@ -762,6 +773,12 @@ function releaseFocus(el){ if(focusHandler){ el.removeEventListener('keydown',fo
 
 function validateStep(){
   if(wizardStep===0) return !!wizardBody.querySelector('input[name="process"]:checked');
+  if(wizardStep===1){
+    const val = id => wizardBody.querySelector(`#${id}`)?.value.trim();
+    const cOk = val('custName') && (val('custEmail') || val('custPhone'));
+    const pOk = val('partnerName') && (val('partnerEmail') || val('partnerPhone'));
+    return cOk && pOk;
+  }
   if(wizardStep===3) return !!wizardBody.querySelector('input[name="scope"]:checked');
   if(wizardStep===4) return wizardBody.querySelector('#agbCheck')?.checked;
   return true;
@@ -774,7 +791,20 @@ function renderWizardStep(){
     li.classList.toggle('done', i<wizardStep);
   });
   backBtn.disabled = wizardStep===0;
+  nextBtn.classList.toggle('hidden', wizardStep===wizardTemplates.length-1);
   nextBtn.disabled = wizardStep===wizardTemplates.length-1 || !validateStep();
+  if(wizardStep===1){
+    wizardBody.querySelectorAll('input').forEach(i=>i.addEventListener('input',()=>{
+      nextBtn.disabled = !validateStep();
+    }));
+  }
+  if(wizardStep===2){
+    const opts = paramOptions[currentProcess] || [];
+    const fmt = wizardBody.querySelector('#selectFormat');
+    const tr = wizardBody.querySelector('#selectTransport');
+    fmt.innerHTML = opts.map(o=>`<option>${o.format}</option>`).join('');
+    tr.innerHTML = opts.map(o=>`<option>${o.transport}</option>`).join('');
+  }
   if(wizardStep===3){
     const radios = wizardBody.querySelectorAll('input[name="scope"]');
     const sel = wizardBody.querySelector('#siteSelect');
@@ -784,20 +814,23 @@ function renderWizardStep(){
     }));
   }
   if(wizardStep===4){
-    wizardBody.querySelector('#wizardSubmit').onclick = hide;
-    wizardBody.querySelector('#agbCheck').addEventListener('change',()=>{nextBtn.disabled = !validateStep();});
+    const submit = wizardBody.querySelector('#btnSubmit');
+    wizardBody.querySelector('#agbCheck').addEventListener('change',e=>{submit.disabled = !e.target.checked;});
+    submit.onclick = hide;
   }
   if(wizardStep===0){
     wizardBody.querySelectorAll('input[name="process"]').forEach(r=>r.addEventListener('change',()=>{
+      currentProcess = processMap[r.value];
       nextBtn.disabled = !validateStep();
     }));
   }
 }
 
-function hide(){ wizardEl.classList.add('hidden'); releaseFocus(wizardEl); }
+function hide(){ wizardEl.classList.add('hidden'); releaseFocus(wizardEl); wizardStep=0; renderWizardStep(); }
 
 if(wizardEl){
-  byId('btnNewOrder').onclick = () => { wizardStep = 0; renderWizardStep(); wizardEl.classList.remove('hidden'); trapFocus(wizardEl); };
+  renderWizardStep();
+  byId('btnNewOrder').onclick = () => wizardEl.classList.remove('hidden');
   byId('wizardClose').onclick = hide;
   byId('wizardAbort').onclick = hide;
   nextBtn.onclick = () => { if(wizardStep<wizardTemplates.length-1){ wizardStep++; renderWizardStep(); } };
