@@ -1,4 +1,8 @@
-jest.mock('electron', () => ({__esModule: true, contextBridge: { exposeInMainWorld: jest.fn() }, default: {} }));
+jest.mock('electron', () => ({__esModule: true,
+  contextBridge: { exposeInMainWorld: jest.fn() },
+  ipcRenderer: { on: jest.fn(), invoke: jest.fn() },
+  default: {}
+}));
 const { contextBridge } = require('electron');
 jest.mock('papaparse', () => ({}));
 jest.mock('xlsx', () => ({ utils: {} }));

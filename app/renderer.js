@@ -256,7 +256,7 @@ function showMsg(txt, type="success") {
 const v = window.api.version || 'dev';
 window.showVersion=()=>dialog.showMessageBox({title:'Partner-Dashboard',message:`Version ${v}`});
 
-ipcRenderer.on('open-csv-dialog', () => document.getElementById('csvFile').click());
+ipcRenderer.on('menu-open-csv', () => window.csvApi.openDialog());
 
 // === KPIs ===
 function renderKPIs() {
