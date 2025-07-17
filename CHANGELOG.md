@@ -1,4 +1,7 @@
 # Changelog
+## [0.7.61] – 2025-07-24
+### Fixed
+* CI runs E2E tests under Xvfb
 ## [0.7.60] – 2025-07-24
 ### Fixed
 * correct Electron main script path for e2e test; pass sandbox flags
