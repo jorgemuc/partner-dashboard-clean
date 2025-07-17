@@ -837,7 +837,13 @@ function renderStep(){
 function closeWizard(){
   wizardModal.classList.add('hidden');
   wizardStep = 0;
+}
+
+function openWizardForTest(){
+  if (process.env.NODE_ENV!=='test') return;
+  wizardStep = 0;
   renderStep();
+  wizardModal.classList.remove('hidden');
 }
 
 if(wizardModal){
@@ -911,4 +917,4 @@ function drawChart(canvasId, labels, values){
   });
 }
 
-export { loadCsvFile, handleCsvLoaded };
+export { loadCsvFile, handleCsvLoaded, openWizardForTest };

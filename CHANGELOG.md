@@ -1,4 +1,7 @@
 # Changelog
+## [0.7.49] – 2025-07-18
+### Fixed
+* wizard opens only via button; test helper for opening during tests
 ## [0.7.48] – 2025-07-18
 ### Fixed
 * wizard modal no longer auto-opens and layout polished
