@@ -15,7 +15,8 @@ esbuild.build({
     external: ['electron', 'fs', 'path', 'os', 'crypto', 'util'],
     target: ['node16'],
     outfile: 'dist/preload.js',
-    logLevel: 'info'
+    logLevel: 'info',
+    define: { 'process.env.NODE_ENV': '"production"' }
   })
   .then(() => esbuild.build({
       entryPoints: ['src/renderer/renderer.js'],

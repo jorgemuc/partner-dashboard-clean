@@ -1,4 +1,8 @@
 # Changelog
+## [0.7.57] – 2025-07-22
+### Added
+* Playwright e2e test ensures wizard hidden on launch
+
 ## [0.7.56] – 2025-07-17
 ### Added
 * Playwright smoke test ensures wizard stays closed on launch

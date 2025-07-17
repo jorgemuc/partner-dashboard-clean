@@ -129,3 +129,4 @@ E71 - Quick Fix,Wizard & Steckbrief bug-sprint,fixed autostart & layout,done,Fix
 E72 - Bug,Wizard öffnet beim Start,Autostart abschalten,done,Fix,S,codex
 E73 - Bugfix,Remove wizard autostart triggers,tests + production guard,done,Fix,S,codex
 E74 - Test,Wizard closed at launch,Playwright smoke,done,Quality,S,codex
+E75 - Test,Wizard start e2e,ensure hidden on launch,done,Quality,S,codex
