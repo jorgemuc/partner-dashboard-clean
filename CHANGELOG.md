@@ -1,9 +1,12 @@
 # Changelog
+## [0.7.53] – 2025-07-20
+### Fixed
+* wizard only opens via "Neue Beauftragung" button
+* modal closes via X, Abbrechen and Kostenpflichtig buttons
+
 ## [0.7.52] – 2025-07-19
 ### Added
 * documentation updated (README, help, backlog)
-### Known Issues
-* start wizard may appear automatically on launch
 ## [0.7.51] – 2025-07-18
 ### Fixed
 * wizard no longer autostarts; submit closes wizard
