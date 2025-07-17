@@ -845,23 +845,20 @@ function closeWizard(){
 }
 
 function showWizard(){
-  const openEdit = document.getElementById('editModal');
-  openEdit?.parentElement?.remove();
   wizardStep = 0;
   renderStep();
   wizardModal.classList.remove('hidden');
 }
 
 function openWizardForTest(){
-  if (process.env.NODE_ENV!=='test') return;
-  showWizard();
+  if (process.env.NODE_ENV === 'test') {
+    showWizard();
+  }
 }
 
 if(wizardModal){
   byId('btnNewOrder').onclick = () => {
-    wizardStep = 0;
-    renderStep();
-    wizardModal.classList.remove('hidden');
+    showWizard();
   };
   ['wizardClose','wizardAbort','btnSubmit'].forEach(id=>{
     const el = byId(id);

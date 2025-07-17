@@ -1,4 +1,8 @@
 # Changelog
+## [0.7.55] – 2025-07-21
+### Fixed
+* wizard hidden on startup; open only via button
+
 ## [0.7.53] – 2025-07-20
 ### Fixed
 * wizard only opens via "Neue Beauftragung" button

@@ -127,3 +127,4 @@ E9 - UX,Wizard open via button,,done,Fix,S,codex
 E70 - Quick Fix,Wizard & Steckbrief layout,cleanup open/close + tiles modal,done,Fix,S,codex
 E71 - Quick Fix,Wizard & Steckbrief bug-sprint,fixed autostart & layout,done,Fix,S,codex
 E72 - Bug,Wizard öffnet beim Start,Autostart abschalten,done,Fix,S,codex
+E73 - Bugfix,Remove wizard autostart triggers,tests + production guard,done,Fix,S,codex
