@@ -1,3 +1,7 @@
+## [0.7.63] – 2025-07-24
+### Fixed
+* added Xvfb install steps for smoke tests
+
 # Changelog
 ## [0.7.62] – 2025-07-24
 ### Fixed
