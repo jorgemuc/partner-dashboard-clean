@@ -1,4 +1,7 @@
 # Changelog
+## [0.7.48] – 2025-07-18
+### Fixed
+* wizard modal no longer auto-opens and layout polished
 ## [0.7.47] – 2025-07-18
 ### Fixed
 * finalize wizard: closeWizard handler and aligned radio layout

@@ -471,9 +471,11 @@ function renderOverview(){
 })();
 
 // signal successful bootstrap for tests
-document.body.setAttribute('data-testid', 'app-ready');
-// Signal an Playwright-Smoke, dass die App fertig ist
-window.api?.bus?.emit?.('e2e-ready');
+if (process.env.NODE_ENV === 'test') {
+  document.body.setAttribute('data-testid', 'app-ready');
+  // Signal an Playwright-Smoke, dass die App fertig ist
+  window.api?.bus?.emit?.('e2e-ready');
+}
 
 
 // === KPIs ===
@@ -723,11 +725,11 @@ const current = {process:'', partner:'', format:'', transport:'', sites:[]};
 
 const wizardTemplates = [
   `<form id="step1">
-     <label class="radio-row"><input type="radio" name="process" value="hk"><span>Heizkostenabrechnung – bved</span></label>
-     <label class="radio-row"><input type="radio" name="process" value="uvi"><span>Unterjährige Verbrauchsinformation – UVI</span></label>
-     <label class="radio-row"><input type="radio" name="process" value="uw"><span>Nutzerwechsel – UVI Empfänger</span></label>
-     <label class="radio-row"><input type="radio" name="process" value="ers"><span>Elektronischer Rechnungsservice</span></label>
-     <label class="radio-row"><input type="radio" name="process" value="za"><span>Zwischenablesung</span></label>
+     <label class="row"><input type="radio" name="process" value="hk"><span>Heizkostenabrechnung – bved</span></label>
+     <label class="row"><input type="radio" name="process" value="uvi"><span>Unterjährige Verbrauchsinformation – UVI</span></label>
+     <label class="row"><input type="radio" name="process" value="uw"><span>Nutzerwechsel – UVI Empfänger</span></label>
+     <label class="row"><input type="radio" name="process" value="ers"><span>Elektronischer Rechnungsservice</span></label>
+     <label class="row"><input type="radio" name="process" value="za"><span>Zwischenablesung</span></label>
    </form>`,
   `<form id="step2">
      <label>Kundenname<input id="custName" type="text"></label>
@@ -742,8 +744,8 @@ const wizardTemplates = [
      <label>Übertragung<select id="selectTransport"></select></label>
    </form>`,
   `<form id="step4">
-     <label class="radio-row"><input type="radio" name="scope" value="all"><span>Alle</span></label>
-     <label class="radio-row"><input type="radio" name="scope" value="some"><span>Einzelne</span></label>
+     <label class="row"><input type="radio" name="scope" value="all"><span>Alle</span></label>
+     <label class="row"><input type="radio" name="scope" value="some"><span>Einzelne</span></label>
      <select id="siteSelect" multiple class="hidden">${sites.map(s=>`<option>${s}</option>`).join('')}</select>
    </form>`,
   `<div id="step5"></div>`
@@ -786,7 +788,7 @@ function validateStep(){
 }
 
 function buildSummary(){
-  wizardBody.innerHTML = `\n        <h4>Zusammenfassung</h4>\n        <ul class="summary">\n          <li>Prozess: ${current.process}</li>\n          <li>Software‑Partner: ${current.partner}</li>\n          <li>Parameter: ${current.format} / ${current.transport}</li>\n          <li>Liegenschaften: ${current.sites.join(', ')}</li>\n        </ul>\n        <p>Setup 299 € einmalig</p>\n        <label><input type="checkbox" id="chkAGB"> AGB gelesen</label>\n        <button id="btnSubmit" class="primary" disabled>Kostenpflichtig beauftragen</button>`;
+  wizardBody.innerHTML = `\n      <div id="step5">\n        <div>\n          <h4>Zusammenfassung</h4>\n          <ul class="summary">\n            <li>Prozess: ${current.process}</li>\n            <li>Software‑Partner: ${current.partner}</li>\n            <li>Parameter: ${current.format} / ${current.transport}</li>\n            <li>Liegenschaften: ${current.sites.join(', ')}</li>\n          </ul>\n        </div>\n        <div>\n          <p>Setup 299 € einmalig</p>\n          <label class="row"><input type="checkbox" id="chkAGB"><span>AGB gelesen</span></label>\n        </div>\n        <button id="btnSubmit" class="primary" disabled>Kostenpflichtig beauftragen</button>\n      </div>`;
   byId('chkAGB').onchange = e => byId('btnSubmit').disabled = !e.target.checked;
   byId('btnSubmit').onclick = () => closeWizard();
 }
@@ -839,8 +841,11 @@ function closeWizard(){
 }
 
 if(wizardModal){
-  renderStep();
-  byId('btnNewOrder').onclick = () => wizardModal.classList.remove('hidden');
+  byId('btnNewOrder').onclick = () => {
+    wizardStep = 0;
+    renderStep();
+    wizardModal.classList.remove('hidden');
+  };
   ['wizardAbort','wizardClose'].forEach(id=>{
     byId(id).onclick = ()=> closeWizard();
   });

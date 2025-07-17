@@ -47,3 +47,13 @@ test('5-step wizard validates required fields', () => {
   submit.click();
   expect(modal.classList.contains('hidden')).toBe(true);
 });
+
+test('wizard closes via X and abort buttons', () => {
+  const modal = document.getElementById('wizardModal');
+  document.getElementById('btnNewOrder').click();
+  document.getElementById('wizardClose').click();
+  expect(modal.classList.contains('hidden')).toBe(true);
+  document.getElementById('btnNewOrder').click();
+  document.getElementById('wizardAbort').click();
+  expect(modal.classList.contains('hidden')).toBe(true);
+});
