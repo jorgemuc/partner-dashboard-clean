@@ -1,12 +1,20 @@
+import { _electron as electron, test, expect } from '@playwright/test';
 import path from 'node:path';
-import { test, expect, _electron as electron } from '@playwright/test';
+
+// 1) derive correct binary path once
+const electronPath = await electron.launcher.executablePath();
 
 
 test('wizard hidden on fresh launch', async () => {
+  // 2) launch app with real main entry (no bundle needed)
   const app = await electron.launch({
-    executablePath: require('electron'),
-    args: [path.join(__dirname, '../../main.js'), '--no-sandbox'],
-    env: { ELECTRON_ENABLE_LOGGING: '1', ELECTRON_DISABLE_SANDBOX: '1' },
+    executablePath: electronPath,
+    args: [path.join(__dirname, '../../src/main.js')],
+    env: {
+      DISPLAY: process.env.DISPLAY || ':99',
+      ELECTRON_ENABLE_LOGGING: '1',
+      ELECTRON_DISABLE_SANDBOX: '1'
+    }
   });
 
   // 2. Erstes Renderer-Fenster holen
