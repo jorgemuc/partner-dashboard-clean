@@ -1,6 +1,6 @@
 {
   "name": "partner-dashboard-clean",
-  "version": "0.7.63",
+  "version": "0.7.64",
   "main": "main.js",
   "scripts": {
     "start": "electron .",
