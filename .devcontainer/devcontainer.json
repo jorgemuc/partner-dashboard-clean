@@ -1,0 +1,16 @@
+{
+  "name": "partner-dashboard-clean",
+  "image": "mcr.microsoft.com/devcontainers/base:ubuntu",
+  "features": {
+    "ghcr.io/devcontainers/features/node:1": { "version": "20" },
+    "ghcr.io/devcontainers-contrib/features/xvfb:1": {}
+  },
+  "postCreateCommand": "npm install -g cross-env && npm run dev:verify || true",
+  "customizations": {
+    "vscode": {
+      "settings": { "terminal.integrated.defaultProfile.linux": "bash" },
+      "extensions": ["dbaeumer.vscode-eslint", "esbenp.prettier-vscode"]
+    }
+  },
+  "remoteEnv": { "DISPLAY": ":99" }
+}

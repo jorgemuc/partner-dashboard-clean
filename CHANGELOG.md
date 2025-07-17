@@ -1,3 +1,7 @@
+## [0.7.65] – 2025-07-24
+### Changed
+* Dev-Verify pipeline and CI refactor
+
 ## [0.7.64] – 2025-07-24
 ### Fixed
 * Playwright e2e uses launcher path; workflow starts Xvfb

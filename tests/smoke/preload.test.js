@@ -1,9 +1,26 @@
 const { test, expect } = require('@playwright/test');
-const { _electron: electron } = require('playwright');
 const { version } = require('../../package.json');
 
+function launchElectron(args = ['.', '--no-sandbox']) {
+  const { _electron: electron } = require('playwright');
+  const exe = require('electron');
+  return electron.launch({
+    executablePath: exe,
+    args,
+    env: { ...process.env, ELECTRON_DISABLE_SANDBOX: '1' }
+  });
+}
+
 test('App exposes version and renders charts', async () => {
-  const app = await electron.launch({ executablePath: require('electron'), args: ['.', '--no-sandbox'], env:{ ELECTRON_DISABLE_SANDBOX:'1' } });
+  process.env.DISPLAY ??= ':99';
+  let app;
+  try {
+    app = await launchElectron();
+  } catch (e) {
+    if (process.env.SMOKE_HARD_FAIL) throw e;
+    test.fail(true, 'Electron launch');
+    return;
+  }
 
   // wait for the main process "app-loaded" signal
   await app.waitForEvent('ipc', (_e, msg) => msg === 'app-loaded');

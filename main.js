@@ -118,6 +118,14 @@ function createWindow() {
 }
 
 if (require.main === module) {
+  if (process.env.DUMP_ENV === '1') {
+    console.error('[diag] env', JSON.stringify({
+      platform: process.platform,
+      versions: process.versions,
+      display: process.env.DISPLAY,
+      cwd: process.cwd()
+    }, null, 2));
+  }
   app.whenReady().then(createWindow);
   app.on('window-all-closed', () => {
     if (process.platform !== 'darwin') app.quit();

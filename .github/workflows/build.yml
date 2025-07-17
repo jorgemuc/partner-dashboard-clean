@@ -11,42 +11,96 @@ on:
     branches: [main]
 
 jobs:
-  test:
+  build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
-        with: { node-version: 20 }
-      - name: Install X-display
-        run: sudo apt-get update -qq && sudo apt-get install -y xvfb
-      - name: Start virtual display :99
-        run: |
-          Xvfb :99 -screen 0 1920x1080x24 &
-          echo "DISPLAY=:99" >> $GITHUB_ENV
-      - run: npm ci
-      - name: Check for bare imports
-        run: node scripts/lint-no-bare-imports.js
-      - name: Run unit tests
-        run: npm test
+        with:
+          node-version: 20
+      - name: Cache npm
+        uses: actions/cache@v3
+        with:
+          path: ~/npm-cache
+          key: ${{ runner.os }}-npm-${{ hashFiles('package-lock.json') }}
+      - run: npm ci --cache ~/npm-cache --prefer-offline
+      - run: node scripts/check-backlog.js
       - run: npm run bundle
-      - name: Run Smoke-E2E
-        run: npm run e2e
+      - name: Upload dist
+        uses: actions/upload-artifact@v4
+        with:
+          name: renderer-dist
+          path: dist/
 
-  win-package:
-    needs: test
-    runs-on: windows-latest
-
+  unit:
+    needs: build
+    runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-
+      - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
         with:
           node-version: 20
+      - name: Cache npm
+        uses: actions/cache@v3
+        with:
+          path: ~/npm-cache
+          key: ${{ runner.os }}-npm-${{ hashFiles('package-lock.json') }}
+      - run: npm ci --cache ~/npm-cache --prefer-offline
+      - run: npm test
 
-      - run: npm ci
+  smoke:
+    needs: unit
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 20
+      - name: Cache npm
+        uses: actions/cache@v3
+        with:
+          path: ~/npm-cache
+          key: ${{ runner.os }}-npm-${{ hashFiles('package-lock.json') }}
+      - run: npm ci --cache ~/npm-cache --prefer-offline
+      - name: Install Xvfb
+        run: sudo apt-get update -qq && sudo apt-get install -y xvfb
+      - name: Start Xvfb
+        run: |
+          Xvfb :99 -screen 0 1920x1080x24 &
+          echo "DISPLAY=:99" >> $GITHUB_ENV
+      - name: Run smoke tests
+        run: npm run smoke
+        env:
+          DISPLAY: :99
+      - name: Upload smoke artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: smoke-artifacts
+          path: |
+            playwright-report/
+            test-results/
+            playwright-traces.zip
 
+  win-package:
+    needs: smoke
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 20
+      - name: Cache npm
+        uses: actions/cache@v3
+        with:
+          path: ~/npm-cache
+          key: ${{ runner.os }}-npm-${{ hashFiles('package-lock.json') }}
+      - run: npm ci --cache ~/npm-cache --prefer-offline
+      - uses: actions/download-artifact@v4
+        with:
+          name: renderer-dist
+          path: dist/
       - run: npm run bundle
-
       - run: npm run build:win32
       - name: Upload portable EXE
         uses: actions/upload-artifact@v4

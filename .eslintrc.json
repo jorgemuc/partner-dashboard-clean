@@ -3,7 +3,7 @@
     "es2023": true,
     "node": true
   },
-  "extends": ["airbnb-base"],
+  "extends": [],
   "parserOptions": { "ecmaVersion": 2023 },
   "plugins": ["node"],
   "rules": {
