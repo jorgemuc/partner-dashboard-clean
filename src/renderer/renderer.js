@@ -655,7 +655,7 @@ window.openEditor = function(idx) {
 };
 
 window.openProfileEdit = function(){
-  if(!currentPartner) return;
+  if(!currentPartner || !wizardModal.classList.contains('hidden')) return;
   const modal = createModal('Bearbeiten');
   modal.body.parentElement.id = 'editModal';
   modal.body.innerHTML = `
@@ -731,11 +731,11 @@ const current = {process:'', partner:'', format:'', transport:'', sites:[]};
 
 const wizardTemplates = [
   `<form id="step1">
-     <label class="wizard-row"><input type="radio" name="process" value="hk"><span>Heizkostenabrechnung – bved</span></label>
-     <label class="wizard-row"><input type="radio" name="process" value="uvi"><span>Unterjährige Verbrauchsinformation – UVI</span></label>
-     <label class="wizard-row"><input type="radio" name="process" value="uw"><span>Nutzerwechsel – UVI Empfänger</span></label>
-     <label class="wizard-row"><input type="radio" name="process" value="ers"><span>Elektronischer Rechnungsservice</span></label>
-     <label class="wizard-row"><input type="radio" name="process" value="za"><span>Zwischenablesung</span></label>
+     <label class="wizard-radio"><input type="radio" name="process" value="hk"><span>Heizkostenabrechnung – bved</span></label>
+     <label class="wizard-radio"><input type="radio" name="process" value="uvi"><span>Unterjährige Verbrauchsinformation – UVI</span></label>
+     <label class="wizard-radio"><input type="radio" name="process" value="uw"><span>Nutzerwechsel – UVI Empfänger</span></label>
+     <label class="wizard-radio"><input type="radio" name="process" value="ers"><span>Elektronischer Rechnungsservice</span></label>
+     <label class="wizard-radio"><input type="radio" name="process" value="za"><span>Zwischenablesung</span></label>
    </form>`,
   `<form id="step2">
      <label>Kundenname<input id="custName" type="text"></label>
@@ -846,6 +846,8 @@ function closeWizard(){
 }
 
 function showWizard(){
+  const openEdit = document.getElementById('editModal');
+  openEdit?.parentElement?.remove();
   wizardStep = 0;
   renderStep();
   wizardModal.classList.remove('hidden');
