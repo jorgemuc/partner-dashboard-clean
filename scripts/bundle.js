@@ -35,6 +35,10 @@ esbuild.build({
       'build/unpacked/version.json',
       JSON.stringify({ version }, null, 2) + '\n'
     );
+    fs.writeFileSync(
+      'dist/version.json',
+      JSON.stringify({ version }, null, 2) + '\n'
+    );
     if (!fs.existsSync('main.js')) fs.copyFileSync('src/main.js', 'main.js');
     console.log('[bundle] wrote build files');
   })

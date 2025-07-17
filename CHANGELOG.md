@@ -1,3 +1,8 @@
+## [0.7.68] - 2025-07-16
+### Fixed
+* dist/version.json restored – `api.version` no longer undefined.
+* Smoke-suite sets NODE_ENV=production → wizard stays closed.
+
 ## [0.7.67] - 2025-07-16
 ### Fixed
 * Smoke-tests aligned with new preload/UI flow (no IPC needed).
