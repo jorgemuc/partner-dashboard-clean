@@ -1,4 +1,8 @@
 # Changelog
+## [0.7.58] – 2025-07-23
+### Fixed
+* stable wizard start smoke test in CI
+
 ## [0.7.57] – 2025-07-22
 ### Added
 * Playwright e2e test ensures wizard hidden on launch
