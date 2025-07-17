@@ -143,6 +143,7 @@ body.dark .log-table th { background: #3a3a3a; }
         <button id="btnNewOrder" class="primary">Neue Beauftragung</button>
       </div>
       <section class="card"><h3>Stammdaten</h3><ul id="pfContacts"></ul></section>
+      <section id="partnerTiles" class="flex-row">
       <div id="contractCard" class="card">
         <h3>Vertrag</h3>
         <ul>
@@ -166,12 +167,7 @@ body.dark .log-table th { background: #3a3a3a; }
           <li><span class="label">SLA-Verletzungen 30d</span><span id="sla_breaches">0</span></li>
         </ul>
       </div>
-      <div id="editModal" class="modal hidden">
-        <h3>Bearbeiten</h3>
-        <label>Health-Score <input type="number" id="editScore"></label>
-        <label>Status <select id="editStatus"><option>aktiv</option><option>gekündigt</option></select></label>
-        <button id="saveEdit">Speichern</button>
-      </div>
+      </section>
     </section>
     <!-- Übersicht -->
     <section id="overviewView" class="view active">

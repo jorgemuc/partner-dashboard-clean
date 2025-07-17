@@ -1,4 +1,8 @@
 # Changelog
+## [0.7.50] – 2025-07-18
+### Fixed
+* wizard only opens via buttons; profile edit modal uses helper
+* profile tiles wrap in flex row
 ## [0.7.49] – 2025-07-18
 ### Fixed
 * wizard opens only via button; test helper for opening during tests

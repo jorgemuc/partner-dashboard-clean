@@ -7,6 +7,7 @@ import * as XLSX from 'xlsx';
 import Chart from 'chart.js/auto';
 import { buildChart } from '../../chartWorker.mjs';
 import { paramOptions } from '../../wizardData.mjs';
+import { createModal } from './modal.js';
 import './inlineEdit.js';
 import './kpi.js';
 window.__DEBUG__ = true;
@@ -655,16 +656,21 @@ window.openEditor = function(idx) {
 
 window.openProfileEdit = function(){
   if(!currentPartner) return;
+  const modal = createModal('Bearbeiten');
+  modal.body.parentElement.id = 'editModal';
+  modal.body.innerHTML = `
+    <label>Health-Score <input type="number" id="editScore"></label>
+    <label>Status <select id="editStatus"><option>aktiv</option><option>gekündigt</option></select></label>`;
+  modal.actions.innerHTML = `<button id="saveEdit">Speichern</button>`;
   byId('editScore').value = currentPartner.Health_Score || '';
   byId('editStatus').value = currentPartner.Status || '';
-  byId('editModal').classList.remove('hidden');
-};
-byId('saveEdit').onclick = function(){
-  if(!currentPartner) return;
-  currentPartner.Health_Score = byId('editScore').value;
-  currentPartner.Status = byId('editStatus').value;
-  byId('editModal').classList.add('hidden');
-  updateProfile();
+  byId('saveEdit').onclick = () => {
+    if(!currentPartner) return;
+    currentPartner.Health_Score = byId('editScore').value;
+    currentPartner.Status = byId('editStatus').value;
+    modal.close();
+    updateProfile();
+  };
 };
 
 // === CHANGELOG ===
@@ -725,11 +731,11 @@ const current = {process:'', partner:'', format:'', transport:'', sites:[]};
 
 const wizardTemplates = [
   `<form id="step1">
-     <label class="row"><input type="radio" name="process" value="hk"><span>Heizkostenabrechnung – bved</span></label>
-     <label class="row"><input type="radio" name="process" value="uvi"><span>Unterjährige Verbrauchsinformation – UVI</span></label>
-     <label class="row"><input type="radio" name="process" value="uw"><span>Nutzerwechsel – UVI Empfänger</span></label>
-     <label class="row"><input type="radio" name="process" value="ers"><span>Elektronischer Rechnungsservice</span></label>
-     <label class="row"><input type="radio" name="process" value="za"><span>Zwischenablesung</span></label>
+     <label class="wizard-row"><input type="radio" name="process" value="hk"><span>Heizkostenabrechnung – bved</span></label>
+     <label class="wizard-row"><input type="radio" name="process" value="uvi"><span>Unterjährige Verbrauchsinformation – UVI</span></label>
+     <label class="wizard-row"><input type="radio" name="process" value="uw"><span>Nutzerwechsel – UVI Empfänger</span></label>
+     <label class="wizard-row"><input type="radio" name="process" value="ers"><span>Elektronischer Rechnungsservice</span></label>
+     <label class="wizard-row"><input type="radio" name="process" value="za"><span>Zwischenablesung</span></label>
    </form>`,
   `<form id="step2">
      <label>Kundenname<input id="custName" type="text"></label>
@@ -839,19 +845,19 @@ function closeWizard(){
   wizardStep = 0;
 }
 
-function openWizardForTest(){
-  if (process.env.NODE_ENV!=='test') return;
+function showWizard(){
   wizardStep = 0;
   renderStep();
   wizardModal.classList.remove('hidden');
 }
 
+function openWizardForTest(){
+  if (process.env.NODE_ENV!=='test') return;
+  showWizard();
+}
+
 if(wizardModal){
-  byId('btnNewOrder').onclick = () => {
-    wizardStep = 0;
-    renderStep();
-    wizardModal.classList.remove('hidden');
-  };
+  byId('btnNewOrder').onclick = showWizard;
   ['wizardAbort','wizardClose'].forEach(id=>{
     byId(id).onclick = ()=> closeWizard();
   });
