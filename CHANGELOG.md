@@ -1,4 +1,7 @@
 # Changelog
+## [0.7.62] – 2025-07-24
+### Fixed
+* e2e test launches with Playwright-provided Electron path; CI builds bundle once
 ## [0.7.61] – 2025-07-24
 ### Fixed
 * CI runs E2E tests under Xvfb

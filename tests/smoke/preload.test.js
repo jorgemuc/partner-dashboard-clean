@@ -3,7 +3,7 @@ const { _electron: electron } = require('playwright');
 const { version } = require('../../package.json');
 
 test('App exposes version and renders charts', async () => {
-  const app = await electron.launch({ args: ['.', '--no-sandbox'], env:{ ELECTRON_DISABLE_SANDBOX:'1' } });
+  const app = await electron.launch({ executablePath: require('electron'), args: ['.', '--no-sandbox'], env:{ ELECTRON_DISABLE_SANDBOX:'1' } });
 
   // wait for the main process "app-loaded" signal
   await app.waitForEvent('ipc', (_e, msg) => msg === 'app-loaded');
