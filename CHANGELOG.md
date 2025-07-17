@@ -1,4 +1,8 @@
 # Changelog
+## [0.7.56] – 2025-07-17
+### Added
+* Playwright smoke test ensures wizard stays closed on launch
+
 ## [0.7.55] – 2025-07-21
 ### Fixed
 * wizard hidden on startup; open only via button

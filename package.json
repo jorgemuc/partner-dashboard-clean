@@ -1,6 +1,6 @@
 {
   "name": "partner-dashboard-clean",
-  "version": "0.7.55",
+  "version": "0.7.56",
   "main": "main.js",
   "scripts": {
     "start": "electron .",
@@ -11,7 +11,7 @@
     "build:win32": "cross-env NODE_ENV=production electron-builder",
     "postinstall": "node scripts/decode-icons.js && npm run prepare-icon",
     "test": "cross-env NODE_OPTIONS=--experimental-vm-modules jest",
-    "smoke": "playwright test tests/smoke/preload.test.js",
+    "smoke": "playwright test tests/smoke",
     "ci": "npm run lint && npm run bundle && npm test && npm run build:win32",
     "postversion": "npm run bundle"
   },
