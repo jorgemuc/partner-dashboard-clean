@@ -17,10 +17,10 @@ beforeAll(async () => {
   renderer = await import('../src/renderer/renderer.js');
 });
 
-test('edit modal shows and hides with wizard', () => {
+test('edit modal shows and remains when wizard opens', () => {
   renderer.handleCsvLoaded([{Partnername:'Foo',Partnertyp:'T',Land:'DE'}]);
   document.getElementById('profileEditBtn').click();
   expect(document.getElementById('editModal')).not.toBeNull();
   document.getElementById('btnNewOrder').click();
-  expect(document.getElementById('editModal')).toBeNull();
+  expect(document.getElementById('editModal')).not.toBeNull();
 });

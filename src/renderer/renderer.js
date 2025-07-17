@@ -842,7 +842,6 @@ function renderStep(){
 
 function closeWizard(){
   wizardModal.classList.add('hidden');
-  wizardStep = 0;
 }
 
 function showWizard(){
@@ -859,9 +858,14 @@ function openWizardForTest(){
 }
 
 if(wizardModal){
-  byId('btnNewOrder').onclick = showWizard;
-  ['wizardAbort','wizardClose'].forEach(id=>{
-    byId(id).onclick = ()=> closeWizard();
+  byId('btnNewOrder').onclick = () => {
+    wizardStep = 0;
+    renderStep();
+    wizardModal.classList.remove('hidden');
+  };
+  ['wizardClose','wizardAbort','btnSubmit'].forEach(id=>{
+    const el = byId(id);
+    if(el) el.onclick = () => closeWizard();
   });
   nextBtn.onclick = () => { if(wizardStep<wizardTemplates.length-1){
       if(wizardStep===0){
@@ -883,6 +887,7 @@ if(wizardModal){
     } };
   backBtn.onclick = () => { if(wizardStep>0){ wizardStep--; renderStep(); } };
 }
+
 
 // === CHARTS ===
 function renderCharts() {

@@ -2,6 +2,7 @@ const fs = require('fs');
 const path = require('path');
 const {JSDOM} = require('jsdom');
 const mitt = require('mitt');
+const { getByTestId, getByText, getByLabelText, getByRole, fireEvent } = require('@testing-library/dom');
 
 let renderer;
 
@@ -18,10 +19,10 @@ beforeAll(async () => {
 });
 
 test('open and close wizard via buttons', () => {
-  const modal = document.getElementById('wizardModal');
-  expect(modal.classList.contains('hidden')).toBe(true);
-  document.getElementById('btnNewOrder').click();
-  expect(modal.classList.contains('hidden')).toBe(false);
-  document.getElementById('wizardClose').click();
-  expect(modal.classList.contains('hidden')).toBe(true);
+  const modal = getByTestId(document.body, 'wizard-modal');
+  expect(modal).toHaveClass('hidden');
+  fireEvent.click(getByText(document.body, 'Neue Beauftragung', { selector: 'button' }));
+  expect(modal).not.toHaveClass('hidden');
+  fireEvent.click(getByLabelText(document.body, 'Wizard schließen'));
+  expect(modal).toHaveClass('hidden');
 });
