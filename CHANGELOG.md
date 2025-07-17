@@ -1,4 +1,7 @@
 # Changelog
+## [0.7.60] – 2025-07-24
+### Fixed
+* correct Electron main script path for e2e test; pass sandbox flags
 ## [0.7.59] – 2025-07-24
 ### Fixed
 * e2e wizard test builds bundle and launches explicit main script

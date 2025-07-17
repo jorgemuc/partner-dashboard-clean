@@ -132,3 +132,4 @@ E74 - Test,Wizard closed at launch,Playwright smoke,done,Quality,S,codex
 E75 - Test,Wizard start e2e,ensure hidden on launch,done,Quality,S,codex
 E76 - CI Fix,Wizard e2e config,Playwright config & workflow,done,CI,S,codex
 E77 - CI Fix,Wizard e2e stable,explicit main script + bundle,done,CI,S,codex
+E78 - CI Fix,Wizard e2e headless,main path corrected,done,CI,S,codex
