@@ -1,3 +1,7 @@
+## [0.7.67] - 2025-07-16
+### Fixed
+* Smoke-tests aligned with new preload/UI flow (no IPC needed).
+
 ## [0.7.66] – 2025-07-24
 ### Fixed
 * Preload script built without UMD wrapper; root preload path always used

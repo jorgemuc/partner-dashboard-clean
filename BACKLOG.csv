@@ -139,3 +139,4 @@ E81 - CI Fix,Electron launch fix,use launcher executablePath,done,CI,S,codex
 E82 - Infra,Dev-Verify Script,local build+test+smoke pipeline,done,CI,S,codex
 E83 - Infra,Devcontainer,Node+Xvfb reproducible env,todo,DX,S,codex
 E84 - TechDebt,Wizard v2 isolate,extract comp library + storybook,todo,Arch,M,codex
+E12,Tests,Update smoke-suite after preload refactor,,done,QA,

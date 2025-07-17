@@ -21,8 +21,8 @@ test('wizard remains closed on launch', async () => {
     test.fail(true, 'Electron launch');
     return;
   }
-  await app.waitForEvent('ipc', (_e, msg) => msg === 'app-loaded');
   const page = await app.firstWindow();
+  await page.waitForSelector('body');
   await expect(page.locator('#wizardModal')).toBeHidden();
   await app.close();
 }, 30_000);
