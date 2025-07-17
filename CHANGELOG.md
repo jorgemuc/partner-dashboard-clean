@@ -1,4 +1,9 @@
 # Changelog
+## [0.7.51] – 2025-07-18
+### Fixed
+* wizard no longer autostarts; submit closes wizard
+* edit modal closes when wizard opens
+* aligned radio rows
 ## [0.7.50] – 2025-07-18
 ### Fixed
 * wizard only opens via buttons; profile edit modal uses helper
