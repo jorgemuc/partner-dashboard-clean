@@ -1,3 +1,7 @@
+## [0.7.66] – 2025-07-24
+### Fixed
+* Preload script built without UMD wrapper; root preload path always used
+
 ## [0.7.65] – 2025-07-24
 ### Changed
 * Dev-Verify pipeline and CI refactor
