@@ -6,7 +6,11 @@ function launchElectron(args = ['.', '--no-sandbox']) {
   return electron.launch({
     executablePath: exe,
     args,
-    env: { ...process.env, ELECTRON_DISABLE_SANDBOX: '1' }
+    env: {
+      ...process.env,
+      NODE_ENV: 'production',
+      ELECTRON_DISABLE_SANDBOX: '1'
+    }
   });
 }
 
