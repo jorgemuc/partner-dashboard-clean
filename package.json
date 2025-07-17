@@ -1,6 +1,6 @@
 {
   "name": "partner-dashboard-clean",
-  "version": "0.7.58",
+  "version": "0.7.60",
   "main": "main.js",
   "scripts": {
     "start": "electron .",
@@ -14,7 +14,7 @@
     "smoke": "playwright test tests/smoke",
     "ci": "npm run lint && npm run bundle && npm test && npm run build:win32",
     "postversion": "npm run bundle",
-    "e2e": "playwright test"
+    "e2e": "npx playwright test tests/e2e"
   },
   "devDependencies": {
     "@electron/asar": "^3.2.14",
