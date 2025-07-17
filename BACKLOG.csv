@@ -134,3 +134,4 @@ E76 - CI Fix,Wizard e2e config,Playwright config & workflow,done,CI,S,codex
 E77 - CI Fix,Wizard e2e stable,explicit main script + bundle,done,CI,S,codex
 E78 - CI Fix,Wizard e2e headless,main path corrected,done,CI,S,codex
 E79 - CI Fix,Wizard e2e Xvfb,Ubuntu job sets up virtual display,done,CI,S,codex
+E80 - CI Fix,Wizard e2e launcher path,uses _electron.launcher.executablePath,done,CI,S,codex
