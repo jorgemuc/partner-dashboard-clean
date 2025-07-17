@@ -16,16 +16,17 @@ komplexe Build-Kette oder Cloud-Abhängigkeiten.
 | Sofort-Suche & Zeilenfilter |
 | Einfache Text-Filter pro Spalte |
 | Paginierung & Spalten-Menü |
-| Dark-/Light-Umstellung (Tailwind) |
-| KPI-Tiles & Diagramme |
-| Kartenansicht für Partner |
-| Undo-/Redo-Stack (max. 5 Schritte) |
-| Spalten-Ansichten (Alle/Vertrag/Tech/Onboarding/Marketing/KPI) |
+| Dunkel-/Hellmodus |
+| KPI‑Tiles & Diagramme |
+| Kartenansicht der Partner |
+| Undo-/Redo‑Stack (max. 5 Schritte) |
+| Spaltenansichten (Alle/Vertrag/Tech/Onboarding/Marketing/KPI) |
 | CSV & XLSX Export |
-| 100 % offline, keine Install/Rights nötig |
-| Context-Isolation + mitt EventBus |
-| ES-Module Refactor (Renderer) |
-| Chart Worker Fallback entfernt |
+| 100 % offline, keine Installation nötig |
+| Context‑Isolation + mitt EventBus |
+| ES‑Modules im Renderer |
+| 360° Steckbrief‑Ansicht |
+| Bestell‑Wizard (Beta) |
 
 ![Dashboard Screenshot](data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z/C/HwAFAgH+OhzCEwAAAABJRU5ErkJggg==)
 
@@ -38,9 +39,9 @@ komplexe Build-Kette oder Cloud-Abhängigkeiten.
 | Layer | Tech |
 |-------|------|
 | **Desktop Shell** | Electron v26 |
-| **UI Framework** | HTML + Tailwind CDN |
-| **CSV-Parser** | Papa Parse v5 |
-| **Build** | npm scripts (kein extra Bundler) |
+| **UI Framework** | Vanilla HTML + CSS |
+| **CSV Parser** | Papa Parse v5 |
+| **Bundling** | esbuild via npm script |
 
 ---
 
@@ -74,6 +75,10 @@ Für einen kompletten UI-Test kann die Datei assets/demo/partner-demo.csv mit al
 - **Unerwartete Trennzeichen** – Komma oder Semikolon müssen einheitlich sein.
 - **mitt Import Error** – tritt bei falscher Pfadangabe im Preload auf.
 - **NodeIntegration/ContextIsolation** – prüfen, ob Preload-Bridge korrekt geladen wird.
+
+## Known Issues
+
+- **Bestell-Wizard öffnet beim Start** – der Wizard sollte nur über die Buttons geöffnet werden. Dieses Verhalten ist noch fehlerhaft.
 
 
 ## CSV-Schema v1.0
