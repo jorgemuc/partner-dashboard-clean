@@ -9,14 +9,12 @@ fs.mkdirSync('build/unpacked', { recursive: true });
 
 esbuild.build({
     entryPoints: ['src/preload.js'],
-    bundle: true,
-    minify: true,
+    bundle: false,
     platform: 'node',
-    external: ['electron', 'fs', 'path', 'os', 'crypto', 'util'],
-    target: ['node16'],
-    outfile: 'dist/preload.js',
-    logLevel: 'info',
-    define: { 'process.env.NODE_ENV': '"production"' }
+    outfile: 'preload.js'
+  })
+  .then(() => {
+    fs.copyFileSync('preload.js', 'dist/preload.js');
   })
   .then(() => esbuild.build({
       entryPoints: ['src/renderer/renderer.js'],
