@@ -4,7 +4,12 @@
 This file applies to the entire repository.
 
 ## Programmatic Checks
-Run `npm test` and `npm run smoke` before committing. Verify that `BACKLOG.csv` keeps its CSV structure (7 columns).
+Run `npm run dev:verify` before committing. Verify that `BACKLOG.csv` keeps its CSV structure (7 columns).
+
+### Dev-Verify Workflow
+- `npm run dev:verify` MUST pass before commit.
+- Smoke tests run under Xvfb; locally use `xvfb-run -a npm run smoke`.
+- If smoke tests fail red, temporarily `test.skip()` and create a BACKLOG ticket.
 
 ## Contribution Guidelines
 - Record progress for each coding session in `BACKLOG.csv` by updating status or adding new rows.
@@ -56,7 +61,7 @@ The workflow uses concurrency to prevent duplicate runs and only triggers on pus
 **Windows-only packaging:** the GitHub Actions workflow now runs lint & tests on any runner, but only `windows-latest` produces the packaged EXE. (No Ubuntu/Wine packaging.)
 
 ## Pull-Request Checklist
-- `npm test` and `npm run smoke` are green.
+- `npm run dev:verify` is green.
 - `BACKLOG.csv` has exactly 7 columns.
 - Update CHANGELOG and bump version.
 

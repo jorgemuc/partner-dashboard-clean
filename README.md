@@ -68,6 +68,14 @@ Die portable EXE findet sich anschließend unter `dist/Partner Cockpit Dashboard
 
 Für einen kompletten UI-Test kann die Datei assets/demo/partner-demo.csv mit allen Spalten importiert werden.
 
+### Lokale Tests
+
+```bash
+npm run dev:verify   # Full build + smoke unter Xvfb (falls verfügbar)
+```
+
+Der Devcontainer liefert eine reproduzierbare Umgebung.
+
 ## Troubleshooting
 
 - **Fehlerhafte Spaltenanzahl** – prüfen, ob jede Zeile gleich viele Trennzeichen besitzt.
