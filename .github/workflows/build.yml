@@ -23,6 +23,8 @@ jobs:
         run: node scripts/lint-no-bare-imports.js
       - name: Run unit tests
         run: npm test
+      - name: Run e2e tests
+        run: npx playwright test tests/e2e
 
   win-package:
     needs: test
