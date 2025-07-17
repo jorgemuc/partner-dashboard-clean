@@ -30,6 +30,7 @@ body.no-chart [data-tab="charts"] { pointer-events:none; opacity:.4; }
 #wizardModal .wizard-body{padding:1.2rem 2rem;display:flex;flex-direction:column;gap:1.2rem;max-height:70vh;overflow:auto}
 #wizardModal .wizard-body input[type="radio"]{margin:0}
 #wizardModal .row{display:flex;align-items:center;gap:.8rem;margin:.3rem 0}
+.wizard-row{display:flex;align-items:center;gap:.7rem;margin:.3rem 0}
 #wizardModal .wizard-footer{display:flex;justify-content:flex-end;gap:.5rem;padding:1rem;border-top:1px solid #ccc}
 #wizardModal .wizard-footer button{min-width:96px}
 #wizardModal #step5{display:grid;grid-template-columns:1fr auto auto;gap:1rem;align-items:start}
@@ -41,3 +42,5 @@ body.no-chart [data-tab="charts"] { pointer-events:none; opacity:.4; }
 #wizardModal label{display:block;margin-bottom:.4rem}
 #wizardModal input,#wizardModal select{width:100%}
 .summary-list dt{font-weight:600}
+.flex-row{display:flex;gap:1rem}
+@media(min-width:1024px){#partnerTiles .card{flex:1 1 32%}}
