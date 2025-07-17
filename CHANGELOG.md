@@ -1,4 +1,8 @@
 # Changelog
+## [0.7.59] – 2025-07-24
+### Fixed
+* e2e wizard test builds bundle and launches explicit main script
+
 ## [0.7.58] – 2025-07-23
 ### Fixed
 * stable wizard start smoke test in CI
