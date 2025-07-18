@@ -105,10 +105,9 @@ function createWindow() {
     }
   });
   mainWindow.loadFile('index.html');
-  // ----------  E2E Smoke-Test Handshake ----------
   mainWindow.webContents.once('did-finish-load', () => {
-    mainWindow.webContents.send('app-loaded'); // guarantees the renderer is ready
-    if (process.send) process.send('app-loaded');
+    // Smoke-Tests warten auf dieses IPC-Echo
+    process.emit('app-loaded');
   });
   createMenu(mainWindow);
 }

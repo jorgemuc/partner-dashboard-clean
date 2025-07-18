@@ -859,7 +859,7 @@ function closeWizard(){
 function showWizard(){
   wizardStep = 0;
   renderStep();
-  wizardModal.classList.remove('hidden');
+  // wizardModal.classList.remove('hidden');
 }
 
 
