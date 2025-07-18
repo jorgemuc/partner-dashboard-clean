@@ -43,6 +43,7 @@ Do not commit ICO or large PNG files directly. Store them as Base64 text and dec
 ### Logging Discipline
 Preload produces no console output on success. All fatal errors must start with `[pl-err]` so Smoke-Test can whitelist benign logs.
 
+Mandatory startup logs use the `[trace]` prefix: main-created-window, preload-start, renderer-domcontentloaded, wizard-state and chart-init.
 ### Testing Policy
 E2E tests verify only UI states or exposed APIs. Console output must never be part of the oracle.
 Smoke tests wait for the IPC message `'app-loaded'` from the main process instead of DOM content.
@@ -83,12 +84,19 @@ Patch bumps fix bugs only. Increase minor for new features, major for breaking c
 
 ```
 {
-  bus: MittEmitter,
-  libs: { Papa?: any, XLSX?: any, Chart?: any },
+  ipc: IpcRenderer,
   version: string,
-  versionFn: () => string
+  getVersion: () => string,
+  getWizardState: () => { dismissed: boolean },
+  getChartStatus: () => { ready: boolean }
 }
 ```
+
+### Preload Contract (Delta)
+`getWizardState` returns the persisted wizard state. `getChartStatus` reports if the first chart finished rendering.
+
+### State Management
+Persistent UI state (currently only the wizard) is stored in `localStorage` under `wizard.dismissed`. Tests must read the state via `window.api.getWizardState()`.
 
 Why these additions help the current build woes
 

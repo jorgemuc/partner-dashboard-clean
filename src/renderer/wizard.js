@@ -9,6 +9,7 @@ function show(){
 }
 function hide(){
   modal.classList.add('hidden');
+  localStorage.setItem('wizard.dismissed', 'true');
   bus.emit('wizard:close');
 }
 

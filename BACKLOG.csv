@@ -157,3 +157,8 @@ F2 - Automation,Smoke-test guard,fail clearly when window.api missing,done,Fix,S
 F3 - Automation,Dev-verify backlog check,fail when BACKLOG columns ≠ 7,done,Fix,S,codex
 F4 - Automation,Self-contained Preload,esbuild bundle; debug console logs,done,Fix,S,codex
 F5 - Bootstrap,Preload contract trimmed,bundle:all & cli-start,done,Fix,S,codex
+T21 - Sprint2,Wizard Persist,flag stored in localStorage,done,Feature,S,codex
+T22 - Sprint2,Chart Status,getChartStatus API,done,Feature,S,codex
+T23 - Sprint2,Telemetry Logger,central logger with trace,done,Infra,S,codex
+T24 - Sprint2,Wizard Test,e2e persist wizard dismiss,done,Tests,S,codex
+T25 - Sprint2,Contract Doc,update AGENTS preload section,done,Docs,S,codex

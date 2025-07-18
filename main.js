@@ -2,13 +2,10 @@ const { app, BrowserWindow, Menu, shell, dialog, ipcMain } = require('electron')
 const fs = require('fs');
 const { parseCsv } = require('./src/utils/parser');
 const path = require('path');
-const log = require('electron-log');
-log.transports.file.level = process.env.LOG_LEVEL || 'info';
-log.transports.console.level = log.transports.file.level;
-log.transports.file.resolvePathFn = () => path.join(__dirname, 'logs/main.log');
+const logger = require('./src/logger.js');
 const resolvePreloadPath = require("./src/main/resolvePreloadPath");
 const PRELOAD = resolvePreloadPath(__dirname);
-if (!fs.existsSync(PRELOAD)) log.info('[pl-dbg] preload missing', PRELOAD);
+if (!fs.existsSync(PRELOAD)) logger.info('[pl-dbg] preload missing', PRELOAD);
 let mainWindow;
 // works in dev (npm start) and in the packed ASAR
 const nodemailer = require('nodemailer');
@@ -110,17 +107,18 @@ function createWindow() {
       preload:PRELOAD
     }
   });
+  logger.info("[trace] main-created-window");
   mainWindow.loadFile('index.html');
   if (process.env.DEBUG) {
     mainWindow.webContents.on('console-message', (_e, lvl, msg) =>
-      log.info('[renderer]', msg)
+      logger.info('[renderer]', msg)
     );
   }
   mainWindow.webContents.on('render-process-gone', (_e, details) => {
-    log.error('[pl-err] renderer crashed', details.reason);
+    logger.error('[pl-err] renderer crashed', details.reason);
   });
   mainWindow.webContents.once('did-finish-load', () => {
-    log.info('[main] emitting app-loaded');
+    logger.info('[main] emitting app-loaded');
     mainWindow.webContents.send('app-loaded');
     if (process.send) process.send('app-loaded');
     ipcMain.emit('app-loaded');
@@ -138,7 +136,7 @@ if (require.main === module) {
     }, null, 2));
   }
   app.whenReady().then(() => {
-    log.info('[main] app ready');
+    logger.info('[main] app ready');
     createWindow();
   });
   app.on('window-all-closed', () => {
