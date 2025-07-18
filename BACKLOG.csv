@@ -145,3 +145,4 @@ E14,Tests,Stabilise smoke-suite & restore version.json,,done,QA,
 E85 - CI Fix,Wizard manual open,launch helper + Xvfb,done,CI,S,codex
 E86 - Bugfix,Smoke tests failing,restore api.version() & disable auto start,done,Bug,S,codex
 E87 - Preload contract fix,Preload contract fix,window.api.version() again,done,Fix,S,codex
+E88 - Bugfix,Wizard stays closed,manual open only,done,Fix,S,codex

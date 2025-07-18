@@ -1,6 +1,7 @@
-## [0.7.72] – 2025-07-24
+## [0.7.73] – 2025-07-24
 ### Fixed
 * fix: restore preload contract – `window.api.version()` again
+* fix: wizard modal opens only via button; smoke green
 
 ## [0.7.71] – 2025-07-24
 ### Fixed
