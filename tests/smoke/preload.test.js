@@ -15,12 +15,10 @@ test('App exposes version and renders charts', async () => {
 
   const page = await app.firstWindow();
   await page.waitForSelector('body');
-  const res = await page.evaluate(() => ({
-    version: window.api?.version?.(),
-    demoEnabled: !document.getElementById('demoDataBtn').disabled
-  }));
-  expect(res.version).toMatch(/^\d+\.\d+\.\d+$/);
-  expect(res.demoEnabled).toBe(true);
+  const v = await page.evaluate(() => window.api.version());
+  const demoEnabled = await page.evaluate(() => !document.getElementById('demoDataBtn').disabled);
+  expect(v).toMatch(/^\d+\.\d+\.\d+$/);
+  expect(demoEnabled).toBe(true);
   await page.click('#demoDataBtn');
   await expect(page.locator('#chartCanvas')).toBeVisible();
   await page.setInputFiles('#csvFile', require('path').join(__dirname, '../fixtures/partner.csv'));

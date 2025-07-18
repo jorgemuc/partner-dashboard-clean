@@ -9,7 +9,7 @@
  .tag{display:inline-block;background:#0057b8;color:#fff;border-radius:3px;padding:.1rem .35rem;font-size:.8rem}
 </style>
 
-<h1>Partner‑Dashboard <small id="verSpan"></small></h1>
+<h1>Partner‑Dashboard <small id="appVersion"></small></h1>
 
 <p>Willkommen zum <strong>Partner Cockpit Dashboard</strong>. Diese Desktop‑App
 bündelt alle CSV‑gestützten Kennzahlen rund um Ihre
@@ -61,7 +61,7 @@ Details finden Sie in der DevTools‑Konsole (<span class="kbd">Ctrl+Shift+I</sp
 
 <script>
   // füllt Version und Changelog dynamisch
-  document.getElementById('verSpan').textContent = window.api?.version?.() || '';
+  document.getElementById('appVersion').textContent = window.api.version();
   fetch('CHANGELOG.md').then(r=>r.text()).then(md=>{
     const items = md.split('\n').filter(l=>l.startsWith('## [')).slice(0,5)
       .map(l=>'<li>'+l.replace(/^## /,'')+'</li>').join('');

@@ -110,7 +110,7 @@ body.dark .log-table th { background: #3a3a3a; }
 </head>
 <body>
   <header>
-  <h1 id="appTitle">Partner-Dashboard</h1>
+  <h1 id="appTitle">Partner-Dashboard <small id="appVersion"></small></h1>
     <button id="darkModeToggle" class="export-btn" style="background:#555;margin-left:1rem;">Dark Mode</button>
     <div class="file-upload">
       <input type="file" id="csvFile" accept=".csv" />
@@ -280,6 +280,7 @@ body.dark .log-table th { background: #3a3a3a; }
     </div>
   </main>
   
+  <script>document.getElementById('appVersion').textContent = window.api.version();</script>
   <script type="module" defer src="build/unpacked/renderer.bundle.js"></script>
 </body>
 </html>
