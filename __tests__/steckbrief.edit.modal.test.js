@@ -21,6 +21,6 @@ test('edit modal shows and remains when wizard opens', () => {
   renderer.handleCsvLoaded([{Partnername:'Foo',Partnertyp:'T',Land:'DE'}]);
   document.getElementById('profileEditBtn').click();
   expect(document.getElementById('editModal')).not.toBeNull();
-  document.getElementById('btnNewOrder').click();
+  document.getElementById('newWizardBtn').click();
   expect(document.getElementById('editModal')).not.toBeNull();
 });
