@@ -1,3 +1,7 @@
+## [0.7.80] – 2025-07-18
+### Added
+* contract sprint: preload version API and app-loaded IPC
+
 ## [0.7.79] – 2025-07-18
 ### Fixed
 * stable app-loaded IPC on window ready

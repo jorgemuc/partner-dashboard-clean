@@ -108,6 +108,7 @@ function createWindow() {
   mainWindow.webContents.once('did-finish-load', () => {
     mainWindow.webContents.send('app-loaded');
     if (process.send) process.send('app-loaded');
+    ipcMain.emit('app-loaded');
   });
   createMenu(mainWindow);
 }
