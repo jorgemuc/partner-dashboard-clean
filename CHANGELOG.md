@@ -1,3 +1,9 @@
+## [0.7.69] – 2025-07-16
+### Fixed
+* dist/version.json now packaged → window.api.version available in preload.
+* Smoke-suite waits for wizard modal to hide; no race condition.
+* Version assertion accepts semantic versions.
+
 ## [0.7.68] - 2025-07-16
 ### Fixed
 * dist/version.json restored – `api.version` no longer undefined.

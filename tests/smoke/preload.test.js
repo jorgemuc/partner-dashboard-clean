@@ -28,7 +28,7 @@ test('App exposes version and renders charts', async () => {
     version: window.api?.version,
     demoEnabled: !document.getElementById('demoDataBtn').disabled
   }));
-  expect(res.version).toBeDefined();
+  expect(res.version).toMatch(/^\d+\.\d+\.\d+$/);
   expect(res.demoEnabled).toBe(true);
   await page.click('#demoDataBtn');
   await expect(page.locator('#chartCanvas')).toBeVisible();
