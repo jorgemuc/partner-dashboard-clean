@@ -7,6 +7,9 @@ npm ci
 echo "[dev-verify] lint"
 npm run lint
 
+echo "[dev-verify] backlog columns"
+node scripts/check-backlog.js
+
 echo "[dev-verify] jest unit"
 npm test
 

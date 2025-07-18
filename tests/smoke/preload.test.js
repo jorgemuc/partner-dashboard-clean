@@ -16,6 +16,8 @@ test('App exposes version and renders charts', async () => {
   const page = await app.firstWindow();
   captureConsole(page);
   await page.waitForSelector('body');
+  const hasApi = await page.evaluate(() => typeof window.api !== 'undefined');
+  expect(hasApi).toBe(true);
   const res = await page.evaluate(() => ({
     version: typeof window.api.version === 'function'
              ? window.api.version()

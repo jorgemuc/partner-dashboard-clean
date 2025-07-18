@@ -153,3 +153,5 @@ E92 - Automation,V-Spec 1.0,preload version+ipc app-loaded,done,Fix,S,codex
 E93 - Automation,Pipeline fix,bundle before smoke; freeze api getVersion,done,Fix,S,codex
 E94 - Automation,Logging instrumentation,opt-in debug logs,done,Infra,S,codex
 F1 - Automation,Preload path check,dist preload path + backlog columns hook,done,Fix,S,codex
+F2 - Automation,Smoke-test guard,fail clearly when window.api missing,done,Fix,S,codex
+F3 - Automation,Dev-verify backlog check,fail when BACKLOG columns ≠ 7,done,Fix,S,codex

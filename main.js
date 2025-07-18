@@ -6,7 +6,8 @@ const log = require('electron-log');
 log.transports.file.level = process.env.LOG_LEVEL || 'error';
 log.transports.console.level = log.transports.file.level;
 log.transports.file.resolvePathFn = () => path.join(__dirname, 'logs/main.log');
-const PRELOAD = path.join(__dirname, 'dist', 'preload.js');
+const resolvePreloadPath = require("./src/main/resolvePreloadPath");
+const PRELOAD = resolvePreloadPath(__dirname);
 if (!fs.existsSync(PRELOAD)) log.info('[pl-dbg] preload missing', PRELOAD);
 let mainWindow;
 // works in dev (npm start) and in the packed ASAR
