@@ -50,3 +50,5 @@ if (typeof module !== 'undefined') {
   module.exports = api;
   module.exports.default = api;
 }
+try { require('electron-log').info('[preload] api.version=', window.api.version); }
+catch {}

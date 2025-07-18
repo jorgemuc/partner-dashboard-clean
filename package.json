@@ -1,6 +1,6 @@
 {
   "name": "partner-dashboard-clean",
-  "version": "0.7.81",
+  "version": "0.7.82",
   "main": "main.js",
   "scripts": {
     "start": "electron .",
@@ -42,6 +42,7 @@
   },
   "dependencies": {
     "chart.js": "^4.5.0",
+    "electron-log": "5.4.1",
     "mitt": "2.1.0",
     "nodemailer": "^6.10.1",
     "papaparse": "^5.5.3",

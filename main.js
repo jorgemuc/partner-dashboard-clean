@@ -2,6 +2,10 @@ const { app, BrowserWindow, Menu, shell, dialog, ipcMain } = require('electron')
 const fs = require('fs');
 const { parseCsv } = require('./src/utils/parser');
 const path = require('path');
+const log = require('electron-log');
+log.transports.file.level = process.env.LOG_LEVEL || 'error';
+log.transports.console.level = log.transports.file.level;
+log.transports.file.resolvePathFn = () => path.join(__dirname, 'logs/main.log');
 const PRELOAD = path.join(__dirname, 'preload.js');
 let mainWindow;
 // works in dev (npm start) and in the packed ASAR
@@ -105,7 +109,11 @@ function createWindow() {
     }
   });
   mainWindow.loadFile('index.html');
+  mainWindow.webContents.on('console-message', (_e, lvl, msg) =>
+    log.info('[renderer]', msg)
+  );
   mainWindow.webContents.once('did-finish-load', () => {
+    log.info('[main] emitting app-loaded');
     mainWindow.webContents.send('app-loaded');
     if (process.send) process.send('app-loaded');
     ipcMain.emit('app-loaded');
@@ -122,7 +130,10 @@ if (require.main === module) {
       cwd: process.cwd()
     }, null, 2));
   }
-  app.whenReady().then(createWindow);
+  app.whenReady().then(() => {
+    log.info('[main] app ready');
+    createWindow();
+  });
   app.on('window-all-closed', () => {
     if (process.platform !== 'darwin') app.quit();
   });

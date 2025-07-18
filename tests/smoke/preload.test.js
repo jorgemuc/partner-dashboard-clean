@@ -1,6 +1,6 @@
 const { test, expect } = require('@playwright/test');
 const { version } = require('../../package.json');
-const { launchApp } = require('../helpers/launchApp.js');
+const { launchApp, captureConsole } = require('../helpers/smokeSetup.js');
 
 test('App exposes version and renders charts', async () => {
   process.env.DISPLAY ??= ':99';
@@ -14,6 +14,7 @@ test('App exposes version and renders charts', async () => {
   }
 
   const page = await app.firstWindow();
+  captureConsole(page);
   await page.waitForSelector('body');
   const res = await page.evaluate(() => ({
     version: typeof window.api.version === 'function'

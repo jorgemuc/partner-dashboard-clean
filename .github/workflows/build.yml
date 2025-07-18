@@ -54,9 +54,17 @@ jobs:
       - run: npm ci --cache ~/npm-cache --prefer-offline
       - run: npm test
       - run: npm run bundle
-      - run: npm run smoke
+      - name: Run Smoke
+        run: LOG_LEVEL=debug npm run smoke
         env:
           DISPLAY: :99
+          ELECTRON_ENABLE_LOGGING: '1'
+      - if: failure()
+        name: Upload electron logs
+        uses: actions/upload-artifact@v4
+        with:
+          name: electron-logs
+          path: logs/*.log
 
   win-package:
     needs: test
