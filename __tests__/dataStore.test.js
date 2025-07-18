@@ -1,8 +1,8 @@
 const mitt = require('mitt');
 let bus;
 beforeEach(() => {
-  global.window = { api: { bus: mitt() } };
-  bus = global.window.api.bus;
+  global.window = { __eventBus: mitt() };
+  bus = global.window.__eventBus;
 });
 
 test('setData stores array and emits update', async () => {

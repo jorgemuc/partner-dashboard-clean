@@ -5,16 +5,9 @@ const setup = require('../tests/globalSetup.js');
 
 test('globalSetup bundles before smoke and stubs canvas', async () => {
   await setup();
-  expect(execFileSync).toHaveBeenNthCalledWith(
-    1,
+  expect(execFileSync).toHaveBeenCalledWith(
     'npm',
-    ['run', 'bundle'],
-    expect.any(Object)
-  );
-  expect(execFileSync).toHaveBeenNthCalledWith(
-    2,
-    'npm',
-    ['run', 'bundle:preload'],
+    ['run', 'bundle:all'],
     expect.any(Object)
   );
   expect(global.HTMLCanvasElement).toBeDefined();

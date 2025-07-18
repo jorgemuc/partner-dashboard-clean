@@ -5,7 +5,7 @@ const { version } = require('../package.json');
 
 test('bundle writes version file and renderer bundle', () => {
   rmSync(BUILD_DIR, { recursive: true, force: true });
-  execFileSync('node', ['scripts/bundle.js']);
+  execFileSync('npm', ['run', 'bundle:all']);
   expect(existsSync(`${BUILD_DIR}/version.json`)).toBe(true);
   expect(existsSync(PRELOAD_PATH_DIST)).toBe(true);
   expect(existsSync(`${BUILD_DIR}/renderer.bundle.js`)).toBe(true);

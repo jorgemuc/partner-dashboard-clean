@@ -1,3 +1,7 @@
+## [0.7.86] - 2025-07-18
+### Fixed
+* trimmed preload API and new cli-start
+
 ## [0.7.85] – 2025-07-18
 ### Added
 * self-contained preload bundle

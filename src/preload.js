@@ -4,7 +4,6 @@ try {
   const electron = require('electron');
   if (electron.ipcRenderer) ({ contextBridge, ipcRenderer } = electron);
 } catch {}
-const mitt = require('mitt');
 const { version: pkgVersion } = require('../package.json');
 let ver = pkgVersion;
 try {
@@ -19,12 +18,10 @@ if (process.env.DEBUG === 'smoke') {
   console.log(`[smoke] version ${ver}`);
 }
 
-const bus = mitt();
-ipcRenderer.on('menu-open-csv', () => bus.emit('menu-open-csv'));
-
 const api = Object.freeze({
-  bus,
-  version: () => ver,
+  ipc: ipcRenderer,
+  version: ver,
+  getVersion: () => ver,
 });
 
 contextBridge.exposeInMainWorld('api', api);

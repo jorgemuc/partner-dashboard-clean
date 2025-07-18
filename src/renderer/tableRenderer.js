@@ -1,13 +1,13 @@
 import { getData } from './dataStore.js';
 import { validationRules, validateCell } from '../shared/schema.mjs';
 import { showAlert } from './alertService.js';
+import bus from './eventBus.js';
 
 let changelog;
 let pushChange;
-let bus;
 
 export function initInlineEdit(opts) {
-  ({ changelog, pushChange, bus } = opts);
+  ({ changelog, pushChange } = opts);
   const table = document.getElementById('tablePartnerTable');
   table.addEventListener('dblclick', onDblClick);
 }
@@ -61,12 +61,10 @@ function spawnEditor(td, rowIndex, col, rule) {
       bus.emit('data:cellEdited');
     }
     td.textContent = val;
-    td.classList.remove('error');
-    td.removeAttribute('title');
     cleanup();
   }
 
-  function cleanup() { if(input.parentNode) input.remove(); }
+  function cleanup() {
+    document.body.removeChild(input);
+  }
 }
-
-window.initInlineEdit = initInlineEdit;

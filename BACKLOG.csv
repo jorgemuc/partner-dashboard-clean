@@ -156,3 +156,4 @@ F1 - Automation,Preload path check,dist preload path + backlog columns hook,done
 F2 - Automation,Smoke-test guard,fail clearly when window.api missing,done,Fix,S,codex
 F3 - Automation,Dev-verify backlog check,fail when BACKLOG columns ≠ 7,done,Fix,S,codex
 F4 - Automation,Self-contained Preload,esbuild bundle; debug console logs,done,Fix,S,codex
+F5 - Bootstrap,Preload contract trimmed,bundle:all & cli-start,done,Fix,S,codex

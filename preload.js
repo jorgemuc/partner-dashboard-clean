@@ -1,36 +1,18 @@
 const { contextBridge, ipcRenderer } = require("electron");
-const mitt = require("mitt");
-const { version: pkgVersion } = require("../package.json");
+const { version: pkgVersion } = require("./package.json");
 let ver = pkgVersion;
 try {
-  const dist = require("../dist/version.json");
+  const dist = require("./dist/version.json");
   if (dist && dist.version) ver = dist.version;
 } catch (e) {
 }
 if (process.env.DEBUG === "smoke") {
   console.log(`[smoke] version ${ver}`);
 }
-function safeRequire(name) {
-  try {
-    return require(name);
-  } catch (_err) {
-    return null;
-  }
-}
-const libs = {
-  Papa: safeRequire("papaparse"),
-  XLSX: safeRequire("xlsx"),
-  Chart: safeRequire("chart.js/auto")
-};
-const bus = mitt();
-ipcRenderer.on("menu-open-csv", () => bus.emit("menu-open-csv"));
 const api = Object.freeze({
-  bus,
-  libs,
+  ipc: ipcRenderer,
   version: ver,
   getVersion: () => ver,
-  onAppLoaded: (cb) => ipcRenderer.on("app-loaded", cb),
-  sendMail: (opts) => ipcRenderer.invoke("send-mail", opts)
 });
 contextBridge.exposeInMainWorld("api", api);
 contextBridge.exposeInMainWorld("csvApi", {
