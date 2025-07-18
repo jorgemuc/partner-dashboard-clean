@@ -89,3 +89,27 @@ Patch bumps fix bugs only. Increase minor for new features, major for breaking c
   versionFn: () => string
 }
 ```
+
+Why these additions help the current build woes
+
+    Contract clarity – tests now fail only if window.api.version is really missing, not because callers mis-use it.
+
+    Global canvas stub removes the “HTMLCanvasElement undefined” error that killed the smoke job (tests/_canvasStub.js is loaded once via globalSetup).
+
+    Debug hooks (DEBUG=smoke) provide actionable logs/IPC traces so we no longer “fly blind”.
+
+    Strict workflow order guarantees the same environment locally and in CI, avoiding the “works on my machine” cycle.
+
+These rules are stable for the foreseeable future: they touch fundamentals (how we bundle, expose preload, and run tests) that rarely change once solid. If we later migrate to another test runner or bundler, we’ll update this file first, honoring the “single-source” doctrine.
+
+When code and docs diverge, update this file first – implementation follows.
+
+---
+
+### Bewertung (halten die Regeln das Build-Problem langfristig in Schach?)
+
+* **Kurzfristig**: Die Canvas-Stub- und Version-Kontrakt-Regeln schalten die beiden aktuell roten Fehlerquellen (undef. `HTMLCanvasElement`, undef. `window.api.version`) ab.  
+* **Mittelfristig**: Mit klar definiertem IPC-Signal und Debug-Logging wird jeder künftige Autostart-/Wizard-Fehler früh im Smoke-Step sichtbar – ohne Trial-and-Error-Commits.  
+* **Langfristig**: Solange wir bei Electron + Playwright bleiben, muss nur der Preload-Contract stabil gehalten werden; die Regeln bleiben gültig. Bei Architekturwechsel (z. B. Vite, Vitest) passen wir **diesen** Leitfaden zuerst an – die Single-Source-Policy schützt vor Drift.
+
+**Fazit:** Die synthetisierte AGENTS.md deckt die bisherigen Lücken, verschärft Observability und verhindert Regressionen, ohne gute existierende Regeln zu “überbügeln”.
