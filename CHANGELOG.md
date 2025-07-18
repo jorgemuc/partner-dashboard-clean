@@ -1,3 +1,7 @@
+## [0.7.77] – 2025-07-24
+### Added
+* digital clock in dashboard header
+
 ## [0.7.76] – 2025-07-24
 ### Fixed
 * preload exposes version string
