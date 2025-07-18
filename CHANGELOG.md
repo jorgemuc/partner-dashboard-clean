@@ -1,3 +1,7 @@
+## [0.7.72] – 2025-07-24
+### Fixed
+* fix: restore preload contract – `window.api.version()` again
+
 ## [0.7.71] – 2025-07-24
 ### Fixed
 * preload exports version() again
