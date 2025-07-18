@@ -1,7 +1,7 @@
 const { contextBridge, ipcRenderer } = require('electron');
-const { readFileSync } = require('node:fs');
-const { join } = require('node:path');
 const mitt = require('mitt');
+// eslint-disable-next-line node/no-unpublished-require
+const { version } = require('../dist/version.json');
 
 function safeRequire(name) {
   try {
@@ -17,29 +17,14 @@ const libs = {
   Chart: safeRequire('chart.js/auto'),
 };
 
-let versionString = 'dev';
-try {
-  versionString = JSON.parse(
-    readFileSync(join(__dirname, 'version.json'), 'utf8')
-  ).version;
-} catch {
-  try {
-    versionString = JSON.parse(
-      readFileSync(join(__dirname, '../package.json'), 'utf8')
-    ).version;
-  } catch {
-    // ignore
-  }
-}
-
 const bus = mitt();
 ipcRenderer.on('menu-open-csv', () => bus.emit('menu-open-csv'));
 
 const api = {
   bus,
   libs,
-  version: versionString,
-  versionFn: () => versionString,
+  version,
+  versionFn: () => version,
   onAppLoaded: (cb) => ipcRenderer.on('app-loaded', cb),
   sendMail: (opts) => ipcRenderer.invoke('send-mail', opts),
 };

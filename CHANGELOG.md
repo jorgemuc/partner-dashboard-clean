@@ -1,3 +1,9 @@
+## [0.7.76] – 2025-07-24
+### Fixed
+* preload exposes version string
+* wizard opens only via button
+* main emits `app-loaded`
+
 ## [0.7.75] – 2025-07-24
 ### Fixed
 * global canvas stub for smoke tests
