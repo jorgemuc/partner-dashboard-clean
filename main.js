@@ -128,7 +128,7 @@ if (require.main === module) {
   });
 }
 
-module.exports = { getMenuTemplate, createMenu };
+module.exports = { getMenuTemplate, createMenu, createWindow };
 
 // test helpers
 let _rows = [];
