@@ -58,4 +58,53 @@ describe('debug logger', () => {
     });
     exists.mockRestore();
   });
+
+  test('default log level is info', () => {
+    delete process.env.LOG_LEVEL;
+    jest.isolateModules(() => {
+      jest.doMock('electron-log', () => ({
+        info: jest.fn(),
+        error: jest.fn(),
+        transports: { file: { level: 'warn', resolvePathFn: jest.fn() }, console: { level: 'warn' } }
+      }));
+      const log = require('electron-log');
+      require('../main.js');
+      expect(log.transports.file.level).toBe('info');
+    });
+  });
+
+  test('forwards renderer console when DEBUG set', () => {
+    process.env.DEBUG = '1';
+    jest.isolateModules(() => {
+      jest.doMock('electron-log', () => ({
+        info: jest.fn(),
+        error: jest.fn(),
+        transports: { file: { level: 'info', resolvePathFn: jest.fn() }, console: { level: 'info' } }
+      }));
+      const log = require('electron-log');
+      const { createWindow } = require('../main.js');
+      createWindow();
+      const win = require('electron').__lastWindow();
+      win.webContents.emit('console-message', {}, 1, 'msg');
+      expect(log.info).toHaveBeenCalledWith('[renderer]', 'msg');
+    });
+    delete process.env.DEBUG;
+  });
+
+  test('logs renderer crashes with prefix', () => {
+    process.env.LOG_LEVEL = 'debug';
+    jest.isolateModules(() => {
+      jest.doMock('electron-log', () => ({
+        info: jest.fn(),
+        error: jest.fn(),
+        transports: { file: { level: 'debug', resolvePathFn: jest.fn() }, console: { level: 'debug' } }
+      }));
+      const log = require('electron-log');
+      const { createWindow } = require('../main.js');
+      createWindow();
+      const win = require('electron').__lastWindow();
+      win.webContents.emit('render-process-gone', {}, { reason: 'crashed' });
+      expect(log.error).toHaveBeenCalledWith('[pl-err] renderer crashed', 'crashed');
+    });
+  });
 });
