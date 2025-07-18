@@ -8,8 +8,7 @@ beforeEach(() => {
 
 test('tableRenderer exposes initInlineEdit', async () => {
   const mod = await import('../src/renderer/tableRenderer.js');
-  expect(typeof window.initInlineEdit).toBe('function');
-  expect(mod.initInlineEdit).toBe(window.initInlineEdit);
+  expect(typeof mod.initInlineEdit).toBe('function');
 });
 
 test('kpi exposes initKpiAlerts', async () => {

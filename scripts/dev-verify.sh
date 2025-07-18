@@ -14,7 +14,7 @@ echo "[dev-verify] jest unit"
 npm test
 
 echo "[dev-verify] bundle"
-npm run bundle
+npm run bundle:all
 
 echo "[dev-verify] smoke (xvfb-run)"
 if command -v xvfb-run >/dev/null 2>&1; then

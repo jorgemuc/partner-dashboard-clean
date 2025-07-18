@@ -62,9 +62,9 @@ export function checkThresholds(kpis){
       el?.setAttribute('title', `${k.label}: ${k.value} ${th.op} ${th.value}`);
       if(!el?.dataset.notified){
         showMsg(`KPI ${k.label} ${th.op}${th.value}`, 'error');
-        if(th.email && window.api?.sendMail && process.env.DEV_FLAG!=='true'){
+        if(th.email && window.api?.ipc && process.env.DEV_FLAG!=='true'){
           if(!last[k.label] || now-last[k.label]>600000){
-            window.api.sendMail({subject:`KPI ${k.label}`, text:`${k.label}: ${k.value}`}).catch(()=>{});
+            window.api.ipc.invoke('send-mail', {subject:`KPI ${k.label}`, text:`${k.label}: ${k.value}`}).catch(()=>{});
             last[k.label]=now;
             localStorage.setItem('kpiLastMail', JSON.stringify(last));
           }

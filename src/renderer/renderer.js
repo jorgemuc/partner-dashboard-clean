@@ -11,6 +11,7 @@ import { createModal } from './modal.js';
 import './inlineEdit.js';
 import './kpi.js';
 import './wizard.js';
+import bus from './eventBus.js';
 window.__DEBUG__ = true;
 // --- test-environment stubs -------------------------------
 if (typeof window !== 'undefined' && !window.undoChange) {
@@ -28,16 +29,16 @@ async function loadWorkerSrc(){
 window.Chart = Chart;
 
 async function waitApi(){
-  if(window.api?.bus && window.api?.version) return;
+  if(window.api?.version) return;
   await new Promise(r=>{
     const t=setInterval(()=>{
-      if(window.api?.bus && window.api?.version){clearInterval(t);r();}
+      if(window.api?.version){clearInterval(t);r();}
     },10);
   });
 }
 
 await waitApi();
-const eventBus = window.api.bus;
+const eventBus = bus;
 eventBus.on('menu-open-csv', () => window.csvApi?.openDialog());
 window.csvApi?.onCsvPath?.(loadCsvFromPath);
 document.getElementById('menuOpenCsv')
@@ -470,8 +471,8 @@ function renderOverview(){
 
 // tolerate missing preload bridge in jsdom/Jest
 (function(){
-  const version = typeof window.api.version === 'function'
-      ? window.api.version()
+  const version = window.api.getVersion
+      ? window.api.getVersion()
       : window.api.version || 'dev-test';
   appVersion = version;
   window.showVersion = () => alert(`Version ${version}`);
@@ -484,7 +485,7 @@ function renderOverview(){
 if (process.env.NODE_ENV === 'test') {
   document.body.setAttribute('data-testid', 'app-ready');
   // Signal an Playwright-Smoke, dass die App fertig ist
-  window.api?.bus?.emit?.('e2e-ready');
+  eventBus.emit('e2e-ready');
 }
 
 
