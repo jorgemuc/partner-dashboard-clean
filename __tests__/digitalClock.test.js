@@ -10,7 +10,7 @@ beforeAll(async () => {
     url: 'http://localhost',
     runScripts: 'dangerously',
     beforeParse(window) {
-      window.api = { libs: {}, bus: mitt(), version: () => '0' };
+      window.api = { bus: mitt(), version: () => '0' };
       window.Chart = function(){};
     }
   });

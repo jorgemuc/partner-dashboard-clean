@@ -8,38 +8,21 @@ const { version } = require('../package.json');
 fs.mkdirSync('build/unpacked', { recursive: true });
 
 esbuild.build({
-    entryPoints: ['src/preload.js'],
-    bundle: false,
-    platform: 'node',
-    outfile: 'preload.js'
-  })
-  .then(() => {
-    fs.copyFileSync('preload.js', 'dist/preload.js');
-  })
-  .then(() => esbuild.build({
-      entryPoints: ['src/renderer/renderer.js'],
-      bundle: true,
-      minify: true,
-      treeShaking: true,
-      outfile: 'build/unpacked/renderer.bundle.js',
-      format: 'esm',
-      target: ['es2022'],
-      define: { 'process.env.NODE_ENV': '"production"' },
-      external: ['electron'],
-      plugins: [importGlob()],
-      sourcemap: true,
-      logLevel: 'info'
-    }))
-  .then(() => {
-    fs.writeFileSync(
-      'build/unpacked/version.json',
-      JSON.stringify({ version }, null, 2) + '\n'
-    );
-    fs.writeFileSync(
-      'dist/version.json',
-      JSON.stringify({ version }, null, 2) + '\n'
-    );
-    if (!fs.existsSync('main.js')) fs.copyFileSync('src/main.js', 'main.js');
-    console.log('[bundle] wrote build files');
-  })
-  .catch(() => process.exit(1));
+  entryPoints: ['src/renderer/renderer.js'],
+  bundle: true,
+  minify: true,
+  treeShaking: true,
+  outfile: 'build/unpacked/renderer.bundle.js',
+  format: 'esm',
+  target: ['es2022'],
+  define: { 'process.env.NODE_ENV': '"production"' },
+  external: ['electron'],
+  plugins: [importGlob()],
+  sourcemap: true,
+  logLevel: 'info'
+}).then(() => {
+  fs.writeFileSync('build/unpacked/version.json', JSON.stringify({ version }, null, 2) + '\n');
+  fs.writeFileSync('dist/version.json', JSON.stringify({ version }, null, 2) + '\n');
+  if (!fs.existsSync('main.js')) fs.copyFileSync('src/main.js', 'main.js');
+  console.log('[bundle] wrote build files');
+}).catch(() => process.exit(1));

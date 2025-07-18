@@ -1,3 +1,8 @@
+## [0.7.85] – 2025-07-18
+### Added
+* self-contained preload bundle
+* renderer debug console forwarding via DEBUG env
+
 ## [0.7.84] – 2025-07-18
 ### Fixed
 * preload path resolves dist/preload.js when present

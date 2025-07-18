@@ -28,17 +28,15 @@ async function loadWorkerSrc(){
 window.Chart = Chart;
 
 async function waitApi(){
-  if(window.api?.libs && window.api?.version) return;
+  if(window.api?.bus && window.api?.version) return;
   await new Promise(r=>{
     const t=setInterval(()=>{
-      if(window.api?.libs && window.api?.version){clearInterval(t);r();}
+      if(window.api?.bus && window.api?.version){clearInterval(t);r();}
     },10);
   });
 }
 
 await waitApi();
-
-const { mitt: Mitt } = window.api.libs || {};
 const eventBus = window.api.bus;
 eventBus.on('menu-open-csv', () => window.csvApi?.openDialog());
 window.csvApi?.onCsvPath?.(loadCsvFromPath);
@@ -355,8 +353,7 @@ function loadCsvFile(file){
   const reader = new FileReader();
   reader.onload = e => {
     try{
-      const lib = window.api?.libs?.Papa || Papa;
-      const res = lib.parse(e.target.result,{header:true,skipEmptyLines:true});
+      const res = Papa.parse(e.target.result,{header:true,skipEmptyLines:true});
       handleCsvLoaded(res.data);
     }catch(err){
       console.error('CSV-Parse-Error', err);
@@ -387,8 +384,7 @@ if(dropZone){
       const reader = new FileReader();
       reader.onload = ev => {
         try{
-          const lib = window.api?.libs?.Papa || Papa;
-          const res = lib.parse(ev.target.result,{header:true,skipEmptyLines:true});
+          const res = Papa.parse(ev.target.result,{header:true,skipEmptyLines:true});
           handleCsvLoaded(res.data);
         }catch(err){
           console.error('CSV-Parse-Error', err);

@@ -3,7 +3,7 @@ const fs = require('fs');
 const { parseCsv } = require('./src/utils/parser');
 const path = require('path');
 const log = require('electron-log');
-log.transports.file.level = process.env.LOG_LEVEL || 'error';
+log.transports.file.level = process.env.LOG_LEVEL || 'info';
 log.transports.console.level = log.transports.file.level;
 log.transports.file.resolvePathFn = () => path.join(__dirname, 'logs/main.log');
 const resolvePreloadPath = require("./src/main/resolvePreloadPath");
@@ -111,9 +111,14 @@ function createWindow() {
     }
   });
   mainWindow.loadFile('index.html');
-  mainWindow.webContents.on('console-message', (_e, lvl, msg) =>
-    log.info('[renderer]', msg)
-  );
+  if (process.env.DEBUG) {
+    mainWindow.webContents.on('console-message', (_e, lvl, msg) =>
+      log.info('[renderer]', msg)
+    );
+  }
+  mainWindow.webContents.on('render-process-gone', (_e, details) => {
+    log.error('[pl-err] renderer crashed', details.reason);
+  });
   mainWindow.webContents.once('did-finish-load', () => {
     log.info('[main] emitting app-loaded');
     mainWindow.webContents.send('app-loaded');
