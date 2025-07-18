@@ -18,7 +18,7 @@ beforeAll(async () => {
 });
 
 test('submit closes wizard', () => {
-  renderer.openWizardForTest();
+  window.__wizardApi.show();
   const next = document.getElementById('wizardNext');
   document.querySelector('input[name="process"]').click();
   next.click();

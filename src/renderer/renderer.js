@@ -8,9 +8,9 @@ import Chart from 'chart.js/auto';
 import { buildChart } from '../../chartWorker.mjs';
 import { paramOptions } from '../../wizardData.mjs';
 import { createModal } from './modal.js';
-import { openWizard } from './wizard.js';
 import './inlineEdit.js';
 import './kpi.js';
+import './wizard.js';
 window.__DEBUG__ = true;
 // --- test-environment stubs -------------------------------
 if (typeof window !== 'undefined' && !window.undoChange) {
@@ -795,9 +795,8 @@ function validateStep(){
 }
 
 function buildSummary(){
-  wizardBody.innerHTML = `\n      <div id="step5">\n        <div>\n          <h4>Zusammenfassung</h4>\n          <ul class="summary">\n            <li>Prozess: ${current.process}</li>\n            <li>Software‑Partner: ${current.partner}</li>\n            <li>Parameter: ${current.format} / ${current.transport}</li>\n            <li>Liegenschaften: ${current.sites.join(', ')}</li>\n          </ul>\n        </div>\n        <div>\n          <p>Setup 299 € einmalig</p>\n          <label class="row"><input type="checkbox" id="chkAGB"><span>AGB gelesen</span></label>\n        </div>\n        <button id="btnSubmit" class="primary" disabled>Kostenpflichtig beauftragen</button>\n      </div>`;
+  wizardBody.innerHTML = `\n      <div id="step5">\n        <div>\n          <h4>Zusammenfassung</h4>\n          <ul class="summary">\n            <li>Prozess: ${current.process}</li>\n            <li>Software‑Partner: ${current.partner}</li>\n            <li>Parameter: ${current.format} / ${current.transport}</li>\n            <li>Liegenschaften: ${current.sites.join(', ')}</li>\n          </ul>\n        </div>\n        <div>\n          <p>Setup 299 € einmalig</p>\n          <label class="row"><input type="checkbox" id="chkAGB"><span>AGB gelesen</span></label>\n        </div>\n        <button id="btnSubmit" data-close="pay" class="primary" disabled>Kostenpflichtig beauftragen</button>\n      </div>`;
   byId('chkAGB').onchange = e => byId('btnSubmit').disabled = !e.target.checked;
-  byId('btnSubmit').onclick = () => closeWizard();
 }
 
 function renderStep(){
@@ -851,19 +850,9 @@ function showWizard(){
   wizardModal.classList.remove('hidden');
 }
 
-function openWizardForTest(){
-  if (process.env.NODE_ENV === 'test') {
-    showWizard();
-  }
-}
 
 if(wizardModal){
-  document.getElementById('newWizardBtn')
-          .addEventListener('click', openWizard);
-  ['wizardClose','wizardAbort','btnSubmit'].forEach(id=>{
-    const el = byId(id);
-    if(el) el.onclick = () => closeWizard();
-  });
+  window.__wizardApi.bus.on('wizard:open', () => { wizardStep = 0; renderStep(); });
   nextBtn.onclick = () => { if(wizardStep<wizardTemplates.length-1){
       if(wizardStep===0){
         const chk = wizardBody.querySelector('input[name="process"]:checked');
@@ -927,4 +916,4 @@ function drawChart(canvasId, labels, values){
   });
 }
 
-export { loadCsvFile, handleCsvLoaded, openWizardForTest };
+export { loadCsvFile, handleCsvLoaded };

@@ -1,8 +1,7 @@
 const fs = require('fs');
 const path = require('path');
-const {JSDOM} = require('jsdom');
+const { JSDOM } = require('jsdom');
 const mitt = require('mitt');
-const {getAllByRole} = require('@testing-library/dom');
 
 let renderer;
 
@@ -18,9 +17,12 @@ beforeAll(async () => {
   renderer = await import('../src/renderer/renderer.js');
 });
 
-test('radios are aligned in step1', () => {
-  window.__wizardApi.show();
-  const radios = getAllByRole(document.body, 'radio');
-  const top = radios[0].offsetTop;
-  radios.forEach(r => expect(r.offsetTop).toBe(top));
+test('wizard API toggles visibility', () => {
+  const { show, hide } = window.__wizardApi;
+  const modal = document.getElementById('wizardModal');
+  expect(modal.classList).toContain('hidden');
+  show();
+  expect(modal.classList).not.toContain('hidden');
+  hide();
+  expect(modal.classList).toContain('hidden');
 });

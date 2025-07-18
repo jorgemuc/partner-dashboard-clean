@@ -17,7 +17,7 @@ const libs = {
 
 let { version } = { version: 'dev' };
 try {
-  // eslint-disable-next-line node/no-unpublished-require
+  // eslint-disable-next-line node/no-unpublished-require, node/no-missing-require
   ({ version } = require('../dist/version.json'));
 } catch {
   try {

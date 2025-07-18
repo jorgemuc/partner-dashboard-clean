@@ -20,7 +20,7 @@ beforeAll(async () => {
 test('5-step wizard validates required fields', () => {
   const modal = document.getElementById('wizardModal');
   expect(modal.classList.contains('hidden')).toBe(true);
-  renderer.openWizardForTest();
+  window.__wizardApi.show();
   expect(modal.classList.contains('hidden')).toBe(false);
   const next = document.getElementById('wizardNext');
   expect(next.disabled).toBe(true);
@@ -50,10 +50,10 @@ test('5-step wizard validates required fields', () => {
 
 test('wizard closes via X and abort buttons', () => {
   const modal = document.getElementById('wizardModal');
-  renderer.openWizardForTest();
+  window.__wizardApi.show();
   document.getElementById('wizardClose').click();
   expect(modal.classList.contains('hidden')).toBe(true);
-  renderer.openWizardForTest();
+  window.__wizardApi.show();
   document.getElementById('wizardAbort').click();
   expect(modal.classList.contains('hidden')).toBe(true);
 });

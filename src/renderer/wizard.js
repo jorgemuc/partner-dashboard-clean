@@ -1,7 +1,23 @@
-export function openWizard() {
-  document.getElementById('wizardModal').classList.remove('hidden');
+import mitt from 'mitt';
+
+const bus = mitt();
+const modal = document.getElementById('wizardModal');
+const openBtn = document.getElementById('wizardOpenBtn');
+function show(){
+  modal.classList.remove('hidden');
+  bus.emit('wizard:open');
+}
+function hide(){
+  modal.classList.add('hidden');
+  bus.emit('wizard:close');
 }
 
-export function closeWizard() {
-  document.getElementById('wizardModal').classList.add('hidden');
-}
+openBtn.addEventListener('click', show);
+modal.addEventListener('click', e => {
+  if (e.target.closest('[data-close]')) hide();
+});
+
+window.__wizardApi = { show, hide, bus };
+
+
+

@@ -13,7 +13,12 @@ test('wizard remains closed on launch', async () => {
     return;
   }
   const page = await app.firstWindow();
+  await app.waitForEvent('ipc');
   await page.waitForSelector('body');
-  await page.locator('#wizardModal').waitFor({ state: 'hidden' });
+  await expect(page.locator('#wizardModal')).toHaveClass(/hidden/);
+  await page.click('#wizardOpenBtn');
+  await expect(page.locator('#wizardModal')).not.toHaveClass(/hidden/);
+  await page.click('[data-close="x"]');
+  await expect(page.locator('#wizardModal')).toHaveClass(/hidden/);
   await app.close();
 }, 30_000);
