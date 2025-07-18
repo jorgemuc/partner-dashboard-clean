@@ -1,3 +1,7 @@
+## [0.7.75] – 2025-07-24
+### Fixed
+* global canvas stub for smoke tests
+
 ## [0.7.74] – 2025-07-24
 ### Fixed
 * fix: version exposed as string for smoke tests; keep versionFn()
