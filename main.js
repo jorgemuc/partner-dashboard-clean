@@ -106,8 +106,8 @@ function createWindow() {
   });
   mainWindow.loadFile('index.html');
   mainWindow.webContents.once('did-finish-load', () => {
-    // Smoke-Tests warten auf dieses IPC-Echo
-    process.emit('app-loaded');
+    mainWindow.webContents.send('app-loaded');
+    if (process.send) process.send('app-loaded');
   });
   createMenu(mainWindow);
 }

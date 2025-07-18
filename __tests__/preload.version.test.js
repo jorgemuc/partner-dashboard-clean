@@ -4,8 +4,8 @@ jest.mock('electron', () => ({
 }));
 const api = require('../src/preload.js');
 
-test('version exposiert String und Funktion', () => {
-  expect(typeof api.version).toBe('string');
-  expect(api.version).toMatch(/^\d+\.\d+\.\d+$/);
-  expect(api.versionFn()).toBe(api.version);
+test('version exposed via function', () => {
+  expect(typeof api.version).toBe('function');
+  const v = api.version();
+  expect(v).toMatch(/^\d+\.\d+\.\d+$/);
 });

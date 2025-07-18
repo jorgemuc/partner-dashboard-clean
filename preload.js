@@ -1,6 +1,14 @@
 const { contextBridge, ipcRenderer } = require("electron");
 const mitt = require("mitt");
-const { version } = require("../dist/version.json");
+let { version } = { version: "dev" };
+try {
+  ({ version } = require("../dist/version.json"));
+} catch {
+  try {
+    ({ version } = require("../package.json"));
+  } catch {
+  }
+}
 function safeRequire(name) {
   try {
     return require(name);
@@ -18,8 +26,7 @@ ipcRenderer.on("menu-open-csv", () => bus.emit("menu-open-csv"));
 const api = {
   bus,
   libs,
-  version,
-  versionFn: () => version,
+  version: () => version,
   onAppLoaded: (cb) => ipcRenderer.on("app-loaded", cb),
   sendMail: (opts) => ipcRenderer.invoke("send-mail", opts)
 };
