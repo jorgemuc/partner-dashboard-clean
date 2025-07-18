@@ -16,7 +16,10 @@ document.getElementById('repoLink').onclick=e=>{
   e.preventDefault();
   window.open('https://github.com/jorgemuc/partner-dashboard-clean');
 };
-document.getElementById('appVersion').textContent = window.api.version();
+const v = typeof window.api.version === 'function'
+    ? window.api.version()
+    : window.api.version;
+document.getElementById('appVersion').textContent = v;
 </script>
 </body>
 </html>

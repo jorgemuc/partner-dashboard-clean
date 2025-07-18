@@ -85,6 +85,7 @@ Patch bumps fix bugs only. Increase minor for new features, major for breaking c
 {
   bus: MittEmitter,
   libs: { Papa?: any, XLSX?: any, Chart?: any },
-  version: () => string
+  version: string,
+  versionFn: () => string
 }
 ```
