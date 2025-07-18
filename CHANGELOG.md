@@ -2,6 +2,7 @@
 ### Fixed
 * fix: restore preload contract – `window.api.version()` again
 * fix: wizard modal opens only via button; smoke green
+* fix: chartCanvas rendered deterministically; canvas stub for tests
 
 ## [0.7.71] – 2025-07-24
 ### Fixed

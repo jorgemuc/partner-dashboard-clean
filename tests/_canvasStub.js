@@ -1,8 +1,4 @@
-require('@testing-library/jest-dom');
-// polyfill: Chart.js needs a 2d context in JSDOM/Node
-if (typeof HTMLCanvasElement === 'undefined') {
-  global.HTMLCanvasElement = function () {};
-}
+// polyfill: Chart.js needs a 2d context in JSDOM
 if (!HTMLCanvasElement.prototype.getContext) {
   HTMLCanvasElement.prototype.getContext = () => ({
     fillRect: ()=>{}, clearRect: ()=>{}, getContext: ()=>{},
@@ -14,4 +10,3 @@ if (!HTMLCanvasElement.prototype.getContext) {
     transform: ()=>{}, rect: ()=>{}, clip: ()=>{}
   });
 }
-afterAll(() => { if(global.window?.close) global.window.close(); });

@@ -137,7 +137,7 @@ E79 - CI Fix,Wizard e2e Xvfb,Ubuntu job sets up virtual display,done,CI,S,codex
 E80 - CI Fix,Wizard e2e launcher path,uses _electron.launcher.executablePath,done,CI,S,codex
 E81 - CI Fix,Electron launch fix,use launcher executablePath,done,CI,S,codex
 E82 - Infra,Dev-Verify Script,local build+test+smoke pipeline,done,CI,S,codex
-E83 - Infra,Devcontainer,Node+Xvfb reproducible env,todo,DX,S,codex
+E83 - Infra,Devcontainer,Node+Xvfb reproducible env,done,DX,S,codex
 E84 - TechDebt,Wizard v2 isolate,extract comp library + storybook,todo,Arch,M,codex
 E12,Tests,Update smoke-suite after preload refactor,,done,QA,
 E13,QA,Smoke fixes for version & wizard,,done,Tests,

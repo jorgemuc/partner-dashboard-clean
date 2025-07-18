@@ -204,7 +204,13 @@ document.querySelectorAll('.tab-btn').forEach(btn => {
     if (name === 'Übersicht') renderOverview();
     if (name === 'Tabelle') renderTable();
     if (name === 'Karten') renderCards();
-    if (name === 'Diagramme') renderCharts();
+    if (name === 'Diagramme') {
+      renderCharts();
+      const container = document.getElementById('chartView');
+      const canvases = container.querySelectorAll('canvas');
+      if (canvases.length && !document.getElementById('chartCanvas'))
+        canvases[0].id = 'chartCanvas';
+    }
     if (name === 'Änderungsprotokoll') renderChangelog();
   };
 });
@@ -412,6 +418,10 @@ function renderAll() {
   renderFilters();
   renderCards();
   renderCharts();
+  const container = document.getElementById('chartView');
+  const canvases = container.querySelectorAll('canvas');
+  if (canvases.length && !document.getElementById('chartCanvas'))
+    canvases[0].id = 'chartCanvas';
 }
 eventBus.on('data:updated', () => {
   renderAll();
@@ -909,11 +919,15 @@ function drawChart(canvasId, labels, values){
   if(!ctx) return;
   const type = canvasId.startsWith('pie') ? 'pie' : 'bar';
   if(charts[canvasId]) charts[canvasId].destroy();
-  charts[canvasId] = new Chart(ctx, {
-    type,
-    data: { labels, datasets:[{data: values}] },
-    options: { responsive:true, plugins:{legend:{position:type==='pie'?'bottom':'none'}} }
-  });
+  try {
+    charts[canvasId] = new Chart(ctx, {
+      type,
+      data: { labels, datasets:[{data: values}] },
+      options: { responsive:true, plugins:{legend:{position:type==='pie'?'bottom':'none'}} }
+    });
+  } catch (e) {
+    console.warn('[chart-skip]', e.message);
+  }
 }
 
 export { loadCsvFile, handleCsvLoaded };

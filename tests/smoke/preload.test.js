@@ -20,7 +20,7 @@ test('App exposes version and renders charts', async () => {
   expect(v).toMatch(/^\d+\.\d+\.\d+$/);
   expect(demoEnabled).toBe(true);
   await page.click('#demoDataBtn');
-  await expect(page.locator('#chartCanvas')).toBeVisible();
+  await page.waitForSelector('#chartCanvas', { state: 'visible' });
   await page.setInputFiles('#csvFile', require('path').join(__dirname, '../fixtures/partner.csv'));
   await page.waitForTimeout(300);
   const rows = await page.evaluate(() => document.querySelectorAll('#tablePartnerTable tbody tr').length);

@@ -1,4 +1,5 @@
 import { defineConfig } from '@playwright/test';
+import './tests/_canvasStub.js';
 
 export default defineConfig({
   testDir: 'tests/smoke',
