@@ -1,3 +1,7 @@
+## [0.7.74] – 2025-07-24
+### Fixed
+* fix: version exposed as string for smoke tests; keep versionFn()
+
 ## [0.7.73] – 2025-07-24
 ### Fixed
 * fix: restore preload contract – `window.api.version()` again

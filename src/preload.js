@@ -1,4 +1,6 @@
 const { contextBridge, ipcRenderer } = require('electron');
+const { readFileSync } = require('node:fs');
+const { join } = require('node:path');
 const mitt = require('mitt');
 
 function safeRequire(name) {
@@ -10,23 +12,25 @@ function safeRequire(name) {
 }
 
 const libs = {
-  mitt,
   Papa: safeRequire('papaparse'),
   XLSX: safeRequire('xlsx'),
+  Chart: safeRequire('chart.js/auto'),
 };
 
-let { version } = { version: 'dev' };
+let versionString = 'dev';
 try {
-  // eslint-disable-next-line node/no-unpublished-require, node/no-missing-require
-  ({ version } = require('../dist/version.json'));
+  versionString = JSON.parse(
+    readFileSync(join(__dirname, 'version.json'), 'utf8')
+  ).version;
 } catch {
   try {
-    ({ version } = require('../package.json'));
+    versionString = JSON.parse(
+      readFileSync(join(__dirname, '../package.json'), 'utf8')
+    ).version;
   } catch {
     // ignore
   }
 }
-const getVersion = () => version;
 
 const bus = mitt();
 ipcRenderer.on('menu-open-csv', () => bus.emit('menu-open-csv'));
@@ -34,7 +38,8 @@ ipcRenderer.on('menu-open-csv', () => bus.emit('menu-open-csv'));
 const api = {
   bus,
   libs,
-  version: getVersion,
+  version: versionString,
+  versionFn: () => versionString,
   onAppLoaded: (cb) => ipcRenderer.on('app-loaded', cb),
   sendMail: (opts) => ipcRenderer.invoke('send-mail', opts),
 };

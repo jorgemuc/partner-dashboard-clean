@@ -281,9 +281,10 @@ body.dark .log-table th { background: #3a3a3a; }
   </main>
   
   <script>
-    if (window.api && typeof window.api.version === 'function') {
-      document.getElementById('appVersion').textContent = window.api.version();
-    }
+    const v = typeof window.api.version === 'function'
+        ? window.api.version()
+        : window.api.version;
+    document.getElementById('appVersion').textContent = v;
   </script>
   <script type="module" defer src="build/unpacked/renderer.bundle.js"></script>
 </body>
