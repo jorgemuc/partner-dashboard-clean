@@ -27,6 +27,6 @@ test('wizard remains closed on launch', async () => {
   }
   const page = await app.firstWindow();
   await page.waitForSelector('body');
-  await expect(page.locator('#wizardModal')).toBeHidden();
+  await page.locator('#wizardModal').waitFor({ state: 'hidden' });
   await app.close();
 }, 30_000);
