@@ -111,6 +111,7 @@ body.dark .log-table th { background: #3a3a3a; }
 <body>
   <header>
   <h1 id="appTitle">Partner-Dashboard <small id="appVersion"></small></h1>
+  <div id="clock"></div>
     <button id="darkModeToggle" class="export-btn" style="background:#555;margin-left:1rem;">Dark Mode</button>
     <div class="file-upload">
       <input type="file" id="csvFile" accept=".csv" />
@@ -285,6 +286,12 @@ body.dark .log-table th { background: #3a3a3a; }
         ? window.api.version()
         : window.api.version;
     document.getElementById('appVersion').textContent = v;
+    function updateClock(){
+      const el = document.getElementById('clock');
+      if(el) el.textContent = new Date().toLocaleTimeString();
+    }
+    updateClock();
+    setInterval(updateClock, 1000);
   </script>
   <script type="module" defer src="build/unpacked/renderer.bundle.js"></script>
 </body>

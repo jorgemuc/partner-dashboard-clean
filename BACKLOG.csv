@@ -148,3 +148,4 @@ E87 - Preload contract fix,Preload contract fix,window.api.version() again,done,
 E88 - Bugfix,Wizard stays closed,manual open only,done,Fix,S,codex
 E89 - Bugfix,Canvas stub via globalSetup,Playwright smoke fix,done,Fix,S,codex
 E90 - Bugfix,Expose version string & wizard manual open,smoke suite green,done,Fix,S,codex
+E91 - UX,Digital Clock,show time in header,done,UI,S,codex

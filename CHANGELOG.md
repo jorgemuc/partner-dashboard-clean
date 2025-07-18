@@ -1,19 +1,23 @@
-## [0.7.77] – 2025-07-25
+## [0.7.79] – 2025-07-18
 ### Fixed
 * stable app-loaded IPC on window ready
 * preload falls back to package.json version
 
-## [0.7.76] – 2025-07-24
+## [0.7.77] – 2025-07-18
+### Added
+* digital clock in dashboard header
+
+## [0.7.76] – 2025-07-18
 ### Fixed
 * preload exposes version string
 * wizard opens only via button
 * main emits `app-loaded`
 
-## [0.7.75] – 2025-07-24
+## [0.7.75] – 2025-07-18
 ### Fixed
 * global canvas stub for smoke tests
 
-## [0.7.74] – 2025-07-24
+## [0.7.74] – 2025-07-18
 ### Fixed
 * fix: version exposed as string for smoke tests; keep versionFn()
 
@@ -23,12 +27,12 @@
 * fix: wizard modal opens only via button; smoke green
 * fix: chartCanvas rendered deterministically; canvas stub for tests
 
-## [0.7.71] – 2025-07-24
+## [0.7.71] – 2025-07-18
 ### Fixed
 * preload exports version() again
 * wizard stays closed until button click
 
-## [0.7.70] – 2025-07-24
+## [0.7.70] – 2025-07-18
 ### Fixed
 * Wizard opens only via button; Playwright uses single launch helper; CI green on Ubuntu
 
