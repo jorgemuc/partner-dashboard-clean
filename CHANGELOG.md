@@ -1,3 +1,8 @@
+## [0.7.83] – 2025-07-18
+### Fixed
+* preload path uses dist/preload.js with debug log
+* pre-commit enforces BACKLOG columns
+
 ## [0.7.82] – 2025-07-18
 ### Fixed
 * added opt-in debug logs

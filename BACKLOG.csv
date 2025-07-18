@@ -152,3 +152,4 @@ E91 - UX,Digital Clock,show time in header,done,UI,S,codex
 E92 - Automation,V-Spec 1.0,preload version+ipc app-loaded,done,Fix,S,codex
 E93 - Automation,Pipeline fix,bundle before smoke; freeze api getVersion,done,Fix,S,codex
 E94 - Automation,Logging instrumentation,opt-in debug logs,done,Infra,S,codex
+F1 - Automation,Preload path check,dist preload path + backlog columns hook,done,Fix,S,codex

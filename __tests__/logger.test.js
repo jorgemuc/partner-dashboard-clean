@@ -42,4 +42,20 @@ describe('debug logger', () => {
     const txt = fs.readFileSync(logPath, 'utf8');
     expect(txt.includes('emitting app-loaded')).toBe(true);
   });
+
+  test('logs preload missing when file absent', () => {
+    process.env.LOG_LEVEL = 'debug';
+    try { fs.unlinkSync(logPath); } catch {}
+    const exists = jest.spyOn(fs, 'existsSync').mockReturnValue(false);
+    jest.isolateModules(() => {
+      jest.doMock('electron-log', () => ({
+        info: jest.fn(),
+        transports: { file: { level: 'debug', resolvePathFn: jest.fn() }, console: { level: 'debug' } }
+      }));
+      const log = require('electron-log');
+      require('../main.js');
+      expect(log.info).toHaveBeenCalledWith('[pl-dbg] preload missing', expect.any(String));
+    });
+    exists.mockRestore();
+  });
 });

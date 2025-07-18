@@ -1,3 +1,4 @@
 #!/usr/bin/env sh
 grep -R "import .*['A-Za-z']" src/renderer && \
   echo "❌  Renderer enthält bare-Import" && exit 1 || true
+node scripts/check-backlog.js
