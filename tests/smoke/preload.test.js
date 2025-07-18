@@ -16,7 +16,7 @@ test('App exposes version and renders charts', async () => {
   const page = await app.firstWindow();
   await page.waitForSelector('body');
   const res = await page.evaluate(() => ({
-    version: window.api?.version,
+    version: window.api?.version?.(),
     demoEnabled: !document.getElementById('demoDataBtn').disabled
   }));
   expect(res.version).toMatch(/^\d+\.\d+\.\d+$/);
