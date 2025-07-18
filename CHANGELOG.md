@@ -1,3 +1,9 @@
+## [0.7.84] – 2025-07-18
+### Fixed
+* preload path resolves dist/preload.js when present
+* smoke test checks window.api existence
+* dev-verify ensures BACKLOG columns
+
 ## [0.7.83] – 2025-07-18
 ### Fixed
 * preload path uses dist/preload.js with debug log
