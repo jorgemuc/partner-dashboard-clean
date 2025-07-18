@@ -1,3 +1,7 @@
+## [0.7.82] – 2025-07-18
+### Fixed
+* added opt-in debug logs
+
 ## [0.7.81] – 2025-07-18
 ### Fixed
 * preload contract frozen (getVersion) and bundler runs before smoke
