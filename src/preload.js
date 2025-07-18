@@ -1,12 +1,20 @@
 const { contextBridge, ipcRenderer } = require('electron');
 const mitt = require('mitt');
-// eslint-disable-next-line node/no-unpublished-require
-const { version } = require('../dist/version.json');
+const { version: pkgVersion } = require('../package.json');
+let version = pkgVersion;
+try {
+  // override with bundled version if available
+  // eslint-disable-next-line node/no-missing-require, node/no-unpublished-require
+  const dist = require('../dist/version.json');
+  if (dist && dist.version) version = dist.version;
+} catch (e) {
+  // ignore - use package.json version
+}
 
 function safeRequire(name) {
   try {
     return require(name);
-  } catch {
+  } catch (_err) {
     return null;
   }
 }

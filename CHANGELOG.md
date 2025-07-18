@@ -1,3 +1,8 @@
+## [0.7.77] – 2025-07-25
+### Fixed
+* stable app-loaded IPC on window ready
+* preload falls back to package.json version
+
 ## [0.7.76] – 2025-07-24
 ### Fixed
 * preload exposes version string

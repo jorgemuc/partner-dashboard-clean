@@ -1,10 +1,16 @@
 const { contextBridge, ipcRenderer } = require("electron");
 const mitt = require("mitt");
-const { version } = require("../dist/version.json");
+const { version: pkgVersion } = require("../package.json");
+let version = pkgVersion;
+try {
+  const dist = require("../dist/version.json");
+  if (dist && dist.version) version = dist.version;
+} catch (e) {
+}
 function safeRequire(name) {
   try {
     return require(name);
-  } catch {
+  } catch (_err) {
     return null;
   }
 }
