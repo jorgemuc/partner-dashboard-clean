@@ -140,7 +140,7 @@ body.dark .log-table th { background: #3a3a3a; }
         <span id="pfMeta"></span>
         <span id="pfHealth" class="badge">-</span>
         <button id="profileEditBtn" class="edit-btn" onclick="openProfileEdit()">Edit</button>
-        <button id="btnNewOrder" class="primary">Neue Beauftragung</button>
+        <button id="newWizardBtn" class="primary">Neue Beauftragung</button>
       </div>
       <section class="card"><h3>Stammdaten</h3><ul id="pfContacts"></ul></section>
       <section id="partnerTiles" class="flex-row">
@@ -257,7 +257,7 @@ body.dark .log-table th { background: #3a3a3a; }
       </div>
     </div>
 
-    <div id="wizardModal" class="wizard hidden" role="dialog" aria-modal="true" data-testid="wizard-modal">
+    <div id="wizardModal" class="hidden modal" role="dialog" aria-modal="true" data-testid="wizard-modal">
       <div class="wizard-header">
         <span>Neue Beauftragung</span>
         <button id="wizardClose" aria-label="Wizard schließen">×</button>

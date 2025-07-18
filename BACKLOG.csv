@@ -142,3 +142,4 @@ E84 - TechDebt,Wizard v2 isolate,extract comp library + storybook,todo,Arch,M,co
 E12,Tests,Update smoke-suite after preload refactor,,done,QA,
 E13,QA,Smoke fixes for version & wizard,,done,Tests,
 E14,Tests,Stabilise smoke-suite & restore version.json,,done,QA,
+E85 - CI Fix,Wizard manual open,launch helper + Xvfb,done,CI,S,codex

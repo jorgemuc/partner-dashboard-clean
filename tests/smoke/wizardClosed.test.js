@@ -1,25 +1,12 @@
 const { test, expect } = require('@playwright/test');
-
-function launchElectron(args = ['.', '--no-sandbox']) {
-  const { _electron: electron } = require('playwright');
-  const exe = require('electron');
-  return electron.launch({
-    executablePath: exe,
-    args,
-    env: {
-      ...process.env,
-      NODE_ENV: 'production',
-      ELECTRON_DISABLE_SANDBOX: '1'
-    }
-  });
-}
+const { launchApp } = require('../helpers/launchApp.js');
 
 // Ensure wizard stays closed on startup
 test('wizard remains closed on launch', async () => {
   process.env.DISPLAY ??= ':99';
   let app;
   try {
-    app = await launchElectron();
+    app = await launchApp();
   } catch (e) {
     if (process.env.SMOKE_HARD_FAIL) throw e;
     test.fail(true, 'Electron launch');

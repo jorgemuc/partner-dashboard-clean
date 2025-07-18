@@ -1,3 +1,7 @@
+## [0.7.70] – 2025-07-24
+### Fixed
+* Wizard opens only via button; Playwright uses single launch helper; CI green on Ubuntu
+
 ## [0.7.69] – 2025-07-16
 ### Fixed
 * dist/version.json now packaged → window.api.version available in preload.

@@ -8,6 +8,7 @@ import Chart from 'chart.js/auto';
 import { buildChart } from '../../chartWorker.mjs';
 import { paramOptions } from '../../wizardData.mjs';
 import { createModal } from './modal.js';
+import { openWizard } from './wizard.js';
 import './inlineEdit.js';
 import './kpi.js';
 window.__DEBUG__ = true;
@@ -857,9 +858,8 @@ function openWizardForTest(){
 }
 
 if(wizardModal){
-  byId('btnNewOrder').onclick = () => {
-    showWizard();
-  };
+  document.getElementById('newWizardBtn')
+          .addEventListener('click', openWizard);
   ['wizardClose','wizardAbort','btnSubmit'].forEach(id=>{
     const el = byId(id);
     if(el) el.onclick = () => closeWizard();
