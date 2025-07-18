@@ -12,5 +12,5 @@ test('version exposed as string and fn', () => {
   window.api = api;
   expect(typeof window.api.version).toBe('string');
   expect(window.api.version).toMatch(/^\d+\.\d+\.\d+$/);
-  expect(window.api.versionFn()).toBe(window.api.version);
+  expect(window.api.getVersion()).toBe(window.api.version);
 });

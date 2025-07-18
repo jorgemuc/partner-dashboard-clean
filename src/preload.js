@@ -31,14 +31,14 @@ const libs = {
 const bus = mitt();
 ipcRenderer.on('menu-open-csv', () => bus.emit('menu-open-csv'));
 
-const api = {
+const api = Object.freeze({
   bus,
   libs,
   version: ver,
-  versionFn: () => ver,
+  getVersion: () => ver,
   onAppLoaded: (cb) => ipcRenderer.on('app-loaded', cb),
   sendMail: (opts) => ipcRenderer.invoke('send-mail', opts),
-};
+});
 
 contextBridge.exposeInMainWorld('api', api);
 contextBridge.exposeInMainWorld('csvApi', {
