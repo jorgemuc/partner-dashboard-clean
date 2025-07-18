@@ -28,10 +28,10 @@ async function loadWorkerSrc(){
 window.Chart = Chart;
 
 async function waitApi(){
-  if(window.api?.libs && window.api?.version) return;
+  if(window.api?.libs && typeof window.api?.version === 'function') return;
   await new Promise(r=>{
     const t=setInterval(()=>{
-      if(window.api?.libs && window.api?.version){clearInterval(t);r();}
+      if(window.api?.libs && typeof window.api?.version === 'function'){clearInterval(t);r();}
     },10);
   });
 }
@@ -464,7 +464,7 @@ function renderOverview(){
 
 // tolerate missing preload bridge in jsdom/Jest
 (function(){
-  const version = window.api?.version || 'dev-test';
+  const version = window.api?.version?.() || 'dev-test';
   appVersion = version;
   window.showVersion = () => alert(`Version ${version}`);
   const titleEl = document.getElementById('appTitle');

@@ -12,15 +12,20 @@ const libs = {
   Papa: safeRequire("papaparse"),
   XLSX: safeRequire("xlsx")
 };
-let version = "dev";
+const { readFileSync } = require("node:fs");
+const { join } = require("node:path");
+let versionJson = { version: "dev" };
 try {
-  version = require("../dist/version.json").version;
+  versionJson = JSON.parse(
+    readFileSync(join(__dirname, "..", "dist", "version.json"), "utf8")
+  );
 } catch {
   try {
-    version = require("../package.json").version;
+    versionJson.version = require("../package.json").version;
   } catch {
   }
 }
+const version = () => versionJson.version;
 const bus = mitt();
 ipcRenderer.on("menu-open-csv", () => bus.emit("menu-open-csv"));
 const api = {

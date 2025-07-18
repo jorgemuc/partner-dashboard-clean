@@ -6,7 +6,7 @@ test('drop handler emits csv:loaded', async () => {
   const { window } = dom;
   global.window = window;
   global.document = window.document;
-  window.api = { libs: { mitt }, version:'0', bus: mitt() };
+  window.api = { libs: { mitt }, version: () => '0', bus: mitt() };
   const initDropHandler = (await import('../src/renderer/dropHandler.js')).default;
   initDropHandler();
   const zone = window.document.getElementById('dropZone');

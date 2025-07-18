@@ -19,7 +19,7 @@ beforeAll(async () => {
   global.localStorage = dom.window.localStorage;
   window.HTMLCanvasElement.prototype.getContext = () => ({});
   global.Chart = function(){};
-  window.api = { libs:{ Papa: require('papaparse') }, bus: mitt(), version:'0' };
+  window.api = { libs:{ Papa: require('papaparse') }, bus: mitt(), version: () => '0' };
   window.FileReader = class { constructor(){ this.onload=null; } readAsText(){ this.onload({target:{result:'A\n1'}}); } };
   global.FileReader = window.FileReader;
   store = await import('../src/renderer/dataStore.js');

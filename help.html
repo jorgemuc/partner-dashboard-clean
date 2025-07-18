@@ -61,7 +61,7 @@ Details finden Sie in der DevTools‑Konsole (<span class="kbd">Ctrl+Shift+I</sp
 
 <script>
   // füllt Version und Changelog dynamisch
-  document.getElementById('verSpan').textContent = window.api?.version || '';
+  document.getElementById('verSpan').textContent = window.api?.version?.() || '';
   fetch('CHANGELOG.md').then(r=>r.text()).then(md=>{
     const items = md.split('\n').filter(l=>l.startsWith('## [')).slice(0,5)
       .map(l=>'<li>'+l.replace(/^## /,'')+'</li>').join('');

@@ -253,7 +253,7 @@ function showMsg(txt, type="success") {
   setTimeout(() => { msgDiv.innerHTML = ""; }, 4000);
 }
 
-const v = window.api.version || 'dev';
+const v = window.api.version ? window.api.version() : 'dev';
 window.showVersion=()=>dialog.showMessageBox({title:'Partner-Dashboard',message:`Version ${v}`});
 
 ipcRenderer.on('menu-open-csv', () => window.csvApi.openDialog());

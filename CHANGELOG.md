@@ -1,3 +1,8 @@
+## [0.7.71] – 2025-07-24
+### Fixed
+* preload exports version() again
+* wizard stays closed until button click
+
 ## [0.7.70] – 2025-07-24
 ### Fixed
 * Wizard opens only via button; Playwright uses single launch helper; CI green on Ubuntu
