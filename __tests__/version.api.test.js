@@ -5,12 +5,12 @@ jest.mock('electron', () => ({
 const { contextBridge } = require('electron');
 require('../src/preload.js');
 
-test('version exposed as string and fn', () => {
+test('version exposed via function', () => {
   const apiCall = contextBridge.exposeInMainWorld.mock.calls.find(c => c[0] === 'api');
   const api = apiCall ? apiCall[1] : {};
   global.window = {};
   window.api = api;
-  expect(typeof window.api.version).toBe('string');
-  expect(window.api.version).toMatch(/^\d+\.\d+\.\d+$/);
-  expect(window.api.versionFn()).toBe(window.api.version);
+  expect(typeof window.api.version).toBe('function');
+  const v = window.api.version();
+  expect(v).toMatch(/^\d+\.\d+\.\d+$/);
 });

@@ -1,3 +1,9 @@
+## [0.7.77] – 2025-07-24
+### Fixed
+* preload exposes version() function
+* smoke IPC event restored
+* canvas stub auto-loaded
+
 ## [0.7.76] – 2025-07-24
 ### Fixed
 * preload exposes version string

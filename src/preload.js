@@ -1,7 +1,16 @@
 const { contextBridge, ipcRenderer } = require('electron');
 const mitt = require('mitt');
-// eslint-disable-next-line node/no-unpublished-require
-const { version } = require('../dist/version.json');
+let { version } = { version: 'dev' };
+try {
+  // eslint-disable-next-line node/no-unpublished-require, node/no-missing-require
+  ({ version } = require('../dist/version.json'));
+} catch {
+  try {
+    ({ version } = require('../package.json'));
+  } catch {
+    // ignore
+  }
+}
 
 function safeRequire(name) {
   try {
@@ -23,8 +32,7 @@ ipcRenderer.on('menu-open-csv', () => bus.emit('menu-open-csv'));
 const api = {
   bus,
   libs,
-  version,
-  versionFn: () => version,
+  version: () => version,
   onAppLoaded: (cb) => ipcRenderer.on('app-loaded', cb),
   sendMail: (opts) => ipcRenderer.invoke('send-mail', opts),
 };

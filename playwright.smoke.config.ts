@@ -1,3 +1,4 @@
+import './tests/_canvasStub.js';
 import { defineConfig } from '@playwright/test';
 
 export default defineConfig({
