@@ -27,7 +27,7 @@ test('App exposes version and renders charts', async () => {
   expect(res.version).toMatch(/^\d+\.\d+\.\d+$/);
   expect(res.demoEnabled).toBe(true);
   await page.click('#demoDataBtn');
-  await page.waitForSelector('#chartCanvas', { state: 'visible' });
+  await page.waitForFunction(() => window.api.getChartStatus().ready);
   await page.setInputFiles('#csvFile', require('path').join(__dirname, '../fixtures/partner.csv'));
   await page.waitForTimeout(300);
   const rows = await page.evaluate(() => document.querySelectorAll('#tablePartnerTable tbody tr').length);

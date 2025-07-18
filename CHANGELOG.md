@@ -1,3 +1,8 @@
+## [0.7.87] - 2025-07-18
+### Added
+* wizard state persistence and telemetry logger
+* chart ready API
+
 ## [0.7.86] - 2025-07-18
 ### Fixed
 * trimmed preload API and new cli-start

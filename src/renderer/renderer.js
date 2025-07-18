@@ -12,6 +12,10 @@ import './inlineEdit.js';
 import './kpi.js';
 import './wizard.js';
 import bus from './eventBus.js';
+const logger = window.log || {info:()=>{},warn:()=>{},error:()=>{},debug:()=>{}};
+logger.info('[trace] renderer-domcontentloaded');
+const __wizardState = window.api.getWizardState ? window.api.getWizardState() : {dismissed:true};
+if(!__wizardState.dismissed){ window.__wizardApi?.show?.(); }
 window.__DEBUG__ = true;
 // --- test-environment stubs -------------------------------
 if (typeof window !== 'undefined' && !window.undoChange) {
@@ -84,6 +88,8 @@ function pushChange(change){
 let charts = {};
 setChartsRef(charts);
 eventBus.on('chart:empty', id => {
+let chartCounts = {};
+let chartReady = false;
   charts[id]?.destroy();
   delete charts[id];
 });
@@ -447,6 +453,11 @@ window.onload = async () => {
   applyView('Alle');
   const cleanupWorkers = await prepareWorkers();
   window.addEventListener('beforeunload', cleanupWorkers);
+  window.addEventListener("beforeunload", () => {
+    for(const [id,c] of Object.entries(chartCounts)){
+      if(c>1) logger.info(`[trace] chart-init ok (n=${c})`, { id });
+    }
+  });
   window.initInlineEdit?.();
   document.getElementById('columnBtn').onclick = () => {
     const menu = document.getElementById('columnMenu');
@@ -916,6 +927,7 @@ function drawChart(canvasId, labels, values){
   const canvas = document.getElementById(canvasId);
   const ctx = canvas?.getContext?.('2d');
   if(!ctx) return;
+  logger.info('[trace] chart-init start', { id: canvasId });
   const type = canvasId.startsWith('pie') ? 'pie' : 'bar';
   if(charts[canvasId]) charts[canvasId].destroy();
   try {
@@ -924,8 +936,13 @@ function drawChart(canvasId, labels, values){
       data: { labels, datasets:[{data: values}] },
       options: { responsive:true, plugins:{legend:{position:type==='pie'?'bottom':'none'}} }
     });
+    if(!chartReady){ window.__setChartReady?.(); chartReady=true; }
+    chartCounts[canvasId] = (chartCounts[canvasId]||0)+1;
+    if(chartCounts[canvasId]===1) logger.info('[trace] chart-init ok', { id: canvasId });
+    canvas.setAttribute('data-chart-ready','true');
   } catch (e) {
-    console.warn('[chart-skip]', e.message);
+    logger.error('[pl-err] chart init', e);
+    logger.info('[trace] chart-init fail', { id: canvasId });
   }
 }
 
