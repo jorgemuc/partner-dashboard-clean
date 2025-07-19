@@ -40,7 +40,7 @@ describe('debug logger', () => {
     const win = require('electron').__lastWindow();
     win.webContents.emit('did-finish-load');
     const txt = fs.readFileSync(logPath, 'utf8');
-    expect(txt.includes('emitting app-loaded')).toBe(true);
+    expect(txt.includes('sent app-loaded')).toBe(true);
   });
 
   test('logs preload missing when file absent', () => {

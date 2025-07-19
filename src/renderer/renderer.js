@@ -14,8 +14,8 @@ import './wizard.js';
 import bus from './eventBus.js';
 const logger = window.log || {info:()=>{},warn:()=>{},error:()=>{},debug:()=>{}};
 logger.info('[trace] renderer-domcontentloaded');
-const __wizardState = window.api.getWizardState ? window.api.getWizardState() : {dismissed:true};
-if(!__wizardState.dismissed){ window.__wizardApi?.show?.(); }
+const dismissed = window.api?.wizard?.isDismissed?.() || false;
+if(!dismissed){ window.__wizardApi?.show?.(); }
 window.__DEBUG__ = true;
 // --- test-environment stubs -------------------------------
 if (typeof window !== 'undefined' && !window.undoChange) {
@@ -936,7 +936,7 @@ function drawChart(canvasId, labels, values){
       data: { labels, datasets:[{data: values}] },
       options: { responsive:true, plugins:{legend:{position:type==='pie'?'bottom':'none'}} }
     });
-    if(!chartReady){ window.__setChartReady?.(); chartReady=true; }
+    if(!chartReady){ window.api?.readiness?.set('charts'); chartReady=true; }
     chartCounts[canvasId] = (chartCounts[canvasId]||0)+1;
     if(chartCounts[canvasId]===1) logger.info('[trace] chart-init ok', { id: canvasId });
     canvas.setAttribute('data-chart-ready','true');

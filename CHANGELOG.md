@@ -1,3 +1,7 @@
+## [0.7.88] - 2025-07-18
+### Added
+* preload contract hardening with readiness API
+
 ## [0.7.87] - 2025-07-18
 ### Added
 * wizard state persistence and telemetry logger
