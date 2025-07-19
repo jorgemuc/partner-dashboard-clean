@@ -13,7 +13,7 @@ test('wizard persists dismissed state', async () => {
     }
   });
   await app1.waitForEvent('ipc', (_e, msg) => msg === 'app-loaded');
-  await page1.waitForFunction(() => !!window.api, { timeout: 5000 });
+  await page1.waitForFunction(() => !!window.api?.version, { timeout: 5000 });
   const preloadErr1 = await page1.evaluate(() => window.api.readiness?.has('preload-error'));
   expect(preloadErr1).toBeFalsy();
   await page1.waitForFunction(() => window.api.readiness?.has('base-ui'), { timeout: 8000 });
@@ -35,7 +35,7 @@ test('wizard persists dismissed state', async () => {
     }
   });
   await app2.waitForEvent('ipc', (_e, msg) => msg === 'app-loaded');
-  await page2.waitForFunction(() => !!window.api, { timeout: 5000 });
+  await page2.waitForFunction(() => !!window.api?.version, { timeout: 5000 });
   const preloadErr2 = await page2.evaluate(() => window.api.readiness?.has('preload-error'));
   expect(preloadErr2).toBeFalsy();
   await page2.waitForFunction(() => window.api.readiness?.has('base-ui'), { timeout: 8000 });

@@ -3,7 +3,8 @@ jest.mock('electron', () => ({
   ipcRenderer: { on: jest.fn(), invoke: jest.fn() }
 }));
 const { contextBridge } = require('electron');
-require('../src/preload/index.cjs');
+global.window = {};
+require('../dist/preload.js');
 
 test('version exposed as function', () => {
   const apiCall = contextBridge.exposeInMainWorld.mock.calls.find(c => c[0] === 'api');

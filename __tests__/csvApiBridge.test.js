@@ -5,7 +5,8 @@ jest.mock('electron', () => ({
 const { contextBridge } = require('electron');
 
 test('api exposed without crash', async () => {
-  await expect(import('../src/preload/index.cjs')).resolves.toBeDefined();
+  global.window = {};
+  expect(() => require('../dist/preload.js')).not.toThrow();
   const call = contextBridge.exposeInMainWorld.mock.calls.find(c => c[0] === 'api');
   expect(call).toBeTruthy();
 });

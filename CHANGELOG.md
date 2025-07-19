@@ -1,3 +1,7 @@
+## [0.7.91] - 2025-07-18
+### Fixed
+* preload self-contained; remove runtime package.json require
+
 ## [0.7.90] - 2025-07-18
 ### Fixed
 * resolve preload sandbox mismatch & stabilize smoke tests

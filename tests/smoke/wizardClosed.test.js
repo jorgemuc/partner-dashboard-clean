@@ -21,7 +21,7 @@ test('wizard shows then persists closed', async () => {
     }
   });
   await app.waitForEvent('ipc', (_e, msg) => msg === 'app-loaded');
-  await page.waitForFunction(() => !!window.api, { timeout: 5000 });
+  await page.waitForFunction(() => !!window.api?.version, { timeout: 5000 });
   const preloadErr = await page.evaluate(() => window.api.readiness?.has('preload-error'));
   expect(preloadErr).toBeFalsy();
   await page.waitForFunction(() => window.api.readiness?.has('base-ui'), { timeout: 8000 });
