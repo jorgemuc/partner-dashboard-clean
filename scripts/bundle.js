@@ -103,6 +103,7 @@ console.time('[bundle:total]');
   console.log('  build/unpacked/renderer.bundle.js      (done)');
   log('before success marker');
   console.timeEnd('[bundle:total]');
+  console.log('[bundle:success] renderer.bundle.js written');
   if (process.exitCode && process.exitCode !== 0) {
     err('Process had recorded exitCode != 0 earlier – preserving.');
     process.exit(process.exitCode);
