@@ -3,8 +3,7 @@ const fs = require('fs');
 const { parseCsv } = require('./src/utils/parser');
 const path = require('path');
 const logger = require('./src/logger.js');
-const resolvePreloadPath = require("./src/main/resolvePreloadPath");
-const PRELOAD = resolvePreloadPath(__dirname);
+const PRELOAD = path.join(__dirname, 'dist', 'preload.js');
 if (!fs.existsSync(PRELOAD)) logger.info('[pl-dbg] preload missing', PRELOAD);
 let mainWindow;
 // works in dev (npm start) and in the packed ASAR
@@ -69,7 +68,8 @@ function getMenuTemplate(win){
           webPreferences:{
             nodeIntegration:false,
             contextIsolation:true,
-            preload:PRELOAD
+            preload:path.join(__dirname,'dist','preload.js'),
+            sandbox:false
           }
         });
         about.setMenu(null);
@@ -83,7 +83,8 @@ function getMenuTemplate(win){
           webPreferences:{
             nodeIntegration:false,
             contextIsolation:true,
-            preload:PRELOAD
+            preload:path.join(__dirname,'dist','preload.js'),
+            sandbox:false
           }
         });
         help.setMenu(null);
@@ -104,8 +105,12 @@ function createWindow() {
     webPreferences:{
       nodeIntegration:false,
       contextIsolation:true,
-      preload:PRELOAD
+      preload:path.join(__dirname,'dist','preload.js'),
+      sandbox:false
     }
+  });
+  mainWindow.webContents.on('preload-error', (_e, p, err) => {
+    console.error('[preload-error-event]', p, err && err.message);
   });
   logger.info("[trace] main-created-window");
   mainWindow.loadFile('index.html');

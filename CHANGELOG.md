@@ -1,3 +1,7 @@
+## [0.7.89] - 2025-07-18
+### Fixed
+* preload sandbox mismatch & readiness gating
+
 ## [0.7.88] - 2025-07-18
 ### Added
 * preload contract hardening with readiness API

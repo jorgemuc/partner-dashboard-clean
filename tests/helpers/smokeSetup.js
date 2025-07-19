@@ -8,5 +8,11 @@ module.exports.launchApp = async function launchApp(opts = {}) {
 };
 
 module.exports.captureConsole = function captureConsole(page) {
-  page.on('console', m => console.log('[ui]', m.text()));
+  const logs = [];
+  page.on('console', m => {
+    const txt = m.text();
+    logs.push(txt);
+    console.log('[ui]', txt);
+  });
+  return logs;
 };
