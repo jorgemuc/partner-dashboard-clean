@@ -21,7 +21,7 @@ test('App exposes version and renders charts', async () => {
       throw new Error('Preload failure detected: ' + t);
     }
   });
-  await page.waitForFunction(() => !!window.api, { timeout: 5000 });
+  await page.waitForFunction(() => !!window.api?.version, { timeout: 5000 });
   const preloadErr = await page.evaluate(() => window.api.readiness?.has('preload-error'));
   expect(preloadErr).toBeFalsy();
   await page.waitForFunction(() => window.api.readiness?.has('base-ui'), { timeout: 8000 });

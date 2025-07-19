@@ -163,4 +163,4 @@ T23 - Sprint2,Telemetry Logger,central logger with trace,done,Infra,S,codex
 T24 - Sprint2,Wizard Test,e2e persist wizard dismiss,done,Tests,S,codex
 T25 - Sprint2,Contract Doc,update AGENTS preload section,done,Docs,S,codex
 T26 - Sprint3,Preload Hardening,new readiness API,done,Infra,S,codex
-T27 - Sprint3,Smoke Fix,stabilize preload readiness,in progress,Infra,S,codex
+T27 - Sprint3,Smoke Fix,stabilize preload readiness,done,Infra,S,codex
