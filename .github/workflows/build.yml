@@ -25,7 +25,10 @@ jobs:
           key: ${{ runner.os }}-npm-${{ hashFiles('package-lock.json') }}
       - run: npm ci --cache ~/npm-cache --prefer-offline
       - run: node scripts/check-backlog.js
-      - run: npm run bundle
+      - name: Bundle
+        run: LOG_LEVEL=debug npm run bundle:all | tee bundle.log
+      - name: Verify bundle artifacts
+        run: BUNDLE_LOG_PATH=bundle.log node scripts/verify-bundle.js
       - name: Upload dist
         uses: actions/upload-artifact@v4
         with:
@@ -53,7 +56,10 @@ jobs:
           echo "DISPLAY=:99" >> $GITHUB_ENV
       - run: npm ci --cache ~/npm-cache --prefer-offline
       - run: npm test
-      - run: npm run bundle
+      - name: Bundle
+        run: LOG_LEVEL=debug npm run bundle:all | tee bundle.log
+      - name: Verify bundle artifacts
+        run: BUNDLE_LOG_PATH=bundle.log node scripts/verify-bundle.js
       - name: Run Smoke
         run: LOG_LEVEL=debug npm run smoke
         env:
@@ -84,7 +90,10 @@ jobs:
         with:
           name: renderer-dist
           path: dist/
-      - run: npm run bundle
+      - name: Bundle
+        run: LOG_LEVEL=debug npm run bundle:all | tee bundle.log
+      - name: Verify bundle artifacts
+        run: BUNDLE_LOG_PATH=bundle.log node scripts/verify-bundle.js
       - run: npm run build:win32
       - name: Upload portable EXE
         uses: actions/upload-artifact@v4

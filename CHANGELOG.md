@@ -1,3 +1,7 @@
+## [0.7.94] – 2025-07-19
+### Internal
+* Added bundle verification script (scripts/verify-bundle.js) to enforce artifact integrity
+
 ## [0.7.93] – 2025-07-19
 ### Fixed
 * bundle diagnostics and stable exit code
