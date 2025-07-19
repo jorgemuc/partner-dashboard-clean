@@ -282,6 +282,9 @@ body.dark .log-table th { background: #3a3a3a; }
   </main>
   
   <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      window.api?.readiness?.add && window.api.readiness.add('dom');
+    });
     const v = typeof window.api.version === 'function'
         ? window.api.version()
         : window.api.version;

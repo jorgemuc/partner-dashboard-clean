@@ -13,13 +13,18 @@ test('wizard shows then persists closed', async () => {
     return;
   }
   const page = await app.firstWindow();
-  captureConsole(page);
+  const logs = captureConsole(page);
   await app.waitForEvent('ipc', (_e, msg) => msg === 'app-loaded');
-  await page.waitForSelector('body');
+  await page.waitForFunction(() => !!window.api, { timeout: 5000 });
+  const preloadErr = await page.evaluate(() => window.api.readiness?.has('preload-error'));
+  expect(preloadErr).toBeFalsy();
   await expect(page.locator('#wizardModal')).not.toHaveClass(/hidden/);
   await page.click('[data-close="x"]');
   await expect(page.locator('#wizardModal')).toHaveClass(/hidden/);
+  await page.evaluate(() => localStorage.setItem('wizard.dismissed','1'));
   await page.click('#wizardOpenBtn');
   await expect(page.locator('#wizardModal')).not.toHaveClass(/hidden/);
+  const errLog = logs.find(l => l.includes('[preload-err]') || l.includes('[preload-error-event]'));
+  if (errLog) test.fail(true, errLog);
   await app.close();
 }, 30_000);
