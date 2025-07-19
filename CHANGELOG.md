@@ -1,3 +1,7 @@
+## [0.7.92] – 2025-07-19
+### Fixed
+* Restored app-loaded IPC and added base-ui / charts readiness flags; smoke tests stabilized
+
 ## [0.7.91] - 2025-07-18
 ### Fixed
 * preload self-contained; remove runtime package.json require

@@ -13,6 +13,7 @@ test('App exposes version and renders charts', async () => {
     return;
   }
 
+  await app.waitForEvent('ipc', (_e, msg) => msg === 'app-loaded');
   const page = await app.firstWindow();
   const logs = captureConsole(page);
   page.on('console', msg => {
@@ -24,9 +25,9 @@ test('App exposes version and renders charts', async () => {
   await page.waitForFunction(() => !!window.api?.version, { timeout: 5000 });
   const preloadErr = await page.evaluate(() => window.api.readiness?.has('preload-error'));
   expect(preloadErr).toBeFalsy();
-  await page.waitForFunction(() => window.api.readiness?.has('base-ui'), { timeout: 8000 });
+  await page.waitForFunction(() => window.api.readiness?.has('base-ui'), { timeout: 5000 });
   await page.click('#demoDataBtn');
-  await page.waitForFunction(() => window.api.readiness?.has('charts'), { timeout: 10000 });
+  await page.waitForFunction(() => window.api.readiness?.has('charts'), { timeout: 8000 });
   const v = await page.evaluate(() => window.api.version());
   expect(v).toMatch(/^\d+\.\d+\.\d+/);
   const demoEnabled = await page.evaluate(() => !document.getElementById('demoDataBtn').disabled);

@@ -88,11 +88,10 @@ function pushChange(change){
 let charts = {};
 setChartsRef(charts);
 eventBus.on('chart:empty', id => {
-let chartCounts = {};
-let chartReady = false;
   charts[id]?.destroy();
   delete charts[id];
 });
+let chartCounts = {};
 let appVersion;
 let chartWorker;
 
@@ -420,7 +419,13 @@ function renderAll() {
   renderTable();
   renderFilters();
   renderCards();
+  if (window.api?.readiness && !window.api.readiness.has('base-ui')) {
+    window.api.readiness.add('base-ui');
+  }
   renderCharts();
+  if (window.api?.readiness && !window.api.readiness.has('charts')) {
+    window.api.readiness.add('charts');
+  }
   const container = document.getElementById('chartView');
   const canvases = container.querySelectorAll('canvas');
   if (canvases.length && !document.getElementById('chartCanvas'))
@@ -936,7 +941,6 @@ function drawChart(canvasId, labels, values){
       data: { labels, datasets:[{data: values}] },
       options: { responsive:true, plugins:{legend:{position:type==='pie'?'bottom':'none'}} }
     });
-    if(!chartReady){ window.api?.readiness?.set('charts'); chartReady=true; }
     chartCounts[canvasId] = (chartCounts[canvasId]||0)+1;
     if(chartCounts[canvasId]===1) logger.info('[trace] chart-init ok', { id: canvasId });
     canvas.setAttribute('data-chart-ready','true');

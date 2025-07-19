@@ -1,11 +1,7 @@
 node_modules/
+dist/
 assets/icons/*.png
-dist/**/*.map
-dist/version.json
 build/
 resources/preload.js
 assets/*.ico
 assets/icon.png
-
-explicit allow:
-!dist/preload.js
