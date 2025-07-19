@@ -118,10 +118,11 @@ function createWindow() {
     logger.error('[pl-err] renderer crashed', details.reason);
   });
   mainWindow.webContents.once('did-finish-load', () => {
-    logger.info('[main] emitting app-loaded');
+    logger.info('[main] did-finish-load');
     mainWindow.webContents.send('app-loaded');
     if (process.send) process.send('app-loaded');
     ipcMain.emit('app-loaded');
+    logger.info('[main] sent app-loaded');
   });
   createMenu(mainWindow);
 }

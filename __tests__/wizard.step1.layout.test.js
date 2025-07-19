@@ -14,7 +14,7 @@ beforeAll(async () => {
   global.localStorage = dom.window.localStorage;
   global.Chart = function(){};
   window.HTMLCanvasElement.prototype.getContext = () => ({});
-  window.api = { bus: mitt(), version: () => '0' };
+  window.api = { bus: mitt(), version: () => '0', wizard:{ isDismissed: () => true, dismiss: () => {} } };
   renderer = await import('../src/renderer/renderer.js');
 });
 

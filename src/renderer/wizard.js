@@ -9,7 +9,7 @@ function show(){
 }
 function hide(){
   modal.classList.add('hidden');
-  localStorage.setItem('wizard.dismissed', 'true');
+  window.api?.wizard?.dismiss?.();
   bus.emit('wizard:close');
 }
 
