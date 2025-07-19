@@ -1,70 +1,75 @@
+// --- Config ---------------------------------------------------------------
 const fs = require('fs');
-const path = require('path');
 
-const LOG_LEVEL = process.env.LOG_LEVEL || '';
-const DEBUG = /debug/.test(LOG_LEVEL);
+const THRESHOLDS = {
+  'build/unpacked/renderer.bundle.js': 50 * 1024,
+  'dist/preload.js': 1 * 1024,
+  'dist/version.json': 10
+};
 
+const SUCCESS_MARKER = '[bundle:success]';
+const DEBUG = /^(debug|trace)$/i.test(process.env.LOG_LEVEL || '');
+
+// --- Helpers --------------------------------------------------------------
 function debug(...a) { if (DEBUG) console.log('[verify:debug]', ...a); }
-function info(msg) { console.log('[verify]', msg); }
-function warn(msg) { console.warn('[verify:warn]', msg); }
+function info(...a) { console.log('[verify]', ...a.join(' ')); }
+function warn(code, msg, extra) {
+  const suffix = extra ? ` ${JSON.stringify(extra)}` : '';
+  console.log(`[verify:${code}] ${msg}${suffix}`);
+}
 function fail(reason, details = {}) {
-  console.log(JSON.stringify({ status: 'fail', reason, ...details }));
+  const payload = { status: 'fail', reason };
+  if (details.file) payload.file = details.file;
+  if (Object.keys(details).length) payload.details = details;
+  console.error(JSON.stringify(payload));
   process.exit(1);
 }
 
-function checkFile(file, minSize) {
+// --- Checks ---------------------------------------------------------------
+function checkFile(file, minBytes) {
   if (!fs.existsSync(file)) fail('missing-artifact', { file });
-  const { size } = fs.statSync(file);
-  if (size < minSize) fail('artifact-too-small', { file, size });
-  return size;
+  const size = fs.statSync(file).size;
+  if (size < minBytes) fail('artifact-too-small', { file, size });
+  return { size };
 }
 
-const rendererPath = path.join('build', 'unpacked', 'renderer.bundle.js');
-const preloadPath = path.join('dist', 'preload.js');
-const versionPath = path.join('dist', 'version.json');
-const SUCCESS_MARKER = '[bundle:success] renderer.bundle.js written';
-
-let rendererSize;
-let preloadSize;
-let version;
-
-try {
-  rendererSize = checkFile(rendererPath, 50 * 1024);
-  preloadSize = checkFile(preloadPath, 1 * 1024);
-} catch (e) {
-  // fail() already handled exit
-  process.exit(1);
-}
-
-try {
-  const data = fs.readFileSync(versionPath, 'utf8');
-  const json = JSON.parse(data);
-  version = json.version;
-  if (!/^\d+\.\d+\.\d+$/.test(version)) fail('invalid-version', { version });
-} catch (e) {
-  fail('version-parse-fail');
-}
-
-function getLogPath() {
-  if (process.env.BUNDLE_LOG_PATH && fs.existsSync(process.env.BUNDLE_LOG_PATH)) {
-    return process.env.BUNDLE_LOG_PATH;
+function readVersion() {
+  const file = 'dist/version.json';
+  if (!fs.existsSync(file)) fail('version-missing', { path: file });
+  let raw = '';
+  try { raw = fs.readFileSync(file, 'utf8'); } catch (e) {
+    fail('version-parse-fail');
   }
-  const alt = path.join('scripts', 'bundle.log');
-  if (fs.existsSync(alt)) return alt;
-  return null;
+  let json;
+  try { json = JSON.parse(raw); } catch (_e) {
+    fail('version-parse-fail');
+  }
+  if (json.version === undefined) fail('version-field-missing');
+  if (!/^\d+\.\d+\.\d+$/.test(json.version)) fail('invalid-version', { version: json.version });
+  return { version: json.version };
 }
 
 function checkSuccessMarker() {
-  const logPath = getLogPath();
-  if (!logPath) { warn('no bundle log, skipping success marker'); return; }
-  debug('checking', logPath);
-  const logContent = fs.readFileSync(logPath, 'utf8');
-  if (!logContent.includes(SUCCESS_MARKER)) {
-    fail('missing-success-marker', { log: logPath });
+  const logPath = process.env.BUNDLE_LOG_PATH;
+  if (!logPath || !fs.existsSync(logPath)) {
+    debug('no bundle log provided; skipping marker enforcement');
+    return;
   }
+  const content = fs.readFileSync(logPath, 'utf8');
+  const lines = content.split(/\r?\n/);
+  const found = lines.some(l => l.startsWith(SUCCESS_MARKER));
+  if (!found) fail('missing-success-marker', { log: logPath });
+  debug('found success marker in', logPath);
 }
 
-checkSuccessMarker();
-
-info(`ok renderer:${rendererSize}B preload:${preloadSize}B version:${version}`);
+// --- Execution ------------------------------------------------------------
+try {
+  const renderer = checkFile('build/unpacked/renderer.bundle.js', THRESHOLDS['build/unpacked/renderer.bundle.js']);
+  const preload = checkFile('dist/preload.js', THRESHOLDS['dist/preload.js']);
+  const { version } = readVersion();
+  checkSuccessMarker();
+  info(`ok renderer:${renderer.size} preload:${preload.size} version:${version}`);
+} catch (e) {
+  fail('exception', { name: e.name, message: e.message });
+}
 
