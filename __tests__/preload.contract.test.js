@@ -5,8 +5,8 @@ jest.mock('electron', () => ({
 const api = require('../src/preload/index.cjs');
 
 test('preload exports contract keys', () => {
-  expect(typeof api.version).toBe('string');
-  expect(api.getVersion()).toBe(api.version);
+  expect(typeof api.version).toBe('function');
+  expect(api.getVersion()).toBe(api.version());
   expect(api.signal).toBeDefined();
   expect(api.readiness).toBeDefined();
   expect(api.wizard).toBeDefined();

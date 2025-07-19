@@ -1,3 +1,7 @@
+## [0.7.90] - 2025-07-18
+### Fixed
+* resolve preload sandbox mismatch & stabilize smoke tests
+
 ## [0.7.89] - 2025-07-18
 ### Fixed
 * preload sandbox mismatch & readiness gating

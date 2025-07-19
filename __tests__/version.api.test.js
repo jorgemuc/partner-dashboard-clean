@@ -10,7 +10,6 @@ test('version exposed as function', () => {
   const api = apiCall ? apiCall[1] : {};
   global.window = {};
   window.api = api;
-  expect(typeof window.api.getVersion).toBe('function');
-  expect(window.api.version).toMatch(/^\d+\.\d+\.\d+$/);
-  expect(window.api.getVersion()).toMatch(/^\d+\.\d+\.\d+$/);
+  expect(typeof window.api.version).toBe('function');
+  expect(window.api.version()).toMatch(/^\d+\.\d+\.\d+$/);
 });

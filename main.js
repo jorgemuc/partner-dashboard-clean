@@ -122,6 +122,9 @@ function createWindow() {
   mainWindow.webContents.on('render-process-gone', (_e, details) => {
     logger.error('[pl-err] renderer crashed', details.reason);
   });
+  mainWindow.webContents.on('render-process-gone', (_e, details) => {
+    console.error('[render-gone]', details.reason);
+  });
   mainWindow.webContents.once('did-finish-load', () => {
     logger.info('[main] did-finish-load');
     mainWindow.webContents.send('app-loaded');

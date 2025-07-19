@@ -1,3 +1,7 @@
+if (typeof window !== 'undefined' && !window.api) {
+  window.api = { readiness: new Set() };
+}
+
 try {
   let contextBridge = { exposeInMainWorld: () => {} };
   let ipcRenderer = { on: () => {}, send: () => {}, invoke: () => {} };
@@ -7,13 +11,17 @@ try {
     if (electron.ipcRenderer) ipcRenderer = electron.ipcRenderer;
   } catch {}
 
-  let loadedVersion;
+  let versionValue;
   try {
     // eslint-disable-next-line node/no-missing-require, node/no-unpublished-require
-    const v = require('../../dist/version.json');
-    if (v && v.version) loadedVersion = v.version;
-  } catch {}
-  const fallback = require('../../package.json').version;
+    versionValue = require('../../dist/version.json').version;
+  } catch {
+    try {
+      versionValue = require('../../package.json').version;
+    } catch {
+      versionValue = '0.0.0-preload-error';
+    }
+  }
 
   const events = {};
   const signal = {
@@ -21,14 +29,14 @@ try {
     off: (e, fn) => { events[e] = (events[e] || []).filter(f => f !== fn); },
     emit: (e, d) => { (events[e] || []).forEach(fn => fn(d)); }
   };
-  const states = {};
+  const states = new Set();
   const readiness = {
-    set: k => { states[k] = true; signal.emit(k); },
-    add: k => { states[k] = true; signal.emit(k); },
-    has: k => !!states[k],
+    set: k => { states.add(k); signal.emit(k); },
+    add: k => { states.add(k); signal.emit(k); },
+    has: k => states.has(k),
     waitFor: k => new Promise(res => {
-      if (states[k]) return res();
-      const cb = () => { if (states[k]) { signal.off(k, cb); res(); } };
+      if (states.has(k)) return res();
+      const cb = () => { if (states.has(k)) { signal.off(k, cb); res(); } };
       signal.on(k, cb);
     })
   };
@@ -42,33 +50,29 @@ try {
     }
   };
   const api = {
-    version: loadedVersion || fallback,
-    getVersion: () => loadedVersion || fallback,
+    version: () => versionValue,
+    getVersion: () => versionValue,
     signal,
     readiness,
     wizard
   };
   contextBridge.exposeInMainWorld('api', api);
-  window.api = api;
-  window.api.readiness.add('base-ui');
+  if (typeof window !== 'undefined') {
+    window.api = api;
+    window.api.readiness.add('base-ui');
+  }
   if (process.env.DEBUG) console.info('[preload] init-ok');
   module.exports = api;
   module.exports.default = api;
 } catch (e) {
   console.error('[preload-err]', e && e.stack || e);
-  const fallback = (() => {
-    try { return require('../../package.json').version; } catch { return '0.0.0'; }
-  })();
-  const api = {
-    version: fallback,
-    getVersion: () => fallback,
-    signal: { on: () => {}, off: () => {}, emit: () => {} },
-    readiness: {
-      set: () => {}, add: () => {}, has: () => false, waitFor: () => Promise.resolve()
-    },
-    wizard: { isDismissed: () => false, dismiss: () => {} }
-  };
-  if (typeof window !== 'undefined' && !window.api) { window.api = api; }
-  module.exports = typeof window !== 'undefined' ? window.api : api;
+  if (typeof window !== 'undefined') {
+    if (!window.api) {
+      window.api = { readiness: new Set(['preload-error']) };
+    } else if (window.api.readiness && window.api.readiness.add) {
+      window.api.readiness.add('preload-error');
+    }
+  }
+  module.exports = typeof window !== 'undefined' ? window.api : {};
   module.exports.default = module.exports;
 }
