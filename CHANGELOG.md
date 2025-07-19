@@ -1,3 +1,7 @@
+## [0.7.93] – 2025-07-19
+### Fixed
+* bundle diagnostics and stable exit code
+
 ## [0.7.92] – 2025-07-19
 ### Fixed
 * Restored app-loaded IPC and added base-ui / charts readiness flags; smoke tests stabilized

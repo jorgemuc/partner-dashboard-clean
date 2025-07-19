@@ -4,16 +4,21 @@ const fs = require('fs');
 const { version } = require('../package.json');
 
 fs.mkdirSync('dist', { recursive: true });
+const entry = fs.existsSync('src/preload/index.cjs') ? 'src/preload/index.cjs' : 'src/preload/index.js';
 
-esbuild.build({
-  entryPoints: ['src/preload/index.js'],
-  bundle: true,
-  platform: 'browser',
-  format: 'iife',
-  target: ['chrome115'],
-  external: ['electron'],
-  define: { APP_VERSION: JSON.stringify(version) },
-  outfile: 'dist/preload.js',
-  minify: false,
-  logLevel: 'info'
-}).catch(() => process.exit(1));
+(async () => {
+  await esbuild.build({
+    entryPoints: [entry],
+    bundle: true,
+    platform: 'browser',
+    format: 'iife',
+    target: 'es2020',
+    define: {
+      'process.env.APP_VERSION': JSON.stringify(version),
+      APP_VERSION: JSON.stringify(version)
+    },
+    outfile: 'dist/preload.js',
+    minify: true,
+    logLevel: 'info'
+  });
+})();
