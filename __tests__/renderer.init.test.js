@@ -19,7 +19,7 @@ test('renderer bootstraps without errors', async () => {
   global.window = window;
   global.document = window.document;
   window.api = apiCall ? apiCall[1] : {};
-  expect(global.window.api.version).toMatch(/^\d+\.\d+\.\d+$/);
-  expect(global.window.api.getVersion()).toMatch(/^\d+\.\d+\.\d+$/);
+  expect(typeof global.window.api.version).toBe('function');
+  expect(global.window.api.version()).toMatch(/^\d+\.\d+\.\d+$/);
   expect(typeof global.window.api.readiness.set).toBe('function');
 });

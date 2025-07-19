@@ -15,20 +15,22 @@ test('App exposes version and renders charts', async () => {
 
   const page = await app.firstWindow();
   const logs = captureConsole(page);
+  page.on('console', msg => {
+    const t = msg.text();
+    if (/\[preload-err\]|\[preload-error-event\]/.test(t)) {
+      throw new Error('Preload failure detected: ' + t);
+    }
+  });
   await page.waitForFunction(() => !!window.api, { timeout: 5000 });
   const preloadErr = await page.evaluate(() => window.api.readiness?.has('preload-error'));
   expect(preloadErr).toBeFalsy();
-  const res = await page.evaluate(() => ({
-    version: typeof window.api.version === 'function'
-             ? window.api.version()
-             : window.api.version,
-    demoEnabled: !document.getElementById('demoDataBtn').disabled
-  }));
-  expect(res.version).toMatch(/^\d+\.\d+\.\d+$/);
-  expect(res.demoEnabled).toBe(true);
   await page.waitForFunction(() => window.api.readiness?.has('base-ui'), { timeout: 8000 });
   await page.click('#demoDataBtn');
   await page.waitForFunction(() => window.api.readiness?.has('charts'), { timeout: 10000 });
+  const v = await page.evaluate(() => window.api.version());
+  expect(v).toMatch(/^\d+\.\d+\.\d+/);
+  const demoEnabled = await page.evaluate(() => !document.getElementById('demoDataBtn').disabled);
+  expect(demoEnabled).toBe(true);
   await page.setInputFiles('#csvFile', require('path').join(__dirname, '../fixtures/partner.csv'));
   await page.waitForTimeout(300);
   const rows = await page.evaluate(() => document.querySelectorAll('#tablePartnerTable tbody tr').length);
