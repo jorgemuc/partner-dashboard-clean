@@ -12,6 +12,7 @@ test('wizard shows then persists closed', async () => {
     test.fail(true, 'Electron launch');
     return;
   }
+  await app.waitForEvent('ipc', (_e, msg) => msg === 'app-loaded');
   const page = await app.firstWindow();
   const logs = captureConsole(page);
   page.on('console', msg => {
@@ -20,11 +21,10 @@ test('wizard shows then persists closed', async () => {
       throw new Error('Preload failure detected: ' + t);
     }
   });
-  await app.waitForEvent('ipc', (_e, msg) => msg === 'app-loaded');
   await page.waitForFunction(() => !!window.api?.version, { timeout: 5000 });
   const preloadErr = await page.evaluate(() => window.api.readiness?.has('preload-error'));
   expect(preloadErr).toBeFalsy();
-  await page.waitForFunction(() => window.api.readiness?.has('base-ui'), { timeout: 8000 });
+  await page.waitForFunction(() => window.api.readiness?.has('base-ui'), { timeout: 5000 });
   await expect(page.locator('#wizardModal')).not.toHaveClass(/hidden/);
   await page.click('[data-close="x"]');
   await expect(page.locator('#wizardModal')).toHaveClass(/hidden/);
