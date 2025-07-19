@@ -165,3 +165,4 @@ T25 - Sprint2,Contract Doc,update AGENTS preload section,done,Docs,S,codex
 T26 - Sprint3,Preload Hardening,new readiness API,done,Infra,S,codex
 T27 - Sprint3,Smoke Fix,stabilize preload readiness,done,Infra,S,codex
 T28 - Sprint3,Phase1 Stabilisierung,base-ui/charts readiness + app-loaded IPC + Smoke Grün,done,Infra,S,codex
+T29 - Sprint3,Bundle Diagnostik,bundle.js instrumentation,done,Infra,S,codex
