@@ -3,7 +3,7 @@
   "image": "mcr.microsoft.com/devcontainers/base:ubuntu",
   "features": {
     "ghcr.io/devcontainers/features/node:1": { "version": "20" },
-    "ghcr.io/devcontainers-contrib/features/xvfb:1": {}
+    "ghcr.io/devcontainers/features/desktop-lite:1": {},
   },
   "postCreateCommand": "npm install -g cross-env && npm run dev:verify || true",
   "customizations": {
